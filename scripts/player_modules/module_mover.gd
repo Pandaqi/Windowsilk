@@ -1,6 +1,6 @@
 extends Node2D
 
-const BASE_SPEED : float = 1000.0
+const BASE_SPEED : float = 170.0
 
 onready var body = get_parent()
 onready var point_delay_timer = $PointDelayTimer
@@ -40,9 +40,14 @@ func try_edge_move(vec, dt):
 	body.move_and_slide(final_move_vec * BASE_SPEED)
 	body.set_rotation(final_move_vec.angle())
 	
+	# NOTE: the "entity on me" check can, in rare occassions, fail
+	# So, we also check if we're close enough to the point at which we should be arriving
+	# Otherwise we call it a fluke and continue
 	if not edge.is_entity_on_me(body):
-		body.m.webtracker.arrived_on_point(edge.get_closest_point(body))
-		return false
+		var closest_point = edge.get_closest_point(body)
+		if (body.position - closest_point.position).length() <= 5.0:
+			body.m.webtracker.arrived_on_point(closest_point)
+			return false
 	
 	return true
 
@@ -64,10 +69,10 @@ func enter_point(p):
 func enter_edge(e):
 	pass
 
-func _on_Input_button_press():
+func disable():
 	active = false
 
-func _on_Input_button_release():
+func enable():
 	active = true
 
 func _on_PointDelayTimer_timeout():

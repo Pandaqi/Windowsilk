@@ -26,6 +26,9 @@ func get_edge_to(p):
 		if e.start == p: return e
 		if e.end == p: return e
 
+func has_edge(e):
+	return (e in edges)
+
 func find_edge_closest_to_vec(vec : Vector2):
 	var best = null
 	var best_dot = -INF
