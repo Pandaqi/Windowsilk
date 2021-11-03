@@ -24,3 +24,7 @@ func remove_existing(point):
 		edges.remove_existing(e)
 	
 	point.queue_free()
+
+func get_random():
+	var points = get_tree().get_nodes_in_group("Points")
+	return points[randi() % points.size()]

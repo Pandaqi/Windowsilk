@@ -18,7 +18,7 @@ var tween_data = {
 }
 
 func pay_for_travel(dist):
-	return -round(dist / DIST_PER_SILK)
+	return clamp(-round(dist / DIST_PER_SILK), -INF, -1)
 
 func get_max_dist():
 	return DIST_PER_SILK * body.m.silk.count()
@@ -47,6 +47,7 @@ func prepare_jump():
 	if body.m.silk.is_empty(): return
 	
 	body.m.mover.disable()
+	body.m.webtracker.disable_updates()
 	active = true
 
 func execute_jump():
@@ -114,6 +115,7 @@ func finish_jump():
 		body.m.webtracker.arrived_on_point(pos)
 
 	body.m.mover.enable()
+	body.m.webtracker.enable_updates()
 
 func _on_Tween_tween_all_completed():
 	finish_jump()

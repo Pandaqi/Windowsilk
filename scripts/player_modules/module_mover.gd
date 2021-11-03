@@ -1,6 +1,7 @@
 extends Node2D
 
 const BASE_SPEED : float = 170.0
+const DELAY_AT_POINT : float = 0.1
 
 onready var body = get_parent()
 onready var point_delay_timer = $PointDelayTimer
@@ -37,7 +38,7 @@ func try_edge_move(vec, dt):
 	if dot_prod < 0: final_move_vec *= -1
 	
 	# TO DO: Not entirely correct, as we don't want to bump off our perfect line (over the web), so move_and_collide is better?
-	body.move_and_slide(final_move_vec * BASE_SPEED)
+	body.move_and_collide(final_move_vec * BASE_SPEED * dt)
 	body.set_rotation(final_move_vec.angle())
 	
 	# NOTE: the "entity on me" check can, in rare occassions, fail
@@ -63,6 +64,7 @@ func try_point_move(vec, dt):
 	return true
 
 func enter_point(p):
+	point_delay_timer.wait_time = DELAY_AT_POINT
 	point_delay_timer.start()
 	can_move_from_point = false
 

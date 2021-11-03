@@ -1,7 +1,8 @@
 extends StaticBody2D
 
 const THICKNESS : float = 10.0
-const COLOR : Color = Color(1,1,1)
+const BASE_COLOR : Color = Color(1,1,1)
+var COLOR : Color = Color(1,1,1)
 
 var start
 var end
@@ -48,16 +49,8 @@ func remove_entity(e):
 func get_entities_on_me():
 	return entities
 
-func try_adding_entities(entities):
-	for e in entities:
-		if not is_entity_on_me(e): continue
-	
-		e.m.webtracker.arrived_on_edge(self)
-		
-		print("SUCCESFULLY RE-ADDED ENTITIES")
-
-func is_entity_on_me(e):
-	return point_is_between(start.position, end.position, e.position)
+func is_entity_on_me(e, epsilon = 5.0):
+	return point_is_between(start.position, end.position, e.position, epsilon)
 
 func get_closest_point(e):
 	var distA = (start.position - e.position).length()
@@ -65,10 +58,15 @@ func get_closest_point(e):
 	if distA < distB: return start
 	return end
 
+func get_random_pos_on_me(margin = 0.0):
+	var vec = get_vec()
+	var vec_norm = vec.normalized()
+	var rand = (randf()*(1.0-2*margin)) + margin
+	return start.position + rand*vec
+
 # Is point C between points A and B (line segment)?
-func point_is_between(a, b, c):
-	var epsilon = 5.0
-	
+# A higher epsilon means less floating point precision errors ... but the algorithm might also be plain wrong (from time to time) if the value is too high
+func point_is_between(a, b, c, epsilon):
 	var crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
 	if abs(crossproduct) > epsilon: return false
 	
@@ -115,11 +113,18 @@ func update_visuals():
 	
 	update()
 
+func recolor(col):
+	if not col: 
+		COLOR = BASE_COLOR
+	else:
+		COLOR = col
+	update()
+
 func _draw():
 	var col_rect = col_shape.extents
 	var rect = Rect2(-col_rect, 2*col_rect)
 	
 	var col = COLOR
 	if entities.size() > 0: col = Color(1,0,0)
-	
+
 	draw_rect(rect, col, true)

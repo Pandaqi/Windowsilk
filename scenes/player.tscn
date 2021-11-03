@@ -1,0 +1,136 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://scripts/player_modules/module_input.gd" type="Script" id=1]
+[ext_resource path="res://scripts/player_modules/collector.gd" type="Script" id=2]
+[ext_resource path="res://assets/fonts/main_medium.tres" type="DynamicFont" id=3]
+[ext_resource path="res://scripts/module_manager.gd" type="Script" id=4]
+[ext_resource path="res://scripts/player_modules/module_mover.gd" type="Script" id=5]
+[ext_resource path="res://scripts/player_modules/module_status.gd" type="Script" id=6]
+[ext_resource path="res://scripts/player_modules/module_legs.gd" type="Script" id=7]
+[ext_resource path="res://scripts/player_modules/module_jumper.gd" type="Script" id=8]
+[ext_resource path="res://scripts/player_modules/module_silk.gd" type="Script" id=9]
+[ext_resource path="res://scripts/player_modules/web_tracker.gd" type="Script" id=10]
+[ext_resource path="res://assets/spider.png" type="Texture" id=11]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 39.6427, 22.889 )
+
+[node name="Player" type="KinematicBody2D" groups=[
+"Players",
+]]
+collision_layer = 2
+collision_mask = 2
+script = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( -0.0623398, 1.62678 )
+shape = SubResource( 1 )
+
+[node name="Status" type="Node2D" parent="."]
+script = ExtResource( 6 )
+
+[node name="Visuals" type="Node2D" parent="."]
+scale = Vector2( 0.33, 0.33 )
+
+[node name="Sprite" type="Sprite" parent="Visuals"]
+texture = ExtResource( 11 )
+
+[node name="Mover" type="Node2D" parent="."]
+script = ExtResource( 5 )
+
+[node name="PointDelayTimer" type="Timer" parent="Mover"]
+wait_time = 0.3
+one_shot = true
+
+[node name="Input" type="Node2D" parent="."]
+script = ExtResource( 1 )
+player_num = 0
+
+[node name="WebTracker" type="Node2D" parent="."]
+script = ExtResource( 10 )
+
+[node name="Jumper" type="Node2D" parent="."]
+script = ExtResource( 8 )
+
+[node name="Tween" type="Tween" parent="Jumper"]
+
+[node name="Silk" type="Node2D" parent="."]
+script = ExtResource( 9 )
+
+[node name="LabelContainer" type="Node2D" parent="Silk"]
+position = Vector2( -13.6862, 0 )
+
+[node name="Label" type="Label" parent="Silk/LabelContainer"]
+margin_left = -19.8214
+margin_top = -19.8214
+margin_right = 20.1786
+margin_bottom = 24.1786
+custom_fonts/font = ExtResource( 3 )
+text = "0"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Collector" type="Node2D" parent="."]
+script = ExtResource( 2 )
+
+[node name="Legs" type="Node2D" parent="."]
+show_behind_parent = true
+script = ExtResource( 7 )
+
+[node name="R1" type="Node2D" parent="Legs"]
+position = Vector2( 26, 13 )
+
+[node name="Offset" type="Node2D" parent="Legs/R1"]
+position = Vector2( 14.6301, 9.20277 )
+
+[node name="R2" type="Node2D" parent="Legs"]
+position = Vector2( 18.5, 13 )
+
+[node name="Offset" type="Node2D" parent="Legs/R2"]
+position = Vector2( 5.37628, 15.5739 )
+
+[node name="R3" type="Node2D" parent="Legs"]
+position = Vector2( 14, 13 )
+
+[node name="Offset" type="Node2D" parent="Legs/R3"]
+position = Vector2( -4.98973, 14.1581 )
+
+[node name="R4" type="Node2D" parent="Legs"]
+position = Vector2( -0.5, 13 )
+
+[node name="Offset" type="Node2D" parent="Legs/R4"]
+position = Vector2( -7.24351, 16.7538 )
+
+[node name="L1" type="Node2D" parent="Legs"]
+position = Vector2( 26.5, -9.5 )
+
+[node name="Offset" type="Node2D" parent="Legs/L1"]
+position = Vector2( 13.8941, -9.59172 )
+
+[node name="L2" type="Node2D" parent="Legs"]
+position = Vector2( 19.5, -9.5 )
+
+[node name="Offset" type="Node2D" parent="Legs/L2"]
+position = Vector2( 5.32016, -16.6708 )
+
+[node name="L3" type="Node2D" parent="Legs"]
+position = Vector2( 13, -9.5 )
+
+[node name="Offset" type="Node2D" parent="Legs/L3"]
+position = Vector2( -3.98974, -14.0751 )
+
+[node name="L4" type="Node2D" parent="Legs"]
+position = Vector2( -0.5, -9.5 )
+
+[node name="Offset" type="Node2D" parent="Legs/L4"]
+position = Vector2( -8.18739, -17.6147 )
+
+[connection signal="timeout" from="Mover/PointDelayTimer" to="Mover" method="_on_PointDelayTimer_timeout"]
+[connection signal="button_press" from="Input" to="Jumper" method="_on_Input_button_press"]
+[connection signal="button_release" from="Input" to="Jumper" method="_on_Input_button_release"]
+[connection signal="move_vec" from="Input" to="Mover" method="_on_Input_move_vec"]
+[connection signal="move_vec" from="Input" to="Jumper" method="_on_Input_move_vec"]
+[connection signal="tween_all_completed" from="Jumper/Tween" to="Jumper" method="_on_Tween_tween_all_completed"]

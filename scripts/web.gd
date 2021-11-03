@@ -19,7 +19,10 @@ var corners = [
 func activate():
 	inset_corners()
 	position_bounds()
-	load_default_web()
+	
+	yield(get_tree(), "idle_frame")
+	
+	generate_random_web()
 
 func inset_corners():
 	corners[0] += Vector2(1,1)*EDGE_MARGIN
@@ -33,9 +36,63 @@ func position_bounds():
 	$Bounds/Left.position.x = corners[0].x - BOUND_THICKNESS
 	$Bounds/Up.position.y = corners[0].y - BOUND_THICKNESS
 
-func load_default_web():
-	yield(get_tree(), "idle_frame")
+func get_random_inner_pos(margin = 0.0):
+	margin = Vector2(1,1)*margin
+	return corners[0] + margin + (corners[2]-corners[0]-2*margin)*Vector2(randf(), randf())
+
+func get_random_vector():
+	var num_angles = 16
+	var rand_angle = randf()*2*PI
+	var snap_angle = round(rand_angle / (2*PI) * num_angles) / num_angles * (2*PI)
+	return Vector2(cos(snap_angle), sin(snap_angle))
+
+func generate_random_web():
+	#var start_pos = get_random_inner_pos()
+	#points.create_at(start_pos)
 	
+	var num_debug_frames = 1
+	var total_edge_length : float = 0.0
+	var target_total_edge_length : float = 5000.0
+	var exclude = []
+	var edge
+	
+	# a value of 1 ensures everything is connected
+	# (higher values create more varied/expansive webs, but lose that certainty)
+	var num_free_shots = 1
+	
+	var start_pos
+	var prev_edge_created = null
+	var counter = 0
+	while total_edge_length < target_total_edge_length:
+		
+		if counter >= num_free_shots:
+			edge = edges.get_random()
+			start_pos = edge.get_random_pos_on_me()
+			exclude = [edge]
+		else:
+			start_pos = get_random_inner_pos(200)
+		
+		var vec = get_random_vector()
+		var res = edges.shoot(start_pos, vec, exclude, edge, null)
+		
+		var nothing_happened = not res.created_something
+		if nothing_happened: continue
+		
+		total_edge_length += res.new_edge.get_vec().length()
+		
+		if prev_edge_created: prev_edge_created.recolor(null)
+		
+		counter += 1
+		
+		prev_edge_created = res.new_edge
+		res.new_edge.recolor(Color(1,0,0))
+		
+		for j in range(num_debug_frames):
+			yield(get_tree(), "idle_frame")
+
+	main_node.web_loading_done()
+
+func load_default_web():
 	var res = edges.shoot(corners[0], corners[2] - corners[0])
 	
 	get_node("/root/Main/Players/Player/WebTracker").arrived_on_edge(res.new_edge)

@@ -23,7 +23,7 @@ func _ready():
 	build_input_map()
 
 func create_debugging_players():
-	var num_players = 1
+	var num_players = 2
 	for i in range(num_players):
 		add_new_player('keyboard')
 

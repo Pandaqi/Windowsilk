@@ -27,7 +27,8 @@ func shoot(from : Vector2, dir : Vector2, exclude = [], origin_edge = null, shoo
 	var result = space_state.intersect_ray(from + epsilon, to, exclude, col_layer)
 	if not result: 
 		return {
-			'failed': true
+			'failed': true,
+			'created_something': false
 		}
 	
 	# create a point where we came from
@@ -35,9 +36,11 @@ func shoot(from : Vector2, dir : Vector2, exclude = [], origin_edge = null, shoo
 	# (much cleaner in all ways)
 	var from_point
 	var create_from_point = true
+	var from_pos = from + epsilon
 	var snappable_from_point = get_closest_point(from)
 	if snappable_from_point:
 		from_point = snappable_from_point
+		from_pos = from_point.position
 		create_from_point = false
 	
 	# similar idea: create a new point, or snap to an existing one
@@ -45,6 +48,7 @@ func shoot(from : Vector2, dir : Vector2, exclude = [], origin_edge = null, shoo
 	var new_point
 	var final_pos = result.position
 	var snappable_new_point = get_closest_point(result.position)
+	
 	if snappable_new_point:
 		create_new_point = false
 		new_point = snappable_new_point
@@ -58,17 +62,40 @@ func shoot(from : Vector2, dir : Vector2, exclude = [], origin_edge = null, shoo
 			if existing_edge:
 				return {
 					'failed': false,
+					'created_something': false,
 					'new_edge': existing_edge,
 					'new_point': new_point
 				}
 
+	# if we try to jump ALONG our current edge, 
+	# just snap to the edge extremes and be done with it
+	# (we calculate it HERE, because snapping to points would subtly change the actual dir we travel)
+	if origin_edge:
+		var edge_vec = origin_edge.get_vec()
+		var actual_dir = (final_pos - from_pos).normalized()
+		var dot = actual_dir.dot(edge_vec.normalized())
+		
+		if abs(dot) >= 0.9:
+			print("ALONG VEC")
+			var target_point = origin_edge.end
+			if dot < 0: target_point = origin_edge.start
+			
+			return {
+				'failed': false,
+				'created_something': false,
+				'new_edge': origin_edge,
+				'new_point': target_point
+			}
+
 	# detect if something is blocking our arrival
-	var obstructing_entity = get_closest_entity(final_pos, [shooter])
-	if obstructing_entity:
-		print("Can't go there; obstructing entity")
-		return {
-			'failed': true
-		}
+	if shooter:
+		var obstructing_entity = get_closest_entity(final_pos, [shooter])
+		if obstructing_entity:
+			print("Can't go there; obstructing entity")
+			return {
+				'failed': true,
+				'created_something': false
+			}
 
 	# if we didn't snap to existing points, they must be created
 	if create_from_point:
@@ -88,6 +115,7 @@ func shoot(from : Vector2, dir : Vector2, exclude = [], origin_edge = null, shoo
 		print("No need to create something new")
 		return {
 			'failed': false,
+			'created_something': false,
 			'new_edge': origin_edge,
 			'new_point': new_point
 		}
@@ -95,13 +123,14 @@ func shoot(from : Vector2, dir : Vector2, exclude = [], origin_edge = null, shoo
 	# if we hit the _bounds_ of the level, we don't break anything
 	# hence the check
 	var hit_an_edge = (result.collider.is_in_group("Edges"))
-	if hit_an_edge: break_edge_in_two(result.collider, new_point)
+	if hit_an_edge and create_new_point: break_edge_in_two(result.collider, new_point)
 	
 	# finally, create the new edge along the shooting line
 	var new_edge = create_between(from_point, new_point)
 	
 	return {
 		'failed': false,
+		'created_something': true,
 		'new_edge': new_edge,
 		'new_point': new_point
 	}
@@ -117,11 +146,18 @@ func break_edge_in_two(edge, new_point):
 	
 	var entities = remove_existing(edge)
 	
-	var e = create_between(pointA, new_point)
-	e.try_adding_entities(entities)
+	var edgeA = create_between(pointA, new_point)
+	var edgeB = create_between(new_point, pointB)
 	
-	e = create_between(new_point, pointB)
-	e.try_adding_entities(entities)
+	for e in entities:
+		var vec_to_split_point = (e.position - new_point.position).normalized()
+		var dotA = edgeA.get_vec_starting_from(new_point).normalized().dot(vec_to_split_point)
+		var dotB = edgeB.get_vec_starting_from(new_point).normalized().dot(vec_to_split_point)
+		
+		if dotA > dotB:
+			e.m.webtracker.force_change_edge(edgeA)
+		else:
+			e.m.webtracker.force_change_edge(edgeB)
 
 func get_closest_point(pos : Vector2):
 	var space_state = get_world_2d().direct_space_state
@@ -136,11 +172,17 @@ func get_closest_point(pos : Vector2):
 	var result = space_state.intersect_shape(query_params)
 	if not result: return null
 	
+	var best_point = null
+	var best_dist = INF
 	for res in result:
 		if not res.collider.is_in_group("Points"): continue
-		return res.collider
-	
-	return null
+		
+		var dist = (res.collider.position - pos).length()
+		if dist < best_dist:
+			best_dist = dist
+			best_point = res.collider
+
+	return best_point
 
 func get_closest_entity(pos : Vector2, exclude = []):
 	var space_state = get_world_2d().direct_space_state
@@ -185,3 +227,12 @@ func create_between(a, b):
 		print()
 	
 	return e
+
+func get_random():
+	var edges = get_tree().get_nodes_in_group("Edges")
+	if edges.size() <= 0: return null
+	return edges[randi() % edges.size()]
+
+func get_random_pos_on_edge(margin = 0.0):
+	var rand_edge = get_random()
+	return rand_edge.get_random_pos_on_me(margin)
