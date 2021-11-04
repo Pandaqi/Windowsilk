@@ -61,31 +61,30 @@ func generate_random_web():
 	var num_free_shots = 1
 	
 	var start_pos
-	var prev_edge_created = null
 	var counter = 0
 	while total_edge_length < target_total_edge_length:
 		
 		if counter >= num_free_shots:
 			edge = edges.get_random()
-			start_pos = edge.get_random_pos_on_me()
+			start_pos = edge.m.body.get_random_pos_on_me()
 			exclude = [edge]
 		else:
 			start_pos = get_random_inner_pos(200)
 		
-		var vec = get_random_vector()
-		var res = edges.shoot(start_pos, vec, exclude, edge, null)
+		var params = {
+			'from': start_pos, 
+			'dir': get_random_vector(),
+			'exclude': exclude, 
+			'origin_edge': edge
+		}
+		
+		var res = edges.shoot(params)
 		
 		var nothing_happened = not res.created_something
 		if nothing_happened: continue
 		
-		total_edge_length += res.new_edge.get_vec().length()
-		
-		if prev_edge_created: prev_edge_created.recolor(null)
-		
+		total_edge_length += res.new_edge.m.body.get_length()
 		counter += 1
-		
-		prev_edge_created = res.new_edge
-		res.new_edge.recolor(Color(1,0,0))
 		
 		for j in range(num_debug_frames):
 			yield(get_tree(), "idle_frame")

@@ -23,8 +23,8 @@ func get_edges():
 
 func get_edge_to(p):
 	for e in edges:
-		if e.start == p: return e
-		if e.end == p: return e
+		if e.m.body.start == p: return e
+		if e.m.body.end == p: return e
 
 func has_edge(e):
 	return (e in edges)
@@ -34,7 +34,7 @@ func find_edge_closest_to_vec(vec : Vector2):
 	var best_dot = -INF
 	
 	for e in edges:
-		var edge_vec = e.get_vec_starting_from(self)
+		var edge_vec = e.m.body.get_vec_starting_from(self)
 		var dot = edge_vec.normalized().dot(vec)
 		if dot <= best_dot: continue
 		

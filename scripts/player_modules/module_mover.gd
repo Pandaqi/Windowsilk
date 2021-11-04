@@ -31,7 +31,7 @@ func try_edge_move(vec, dt):
 	var edge = body.m.webtracker.get_current_edge()
 	if not edge: return false
 	
-	var cur_edge_vec : Vector2 = edge.get_vec().normalized()
+	var cur_edge_vec : Vector2 = edge.m.body.get_vec().normalized()
 	var dot_prod : float = vec.normalized().dot(cur_edge_vec)
 	
 	var final_move_vec : Vector2 = cur_edge_vec
@@ -44,8 +44,8 @@ func try_edge_move(vec, dt):
 	# NOTE: the "entity on me" check can, in rare occassions, fail
 	# So, we also check if we're close enough to the point at which we should be arriving
 	# Otherwise we call it a fluke and continue
-	if not edge.is_entity_on_me(body):
-		var closest_point = edge.get_closest_point(body)
+	if not edge.m.entities.is_on_me(body):
+		var closest_point = edge.m.body.get_closest_point(body)
 		if (body.position - closest_point.position).length() <= 5.0:
 			body.m.webtracker.arrived_on_point(closest_point)
 			return false

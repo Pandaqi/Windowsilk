@@ -4,7 +4,7 @@ const BOUNDS = { 'min': 3, 'max': 8 }
 const TIME_BOUNDS = { 'min': 3.0, 'max': 7.0 }
 
 const OFFSET_FROM_EDGE : Dictionary = { 'min': 50.0, 'max': 150.0 }
-const DEFAULT_SPAWN_CHECK_RADIUS : float = 100.0
+const DEFAULT_SPAWN_CHECK_RADIUS : float = 50.0
 
 var item_scene = preload("res://scenes/item.tscn")
 
@@ -48,23 +48,32 @@ func check_placement():
 func get_random_type():
 	return available_types[randi() % available_types.size()]
 
-func get_random_position():
+func get_random_position(params = {}):
+	var data = {
+		'pos': Vector2.ZERO,
+		'edge': null
+	}
+	
 	var edges = get_tree().get_nodes_in_group("Edges")
 	var rand_edge = edges[randi() % edges.size()]
+	data.edge = rand_edge
 	
-	var vec = rand_edge.get_vec()
+	var vec = rand_edge.m.body.get_vec()
 	var vec_norm = vec.normalized()
-	var rand_pos = rand_edge.start.position + randf()*vec
+	var rand_pos = rand_edge.m.body.start.position + randf()*vec
+	data.pos = rand_pos
 	
-	if place_on_web: return rand_pos
+	if not params.has('avoid_web') or not params.avoid_web: return data
 	
 	var ortho_vec = vec_norm.rotated(0.5*PI)
 	if randf() <= 0.5: ortho_vec = vec_norm.rotated(-0.5*PI)
 	
 	rand_pos += ortho_vec*rand_range(OFFSET_FROM_EDGE.min, OFFSET_FROM_EDGE.max)
-	return rand_pos
+	data.pos = rand_pos
+	
+	return data
 
-func get_valid_random_position(params):
+func get_valid_random_position(params = {}):
 	var bad_pos = true
 	var pos
 	
@@ -81,14 +90,14 @@ func get_valid_random_position(params):
 	var max_tries = 500
 	
 	# TO DO: Very repetitive code => streamline and optimize
-	# TO DO: Also, it's not really necessary to do an expensive intersection for the large radius => just loop through all players and check their distance
+	var data
 	while bad_pos and num_tries < max_tries:
 		bad_pos = false
-		pos = get_random_position()
+		data = get_random_position(params)
 		
 		num_tries += 1
 		
-		var small_result = get_intersections(pos, small_radius)
+		var small_result = get_intersections(data.pos, small_radius)
 		for res in small_result:
 			if avoid_web and num_tries < 200:
 				if res.collider.is_in_group("Edges"):
@@ -101,12 +110,12 @@ func get_valid_random_position(params):
 					break
 		
 		if avoid_players:
-			var closest_dist = players.get_closest_dist(pos)
+			var closest_dist = players.get_closest_dist(data.pos)
 			if closest_dist < large_radius:
 				bad_pos = true
-				break
+				continue
 
-	return pos
+	return data
 
 func get_intersections(pos : Vector2, radius : float = 10.0):
 	var space_state = get_world_2d().direct_space_state
@@ -124,13 +133,24 @@ func get_intersections(pos : Vector2, radius : float = 10.0):
 func place_item():
 	var item = item_scene.instance()
 	
-	placement_params.avoid_web = not place_on_web
+	placement_params.avoid_web = should_create_item_off_web()
 	
-	item.set_position(get_valid_random_position(placement_params))
+	var spawn_data = get_valid_random_position(placement_params)
+	
+	item.set_position(spawn_data.pos)
 	item.set_type(get_random_type())
+	item.set_on_web(not placement_params.avoid_web)
 	add_child(item)
+
+func should_create_item_off_web():
+	var items = get_tree().get_nodes_in_group("Items")
+	var count = {
+		'on_web': 0,
+		'off_web': 0
+	}
 	
-	place_on_web = not place_on_web
+	for item in items:
+		if item.on_web: count.on_web += 1
+		else: count.off_web += 1
 	
-	print("ITEM PLACED")
-	print(item.position)
+	return (count.off_web < count.on_web)

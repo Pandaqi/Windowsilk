@@ -72,15 +72,29 @@ func create_new_silk_line():
 	
 	tween_data.target_point = null
 	
-	var res = edges.shoot(body.global_position, dir, exclude_bodies, edge, body)
-	if res.failed:
+	var params = {
+		'from': body.position,
+		'dir': dir,
+		'exclude': exclude_bodies,
+		'origin_edge': edge,
+		'shooter': body
+	}
+	
+	# DEBUGGING:
+	#params.destroy = true
+
+	var res = edges.shoot(params)
+	if res.failed or res.destroy:
 		# TO DO: give feedback
-		print("No jump possible")
+		print("No jump possible or needed")
 		finish_jump()
 		return
+	
+	res.new_edge.m.boss.set_to(body)
+	res.new_edge.m.type.set_to('regular')
 
 	tween_data.start_point = body.position
-	tween_data.target_point = res.new_point
+	tween_data.target_point = res.to.point
 
 func play_jump_tween():
 	if not tween_data.target_point: return

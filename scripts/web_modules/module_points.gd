@@ -20,8 +20,12 @@ func create_at(pos):
 	return p
 
 func remove_existing(point):
-	for e in point.get_edges():
-		edges.remove_existing(e)
+	var edges_copy = point.get_edges() + []
+	for e in edges_copy:
+		var entities = edges.remove_existing(e)
+		
+		for entity in entities:
+			entity.m.status.die()
 	
 	point.queue_free()
 

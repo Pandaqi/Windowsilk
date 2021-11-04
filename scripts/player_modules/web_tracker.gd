@@ -7,10 +7,14 @@ var cur_point
 var updating_disabled : bool = false
 
 onready var body = get_parent()
+onready var spawner = get_node("/root/Main/Spawner")
 onready var edges = get_node("/root/Main/Web/Edges")
 
 func start_randomly():
-	arrived_on_edge(edges.get_random())
+	var data = spawner.get_valid_random_position({ 'avoid_players': true })
+	
+	body.set_position(data.pos)
+	force_set_edge(data.edge)
 
 func get_current_edge():
 	return cur_edge
@@ -27,26 +31,29 @@ func hard_remove_from_point():
 func hard_remove_from_edge():
 	if not cur_edge: return
 	
-	cur_edge.remove_entity(body)
+	cur_edge.m.entities.remove(body)
 	cur_edge = null
+
+func force_set_edge(e):
+	cur_edge = e
+	e.m.entities.add(body)
 
 # the edge we were standing on has been removed (split by someone else jumping)
 # so we only need to update our edge, not call anything else
 func force_change_edge(e):
-	cur_edge = e
-	e.add_entity(body)
+	force_set_edge(e)
 	
 	# the new edge might have a slightly different line
 	# so try all possibilities (start changed, end changed, direction reversed)
 	# and find the one with the least distance difference)
-	var vec = cur_edge.get_vec().normalized()
+	var vec = cur_edge.m.body.get_vec().normalized()
 	var cur_pos = body.position
 	var options = []
 	options.resize(4)
-	options[0] = cur_edge.start.position + dist_to_extremes.start*vec
-	options[1] = cur_edge.start.position + dist_to_extremes.end*vec
-	options[2] = cur_edge.end.position - dist_to_extremes.start*vec
-	options[3] = cur_edge.end.position - dist_to_extremes.end*vec
+	options[0] = cur_edge.m.body.start.position + dist_to_extremes.start*vec
+	options[1] = cur_edge.m.body.start.position + dist_to_extremes.end*vec
+	options[2] = cur_edge.m.body.end.position - dist_to_extremes.start*vec
+	options[3] = cur_edge.m.body.end.position - dist_to_extremes.end*vec
 	
 	var best_option = null
 	var least_change = INF
@@ -62,6 +69,11 @@ func force_change_edge(e):
 func _physics_process(dt):
 	keep_positioned_on_web()
 
+func die():
+	disable_updates()
+	cur_edge = null
+	cur_point = null
+
 func disable_updates():
 	updating_disabled = true
 
@@ -74,13 +86,13 @@ func keep_positioned_on_web():
 	var cur_pos = body.position
 	var new_pos
 	
-	if cur_point:
+	if cur_point and is_instance_valid(cur_point):
 		new_pos = cur_point.position
 	
-	elif cur_edge:
+	elif cur_edge and is_instance_valid(cur_edge):
 		recalculate_dist_to_extremes()
 		
-		new_pos = cur_edge.start.position + dist_to_extremes.start * cur_edge.get_vec().normalized()
+		new_pos = cur_edge.m.body.start.position + dist_to_extremes.start * cur_edge.m.body.get_vec().normalized()
 	
 	body.position = new_pos
 
@@ -91,16 +103,16 @@ func recalculate_dist_to_extremes():
 		return
 	
 	var cur_pos = body.position
-	dist_to_extremes.start = (cur_pos - cur_edge.start.position).length()
-	dist_to_extremes.end = (cur_pos - cur_edge.end.position).length()
+	dist_to_extremes.start = (cur_pos - cur_edge.m.body.start.position).length()
+	dist_to_extremes.end = (cur_pos - cur_edge.m.body.end.position).length()
 
 func arrived_on_edge(e):
 	hard_remove_from_point()
 	hard_remove_from_edge()
 	
 	cur_edge = e
-	e.add_entity(body)
-	body.set_position(e.get_closest_point(body).position)
+	e.m.entities.add(body)
+	body.set_position(e.m.body.get_closest_point(body).position)
 	
 	recalculate_dist_to_extremes()
 
