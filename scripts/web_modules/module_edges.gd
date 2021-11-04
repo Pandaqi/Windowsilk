@@ -9,7 +9,7 @@ var edge_scene = preload("res://scenes/web/edge.tscn")
 onready var points = get_node("../Points")
 onready var web = get_parent()
 
-var debug : bool = true
+var debug : bool = false
 
 func shoot(params = {}):
 	
@@ -218,12 +218,15 @@ func break_edge_in_two(edge, new_point):
 	var pointA = edge.m.body.start
 	var pointB = edge.m.body.end
 	
-	var entities = remove_existing(edge)
+	var data_to_transfer = remove_existing(edge, false)
 	
 	var edgeA = create_between(pointA, new_point)
 	var edgeB = create_between(new_point, pointB)
 	
-	for e in entities:
+	edgeA.m.type.set_to(data_to_transfer.type)
+	edgeB.m.type.set_to(data_to_transfer.type)
+	
+	for e in data_to_transfer.entities:
 		var vec_to_split_point = (e.position - new_point.position).normalized()
 		var vecA = edgeA.m.body.get_vec_starting_from(new_point).normalized()
 		var dotA = vecA.dot(vec_to_split_point)
@@ -281,13 +284,17 @@ func get_closest_entity(pos : Vector2, exclude = []):
 	
 	return null
 
-func remove_existing(edge):
-	edge.m.body.start.remove_edge(edge)
-	edge.m.body.end.remove_edge(edge)
+func remove_existing(edge, destroy_orphan_points = true):
+	edge.m.body.start.remove_edge(edge, destroy_orphan_points)
+	edge.m.body.end.remove_edge(edge, destroy_orphan_points)
 	
 	var entities = edge.m.entities.get_them()
 	edge.queue_free()
-	return entities
+	
+	return {
+		'entities': entities,
+		'type': edge.m.type.get_it()
+	}
 
 func create_between(a, b):
 	var e = edge_scene.instance()

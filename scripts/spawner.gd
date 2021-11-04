@@ -1,52 +1,9 @@
 extends Node2D
 
-const BOUNDS = { 'min': 3, 'max': 8 }
-const TIME_BOUNDS = { 'min': 3.0, 'max': 7.0 }
-
 const OFFSET_FROM_EDGE : Dictionary = { 'min': 50.0, 'max': 150.0 }
 const DEFAULT_SPAWN_CHECK_RADIUS : float = 50.0
 
-var item_scene = preload("res://scenes/item.tscn")
-
-var available_types = ['silk']
-var place_on_web : bool = true
-
 onready var players = get_node("../Players")
-
-onready var timer = $Timer
-
-var placement_params = {
-	'small_radius': 30.0,
-	'large_radius': 250.0,
-	'avoid_items': true,
-	'avoid_players': true,
-	'avoid_web': false
-}
-
-func activate():
-	_on_Timer_timeout()
-
-func _on_Timer_timeout():
-	check_placement()
-	restart_timer()
-
-func restart_timer():
-	timer.wait_time = rand_range(TIME_BOUNDS.min, TIME_BOUNDS.max)
-	timer.start()
-
-func check_placement():
-	var num_items = get_tree().get_nodes_in_group("Items").size()
-	if num_items >= BOUNDS.max: return
-	
-	place_item()
-	num_items += 1
-	
-	while num_items < BOUNDS.min:
-		place_item()
-		num_items += 1
-
-func get_random_type():
-	return available_types[randi() % available_types.size()]
 
 func get_random_position(params = {}):
 	var data = {
@@ -79,12 +36,12 @@ func get_valid_random_position(params = {}):
 	
 	var small_radius = DEFAULT_SPAWN_CHECK_RADIUS
 	var large_radius = small_radius * 4
-	if placement_params.has('small_radius'): small_radius = placement_params.small_radius
-	if placement_params.has('large_radius'): large_radius = placement_params.large_radius
+	if params.has('small_radius'): small_radius = params.small_radius
+	if params.has('large_radius'): large_radius = params.large_radius
 	
 	var avoid_players = params.has('avoid_players')
 	var avoid_web = params.has('avoid_web')
-	var avoid_items = params.has('avoid_items')
+	var avoid_entities = params.has('avoid_entities')
 	
 	var num_tries = 0
 	var max_tries = 500
@@ -104,8 +61,8 @@ func get_valid_random_position(params = {}):
 					bad_pos = true
 					break
 			
-			if avoid_items and num_tries < 300:
-				if res.collider.is_in_group("ItemBodies"):
+			if avoid_entities and num_tries < 300:
+				if res.collider.is_in_group("Entities"):
 					bad_pos = true
 					break
 		
@@ -129,28 +86,3 @@ func get_intersections(pos : Vector2, radius : float = 10.0):
 	
 	var result = space_state.intersect_shape(query_params)
 	return result
-
-func place_item():
-	var item = item_scene.instance()
-	
-	placement_params.avoid_web = should_create_item_off_web()
-	
-	var spawn_data = get_valid_random_position(placement_params)
-	
-	item.set_position(spawn_data.pos)
-	item.set_type(get_random_type())
-	item.set_on_web(not placement_params.avoid_web)
-	add_child(item)
-
-func should_create_item_off_web():
-	var items = get_tree().get_nodes_in_group("Items")
-	var count = {
-		'on_web': 0,
-		'off_web': 0
-	}
-	
-	for item in items:
-		if item.on_web: count.on_web += 1
-		else: count.off_web += 1
-	
-	return (count.off_web < count.on_web)

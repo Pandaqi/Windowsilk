@@ -10,11 +10,17 @@ onready var body = get_parent()
 onready var spawner = get_node("/root/Main/Spawner")
 onready var edges = get_node("/root/Main/Web/Edges")
 
-func start_randomly():
-	var data = spawner.get_valid_random_position({ 'avoid_players': true })
+signal arrived_on_point(p)
+signal arrived_on_edge(e)
+
+func start_randomly(params = {}):
+	var data = spawner.get_valid_random_position(params)
 	
 	body.set_position(data.pos)
 	force_set_edge(data.edge)
+	
+	print("WE ARE AT EDGE")
+	print(data.edge)
 
 func get_current_edge():
 	return cur_edge
@@ -37,6 +43,8 @@ func hard_remove_from_edge():
 func force_set_edge(e):
 	cur_edge = e
 	e.m.entities.add(body)
+	
+	emit_signal("arrived_on_edge", e)
 
 # the edge we were standing on has been removed (split by someone else jumping)
 # so we only need to update our edge, not call anything else
@@ -71,8 +79,9 @@ func _physics_process(dt):
 
 func die():
 	disable_updates()
-	cur_edge = null
-	cur_point = null
+	
+	hard_remove_from_point()
+	hard_remove_from_edge()
 
 func disable_updates():
 	updating_disabled = true
@@ -116,7 +125,7 @@ func arrived_on_edge(e):
 	
 	recalculate_dist_to_extremes()
 
-	body.m.mover.enter_edge(e)
+	emit_signal("arrived_on_edge", e)
 
 func arrived_on_point(p):
 	hard_remove_from_point()
@@ -127,5 +136,5 @@ func arrived_on_point(p):
 	body.set_position(cur_point.position)
 	
 	recalculate_dist_to_extremes()
-	
-	body.m.mover.enter_point(p)
+
+	emit_signal("arrived_on_point", p)

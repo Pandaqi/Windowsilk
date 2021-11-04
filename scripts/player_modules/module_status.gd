@@ -12,11 +12,13 @@ func initialize(pnum, tnum):
 	team_num = tnum
 	
 	body.m.input.set_player_num(pnum)
-	body.m.webtracker.start_randomly()
+	body.m.webtracker.start_randomly({ 'avoid_players': true })
 
 func die():
 	is_dead = true
 	body.m.webtracker.die()
 	main_node.on_player_death(body)
+	
+	body.modulate.a = 0.3
 	
 	# TO DO: more here of course

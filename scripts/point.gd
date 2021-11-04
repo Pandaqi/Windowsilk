@@ -6,6 +6,8 @@ var entities = []
 const RADIUS : float = 10.0
 const COLOR : Color = Color(1,1,1)
 
+onready var points = get_node("/root/Main/Web/Points")
+
 func add_entity(e):
 	entities.append(e)
 
@@ -15,8 +17,12 @@ func remove_entity(e):
 func add_edge(e):
 	edges.append(e)
 
-func remove_edge(e):
+func remove_edge(e, destroy_orphan_points = true):
 	edges.erase(e)
+	
+	var is_orphan = (edges.size() <= 0)
+	if destroy_orphan_points and is_orphan:
+		points.remove_existing(self)
 
 func get_edges():
 	return edges

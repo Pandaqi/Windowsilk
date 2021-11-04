@@ -26,8 +26,10 @@ func get_max_dist():
 func _on_Input_move_vec(vec, dt):
 	if not active: return
 	
-	var no_input = (vec.length() <= 0.03)
-	if no_input: return
+	# NOTE: It's common for players to release their aim too soon, causing it to change _just_ before jumping => this prevents that, mostly. 
+	var deadzone = 0.5
+	var not_enough_input = (vec.length() <= deadzone)
+	if not_enough_input: return
 	
 	body.set_rotation(vec.angle())
 
@@ -46,8 +48,11 @@ func get_forward_vec():
 func prepare_jump():
 	if body.m.silk.is_empty(): return
 	
-	body.m.mover.disable()
-	body.m.webtracker.disable_updates()
+	# TO DO: Use _signals_ instead of hardcoding module existence?
+	if body.has_module('webmover'):
+		body.m.webmover.disable()
+		body.m.webtracker.disable_updates()
+	
 	active = true
 
 func execute_jump():
@@ -128,8 +133,9 @@ func finish_jump():
 		
 		body.m.webtracker.arrived_on_point(pos)
 
-	body.m.mover.enable()
-	body.m.webtracker.enable_updates()
+	if body.has_module('webmover'):
+		body.m.webmover.enable()
+		body.m.webtracker.enable_updates()
 
 func _on_Tween_tween_all_completed():
 	finish_jump()

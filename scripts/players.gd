@@ -16,7 +16,7 @@ func create_player(num):
 	var p = player_scene.instance()
 	add_child(p)
 	
-	var team_num = num # for now, read from "player_data" when I have menus
+	var team_num = num # for now;; read from "player_data" when I have menus
 	p.m.status.initialize(num, team_num)
 
 func get_closest_dist(pos):

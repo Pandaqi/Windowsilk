@@ -1,7 +1,7 @@
 extends Node2D
 
 onready var web = $Web
-onready var spawner = $Spawner
+onready var entities = $Entities
 onready var players = $Players
 
 func _ready():
@@ -14,7 +14,7 @@ func _ready():
 
 func web_loading_done():
 	players.activate()
-	spawner.activate()
+	entities.activate()
 
 func on_player_death(p):
 	print("PLAYER DIED")

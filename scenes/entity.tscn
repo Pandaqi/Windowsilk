@@ -1,0 +1,78 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://scenes/modules/web_tracker.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/modules/legs.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/modules/mover.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scripts/module_manager.gd" type="Script" id=4]
+[ext_resource path="res://assets/items.png" type="Texture" id=5]
+[ext_resource path="res://scripts/entity_modules/module_status.gd" type="Script" id=6]
+[ext_resource path="res://scripts/entity_modules/module_movement.gd" type="Script" id=7]
+[ext_resource path="res://scripts/entity_modules/module_visuals.gd" type="Script" id=8]
+[ext_resource path="res://scripts/entity_modules/module_trail.gd" type="Script" id=9]
+[ext_resource path="res://scripts/entity_modules/module_fly_movement.gd" type="Script" id=10]
+[ext_resource path="res://scripts/entity_modules/module_fly_mover.gd" type="Script" id=11]
+[ext_resource path="res://scripts/entity_modules/module_points.gd" type="Script" id=12]
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 13.8734
+
+[node name="Entity" type="KinematicBody2D" groups=[
+"Entities",
+]]
+collision_layer = 2
+collision_mask = 4
+script = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[node name="Status" type="Node2D" parent="."]
+script = ExtResource( 6 )
+
+[node name="WebMover" parent="." instance=ExtResource( 3 )]
+
+[node name="FlyMover" type="Node2D" parent="."]
+script = ExtResource( 11 )
+
+[node name="FlyMovement" type="Node2D" parent="."]
+script = ExtResource( 10 )
+
+[node name="Timer" type="Timer" parent="FlyMovement"]
+
+[node name="RayCast2D" type="RayCast2D" parent="FlyMovement"]
+enabled = true
+cast_to = Vector2( 50, 0 )
+
+[node name="WebMovement" type="Node2D" parent="."]
+script = ExtResource( 7 )
+
+[node name="WebTracker" parent="." instance=ExtResource( 1 )]
+
+[node name="Visuals" type="Node2D" parent="."]
+script = ExtResource( 8 )
+
+[node name="Sprite" type="Sprite" parent="Visuals"]
+scale = Vector2( 0.25, 0.25 )
+texture = ExtResource( 5 )
+hframes = 8
+vframes = 8
+
+[node name="Points" type="Node2D" parent="."]
+script = ExtResource( 12 )
+
+[node name="Trail" type="Node2D" parent="."]
+script = ExtResource( 9 )
+
+[node name="Legs" parent="." instance=ExtResource( 2 )]
+
+[connection signal="on_death" from="Status" to="WebTracker" method="die"]
+[connection signal="on_death" from="Status" to="Trail" method="die"]
+[connection signal="move_vec" from="FlyMovement" to="FlyMover" method="_on_Input_move_vec"]
+[connection signal="timeout" from="FlyMovement/Timer" to="FlyMovement" method="_on_Timer_timeout"]
+[connection signal="move_vec" from="WebMovement" to="WebMover" method="_on_Input_move_vec"]
+[connection signal="arrived_on_edge" from="WebTracker" to="WebMovement" method="_on_WebTracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="WebTracker" to="Trail" method="_on_WebTracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="WebTracker" to="WebMover" method="_on_WebTracker_arrived_on_edge"]
+[connection signal="arrived_on_point" from="WebTracker" to="WebMovement" method="_on_WebTracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="WebTracker" to="Trail" method="_on_WebTracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="WebTracker" to="WebMover" method="_on_WebTracker_arrived_on_point"]

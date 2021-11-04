@@ -5,7 +5,7 @@ var point_scene = preload("res://scenes/web/point.tscn")
 onready var web = get_parent()
 onready var edges = get_node("../Edges")
 
-var debug : bool = true
+var debug : bool = false
 
 func create_at(pos):
 	var p = point_scene.instance()
@@ -22,9 +22,9 @@ func create_at(pos):
 func remove_existing(point):
 	var edges_copy = point.get_edges() + []
 	for e in edges_copy:
-		var entities = edges.remove_existing(e)
+		var data_to_transfer = edges.remove_existing(e)
 		
-		for entity in entities:
+		for entity in data_to_transfer.entities:
 			entity.m.status.die()
 	
 	point.queue_free()
