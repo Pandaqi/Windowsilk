@@ -15,6 +15,9 @@ func initialize(params = {}):
 	body.set_position(data.pos)
 	force_set_edge(data.edge)
 
+func module_update(dt):
+	keep_positioned_on_web()
+
 func get_current_edge():
 	return cur_edge
 
@@ -43,10 +46,12 @@ func force_set_edge(e):
 # so we only need to update our edge, not call anything else
 func force_change_edge(e):
 	force_set_edge(e)
-	
-	# the new edge might have a slightly different line
-	# so try all possibilities (start changed, end changed, direction reversed)
-	# and find the one with the least distance difference)
+	update_positions()
+
+# the new edge might have a slightly different line
+# so try all possibilities (start changed, end changed, direction reversed)
+# and find the one with the least distance difference)
+func update_positions():
 	var vec = cur_edge.m.body.get_vec().normalized()
 	var cur_pos = body.position
 	var options = []
@@ -66,9 +71,6 @@ func force_change_edge(e):
 	
 	body.set_position(best_option)
 	recalculate_dist_to_extremes()
-
-func module_update(dt):
-	keep_positioned_on_web()
 
 func keep_positioned_on_web():
 	var cur_pos = body.position

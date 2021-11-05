@@ -18,7 +18,10 @@ var tween_data = {
 }
 
 func pay_for_travel(dist):
-	return clamp(-round(dist / DIST_PER_POINT), -INF, -1)
+	if body.m.silkreader.jumping_is_free(): return 0
+	
+	var payment = clamp(-round(dist / DIST_PER_POINT), -INF, -1)
+	return payment
 
 func get_max_dist():
 	return DIST_PER_POINT * body.m.points.count()
@@ -31,14 +34,17 @@ func _on_Input_move_vec(vec, dt):
 	var not_enough_input = (vec.length() <= deadzone)
 	if not_enough_input: return
 	
-	body.set_rotation(vec.angle())
+	var input_vec = body.m.silkreader.modify_input_vec(vec)
+	body.set_rotation(input_vec.angle())
 
 func _on_Input_button_press():
 	if input_disabled: return
+	if body.m.silkreader.jumping_is_forbidden(): return
 	prepare_jump()
 
 func _on_Input_button_release():
 	if input_disabled: return
+	if not active: return # if we never started the jump, don't do anything when we release
 	execute_jump()
 
 func get_forward_vec():
@@ -80,11 +86,9 @@ func create_new_silk_line():
 		'dir': dir,
 		'exclude': exclude_bodies,
 		'origin_edge': edge,
-		'shooter': body
+		'shooter': body,
+		'destroy': body.m.silkreader.jumping_is_aggressive()
 	}
-	
-	# DEBUGGING:
-	#params.destroy = true
 
 	var res = edges.shoot(params)
 	if res.failed or res.destroy or not res.new_edge:

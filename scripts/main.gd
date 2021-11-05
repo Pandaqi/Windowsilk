@@ -28,7 +28,7 @@ func on_player_progression(p):
 	print("PLAYER PROGRESSED")
 	
 	var team_num = p.m.status.team_num
-	if players.team_total_below_target(): return
+	if players.team_total_below_target(team_num): return
 	
 	game_over(team_num)
 

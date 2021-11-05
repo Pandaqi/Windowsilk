@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://scenes/modules/web_tracker.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/modules/legs.tscn" type="PackedScene" id=2]
@@ -20,6 +20,7 @@
 [ext_resource path="res://scenes/modules/collector.tscn" type="PackedScene" id=18]
 [ext_resource path="res://scenes/modules/input.tscn" type="PackedScene" id=19]
 [ext_resource path="res://scenes/modules/jumper.tscn" type="PackedScene" id=20]
+[ext_resource path="res://scripts/entity_modules/module_silkreader.gd" type="Script" id=21]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 13.8734
@@ -125,20 +126,24 @@ script = ExtResource( 9 )
 wait_time = 2.0
 one_shot = true
 
-[connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
+[node name="SilkReader" type="Node2D" parent="."]
+script = ExtResource( 21 )
+
 [connection signal="on_death" from="Status" to="Tracker" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
 [connection signal="button_press" from="Input" to="Jumper" method="_on_Input_button_press"]
 [connection signal="button_release" from="Input" to="Jumper" method="_on_Input_button_release"]
 [connection signal="move_vec" from="Input" to="Jumper" method="_on_Input_move_vec"]
 [connection signal="move_vec" from="Input" to="Mover" method="_on_Movement_move_vec"]
-[connection signal="move_vec" from="Movement" to="Mover" method="_on_Movement_move_vec"]
 [connection signal="timeout" from="Movement/FlyMovement/Timer" to="Movement/FlyMovement" method="_on_Timer_timeout"]
-[connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
-[connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_point"]
 [connection signal="point_change" from="Points" to="Movement/FlyMovement" method="_on_Points_point_change"]
 [connection signal="timeout" from="Trail/Timer" to="Trail" method="_on_Timer_timeout"]

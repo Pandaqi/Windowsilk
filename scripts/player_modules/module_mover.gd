@@ -7,6 +7,7 @@ onready var body = mover_handler.get_parent()
 onready var point_delay_timer = $PointDelayTimer
 
 var can_move_from_point : bool = false
+var last_velocity : Vector2 = Vector2.RIGHT
 
 func _on_Input_move_vec(vec, dt):
 	move_along_web(vec, dt)
@@ -19,21 +20,27 @@ func move_along_web(vec, dt):
 
 func try_edge_move(vec, dt):
 	var edge = body.m.tracker.get_current_edge()
-
 	if not edge: return false
 
 	var cur_edge_vec : Vector2 = edge.m.body.get_vec().normalized()
-	var dot_prod : float = vec.normalized().dot(cur_edge_vec)
-	
+	var input_vec = body.m.silkreader.modify_input_vec(vec)
+	body.set_rotation(input_vec.angle())
+
+	var dot_prod : float = input_vec.normalized().dot(cur_edge_vec)
 	var final_move_vec : Vector2 = cur_edge_vec
 	if dot_prod < 0: final_move_vec *= -1
 	
+	var no_changes_in_rotation = ((input_vec - vec).length() <= 0.03)
+	if no_changes_in_rotation:
+		body.set_rotation(final_move_vec.angle())
+	
 	var final_move_speed = mover_handler.speed
-	if edge.m.type.equals('speedy'): final_move_speed *= 1.5
-	elif edge.m.type.equals('slowy'): final_move_speed *= 0.5
+	final_move_vec = body.m.silkreader.modify_speed(final_move_vec, final_move_speed)
 
-	body.move_and_collide(final_move_vec * final_move_speed * dt)
-	body.set_rotation(final_move_vec.angle())
+	var new_velocity = final_move_vec * dt
+	body.move_and_collide(new_velocity)
+	
+	last_velocity = new_velocity
 	
 	var res = did_we_walk_off_the_edge(edge)
 	if res: return false
@@ -59,6 +66,8 @@ func try_point_move(vec, dt):
 	if not point: return false
 	
 	var best_edge = point.find_edge_closest_to_vec(vec)
+	if not best_edge: return false
+	
 	body.m.tracker.arrived_on_edge(best_edge)
 
 	return true

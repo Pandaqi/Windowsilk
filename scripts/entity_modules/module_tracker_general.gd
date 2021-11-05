@@ -28,4 +28,7 @@ func get_current_point():
 	if not active_module.has_method("get_current_point"): return
 	return active_module.get_current_point()
 
+func update_positions():
+	if not active_module.has_method("update_positions"): return
+	active_module.update_positions()
 

@@ -1,12 +1,24 @@
-extends StaticBody2D
+extends KinematicBody2D
 
 var edges = []
 var entities = []
 
-const RADIUS : float = 10.0
 const COLOR : Color = Color(1,1,1)
 
 onready var points = get_node("/root/Main/Web/Points")
+onready var col_shape = get_node("CollisionShape2D").shape
+
+func _ready():
+	col_shape.radius = GlobalDict.cfg.line_thickness
+
+func move(vec, dt):
+	move_and_slide(vec)
+	
+	# TO DO: maybe add a general "status" module to edges, so we can just call "update" on that and it handles this?
+	for e in edges:
+		e.m.body.update_body()
+		e.m.drawer.update_visuals()
+		e.m.entities.update_positions()
 
 func add_entity(e):
 	entities.append(e)
@@ -42,6 +54,7 @@ func find_edge_closest_to_vec(vec : Vector2):
 	for e in edges:
 		var edge_vec = e.m.body.get_vec_starting_from(self)
 		var dot = edge_vec.normalized().dot(vec)
+		if e.m.type.direction_forbidden(vec): continue
 		if dot <= best_dot: continue
 		
 		best_dot = dot
@@ -66,4 +79,4 @@ func get_edges_with_food(body):
 	return arr
 
 func _draw():
-	draw_circle(Vector2.ZERO, RADIUS, COLOR)
+	draw_circle(Vector2.ZERO, col_shape.radius, COLOR)

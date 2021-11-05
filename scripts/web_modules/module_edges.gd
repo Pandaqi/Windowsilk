@@ -33,7 +33,7 @@ func shoot(params = {}):
 		
 		'from_edge': params.origin_edge,
 		'to_edge': null,
-		'new_edge': params.origin_edge
+		'new_edge': null,
 	}
 	
 	var res = shoot_raycast(data)
@@ -188,7 +188,7 @@ func create_new_points_and_edges_if_needed(data):
 		data.from.point = points.create_at(data.from.pos)
 		
 		if not data.destroy:
-			break_edge_in_two(data.from_edge, data.from.point)
+			break_edge_in_two(data.from_edge, data.from.point, data)
 	
 	if not data.to.already_created:
 		data.to.point = points.create_at(data.to.pos)
@@ -197,7 +197,7 @@ func create_new_points_and_edges_if_needed(data):
 	# hence the check
 	var hit_an_edge = (data.to_edge.is_in_group("Edges"))
 	if hit_an_edge and not data.to.already_created: 
-		break_edge_in_two(data.to_edge, data.to.point)
+		break_edge_in_two(data.to_edge, data.to.point, data)
 	
 	# finally, create the new edge along the shooting line
 	data.new_edge = create_between(data.from.point, data.to.point)
@@ -207,13 +207,15 @@ func destroy_points_and_edges_if_needed(data):
 	if not data.destroy: return
 	if not data.to.point: return
 	
+	# NOTE: this is a bogus point with no live edges attached to it, so removing it only removes that point => left in for consistency
 	if not data.from.already_created: points.remove_existing(data.from.point)
 	points.remove_existing(data.to.point)
 
 # find the points (that this edge connected) and any entities on them
 # reconnect new edges to the old points, and transfer entities to the right one
-func break_edge_in_two(edge, new_point):
+func break_edge_in_two(edge, new_point, data):
 	if not edge: return
+	if edge.m.type.disallows_breaking() and data.destroy: return
 	
 	var pointA = edge.m.body.start
 	var pointB = edge.m.body.end
@@ -298,7 +300,7 @@ func remove_existing(edge, destroy_orphan_points = true):
 
 func create_between(a, b):
 	var e = edge_scene.instance()
-	web.add_child(e)
+	add_child(e)
 	e.m.body.set_extremes(a, b)
 	
 	a.add_edge(e)
@@ -309,6 +311,9 @@ func create_between(a, b):
 		print(e.m.body.get_center())
 		print(e.m.body.col_shape.extents)
 		print()
+	
+	if GlobalDict.cfg.debug_terrain_types:
+		e.m.type.create_debug_terrain_type()
 	
 	return e
 

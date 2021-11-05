@@ -1,12 +1,15 @@
 extends Node2D
 
-const THICKNESS : float = 10.0
+const MIN_LENGTH_FOR_POINT_MOVING : float = 100.0
+
+var thickness : float = GlobalDict.cfg.line_thickness
 
 var start
 var end
 
 onready var body = get_parent()
 onready var col_node = get_node("../CollisionShape2D")
+onready var edges = get_node("/root/Main/Web/Edges")
 var col_shape
 
 func _ready():
@@ -20,6 +23,13 @@ func set_extremes(s,e):
 	set_start(s)
 	set_end(e)
 
+func move_extremes_inward(speed, dt):
+	if get_length() <= MIN_LENGTH_FOR_POINT_MOVING: return
+	
+	var vel = get_vec() * speed
+	start.move(vel, dt)
+	end.move(-vel, dt)
+
 func set_start(s):
 	start = s
 	on_change()
@@ -27,6 +37,9 @@ func set_start(s):
 func set_end(e):
 	end = e 
 	on_change()
+
+func get_thickness():
+	return thickness
 
 func get_center():
 	return 0.5*(start.position + end.position)
@@ -53,7 +66,7 @@ func on_change():
 # NOTE: default rotation is RIGHT, so X is the distance between points, Y is the thickness
 func update_body():
 	var half_length = 0.5*get_length()
-	var half_width = 0.5*THICKNESS
+	var half_width = 0.5*thickness
 	
 	var rot = get_vec().normalized().angle()
 	body.set_rotation(rot)
@@ -66,6 +79,11 @@ func get_closest_point(e):
 	var distB = (end.position - e.position).length()
 	if distA < distB: return start
 	return end
+
+func get_dist_to_closest_point(e):
+	var distA = (start.position - e.position).length()
+	var distB = (end.position - e.position).length()
+	return min(distA, distB)
 
 func get_random_pos_on_me(margin = 0.0):
 	var vec = get_vec()
@@ -86,3 +104,6 @@ func point_is_between(a, b, c, epsilon):
 		return false
 	
 	return true
+
+func self_destruct():
+	edges.remove_existing(body)

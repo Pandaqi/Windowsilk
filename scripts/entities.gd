@@ -18,6 +18,9 @@ var placement_params = {
 }
 
 func activate():
+	available_types = ['larva']
+	return
+	
 	available_types = GlobalDict.entities.keys()
 	available_types.erase("player_spider")
 	
