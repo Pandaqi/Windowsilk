@@ -7,7 +7,7 @@ onready var timer = $Timer
 signal on_instant_jump(params)
 
 func activate():
-	_on_Timer_timeout()
+	restart_timer()
 
 func _on_Timer_timeout():
 	restart_timer()
@@ -20,6 +20,6 @@ func restart_timer():
 func jump():
 	var params = {
 		'dont_create_new_edges': true,
-		'find_valid_dir': true
+		'find_valid_dir': true,
 	}
 	emit_signal("on_instant_jump", params)

@@ -21,6 +21,8 @@ func make_player(pnum, tnum):
 
 func make_non_player():
 	body.erase_module("input")
+	
+	body.add_to_group("NonPlayers")
 
 func is_player():
 	return (player_num >= 0)

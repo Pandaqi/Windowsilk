@@ -82,6 +82,9 @@ func shoot(params = {}):
 	data.failed = false
 	data.created_something = true
 	
+	if data.dont_create_new_edges:
+		data.destroy = false
+	
 	return data
 
 func shoot_raycast(data):
@@ -102,10 +105,17 @@ func shoot_raycast(data):
 	# the edges of the map always have bounds, so we always stop at the edge (if we hit nothing else)
 	data.result = space_state.intersect_ray(from, to, data.exclude, col_layer)
 	if not data.result: return false
-	
+
 	data.from = from
 	data.to_edge = data.result.collider
-	data.to = data.result.position
+	
+	# DEBUGGING: is this actually a good idea/necessary?
+	var compensate_for_imprecision = 0.5*dir*GlobalDict.cfg.line_thickness
+	if data.to_edge.is_in_group("Bounds"): compensate_for_imprecision = Vector2.ZERO
+	
+	print("RAYCAST FOUND SOMETHING")
+	
+	data.to = data.result.position + compensate_for_imprecision
 	return true
 
 func snap_to_existing_point(data, key):
@@ -132,6 +142,8 @@ func does_edge_already_exist(data):
 	return data.to.point.get_edge_to(data.from.point)
 
 func is_edge_too_short(data):
+	if data.dont_create_new_edges: return false
+	
 	var dist_between_points = (data.to.pos - data.from.pos).length()
 	return (dist_between_points < MIN_JUMP_DIST)
 
@@ -154,6 +166,7 @@ func is_shot_along_current_edge(data):
 	return true
 
 func does_something_obstruct_arrival(data):
+	if not GlobalDict.cfg.entities_obstruct_each_other: return
 	if not data.shooter: return false
 	
 	var obstructing_entity = get_closest_entity(data.to.pos, [data.shooter])
@@ -162,6 +175,8 @@ func does_something_obstruct_arrival(data):
 	return true
 
 func is_too_similar_to_existing_edge(data):
+	if data.dont_create_new_edges: return false
+	
 	var vec = (data.to.pos - data.from.pos).normalized()
 	
 	if data.from.point:
@@ -212,6 +227,10 @@ func destroy_points_and_edges_if_needed(data):
 	if not data.destroy: return
 	if not data.to.point: return
 	
+	if data.dont_create_new_edges:
+		remove_existing(data.to_edge)
+		return
+	
 	# NOTE: this is a bogus point with no live edges attached to it, so removing it only removes that point => left in for consistency
 	if not data.from.already_created: points.remove_existing(data.from.point)
 	points.remove_existing(data.to.point)
@@ -225,7 +244,9 @@ func break_edge_in_two(edge, new_point, data):
 	var pointA = edge.m.body.start
 	var pointB = edge.m.body.end
 	
-	var data_to_transfer = remove_existing(edge, false)
+	# @params => edge object, destroy orphans, keep entities alive
+	# we need to keep all points and entities alive, because they will simply be redistributed over the _new_ edge we'll create now
+	var data_to_transfer = remove_existing(edge, false, true)
 	
 	var edgeA = create_between(pointA, new_point)
 	var edgeB = create_between(new_point, pointB)
@@ -291,11 +312,15 @@ func get_closest_entity(pos : Vector2, exclude = []):
 	
 	return null
 
-func remove_existing(edge, destroy_orphan_points = true):
+func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = false):
 	edge.m.body.start.remove_edge(edge, destroy_orphan_points)
 	edge.m.body.end.remove_edge(edge, destroy_orphan_points)
 	
 	var entities = edge.m.entities.get_them()
+	if not keep_entities_alive:
+		for entity in entities:
+			entity.m.status.die()
+	
 	edge.queue_free()
 	
 	return {

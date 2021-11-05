@@ -23,7 +23,7 @@ func handle_continuous_effects(dt):
 	if not cur_silk_type: return
 	
 	# NOTE: if we immediately start changing points, we might get stuck on the starting point (as it just moved underneath us), so only start slightly later, works wonders
-	var far_enough_on_edge =  cur_edge.m.body.get_dist_to_closest_point(body) > 20
+	var far_enough_on_edge = cur_edge.m.body.get_dist_to_closest_point(body) > 20
 	if cur_silk_type == "featherlight" and far_enough_on_edge:
 		cur_edge.m.body.move_extremes_inward(FEATHERLIGHT_SPEED, dt)
 

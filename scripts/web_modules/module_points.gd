@@ -22,10 +22,7 @@ func create_at(pos):
 func remove_existing(point):
 	var edges_copy = point.get_edges() + []
 	for e in edges_copy:
-		var data_to_transfer = edges.remove_existing(e)
-		
-		for entity in data_to_transfer.entities:
-			entity.m.status.die()
+		edges.remove_existing(e)
 	
 	point.queue_free()
 

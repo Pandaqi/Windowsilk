@@ -27,7 +27,9 @@ func pay_for_travel(dist):
 	return payment
 
 func get_max_dist():
-	return DIST_PER_POINT * body.m.points.count()
+	if body.is_in_group("Players"):
+		return DIST_PER_POINT * body.m.points.count()
+	return 3000.0
 
 func _on_Input_move_vec(vec, _dt):
 	if not active: return
@@ -78,6 +80,7 @@ func execute_jump():
 	if jump_data.find_valid_dir:
 		var new_vec = find_valid_jumping_dir(params)
 		body.set_rotation(new_vec.angle())
+		params.dir = new_vec
 	
 	if params.move_type == "web":
 		shoot_silk_line(params)
@@ -89,6 +92,7 @@ func execute_jump():
 func determine_jump_details():
 	var dir = get_forward_vec()
 	var move_type = body.m.status.get_move_type()
+	jump_data.move_type = move_type
 	
 	var exclude_bodies = []
 	var edge = body.m.tracker.get_current_edge()
@@ -114,10 +118,15 @@ func determine_jump_details():
 
 func shoot_silk_line(params):
 	# TO DO: give feedback => and differentiate, as these cases are really not the same
-	# NOTE: If I simply _return_ if new_edge is not present, we completely disallow jumping over existing edges - is that a good idea or not?
+	# NOTE: If I simply _return_ if "new_edge" is not present, we completely disallow jumping over existing edges - is that a good idea or not?
 	var res = edges.shoot(params)
-	if res.failed or res.destroy:
-		print("No jump possible or needed")
+	if res.failed:
+		print("No jump possible")
+		finish_jump()
+		return
+	
+	if res.destroy:
+		print("Destroy jump, no need to actually move")
 		finish_jump()
 		return
 	
@@ -130,10 +139,10 @@ func shoot_silk_line(params):
 	jump_data.target_edge = res.to_edge
 
 func play_jump_tween():
-	if not jump_data.target_point: return
-	
 	var target = jump_data.target_pos
 	if jump_data.target_point: target = jump_data.target_point.position
+	
+	if not target: return
 	
 	var dur = JUMP_DURATION
 	tween.interpolate_property(body, "position",
@@ -154,23 +163,39 @@ func play_jump_tween():
 func finish_jump():
 	input_disabled = false
 	
-	var start_pos = jump_data.start_pos
-	var target_pos = jump_data.target_pos
-	var actually_jumped = (target_pos != null)
-	
-	if actually_jumped:
-		var dist = (target_pos - start_pos).length()
-		
-		if body.is_in_group("Players"):
-			body.m.points.change(pay_for_travel(dist))
-		
-		if jump_data.target_point:
-			body.m.tracker.arrived_on_point(jump_data.target_point)
-		elif jump_data.target_edge:
-			body.m.tracker.arrived_on_edge(jump_data.target_edge)
+	handle_new_position_in_web()
 
 	body.m.mover.enable()
 	body.m.tracker.enable()
+
+func handle_new_position_in_web():
+	if jump_data.move_type != "web": return
+	
+	var start_pos = jump_data.start_pos
+	var target_pos = jump_data.target_pos
+	var actually_jumped = (target_pos != null)
+	if not actually_jumped: return
+	
+	var dist = (target_pos - start_pos).length()
+	
+	if body.is_in_group("Players"):
+		body.m.points.change(pay_for_travel(dist))
+	
+	if (not jump_data.target_edge) and (not jump_data.target_point):
+		print("Something went wrong => no target edge or point at end of jump")
+		return
+	
+	if jump_data.target_point:
+		body.m.tracker.arrived_on_point(jump_data.target_point)
+		return
+	
+	if jump_data.target_edge and is_instance_valid(jump_data.target_edge):
+		if jump_data.dont_create_new_edges:
+			body.m.tracker.force_set_edge(jump_data.target_edge)
+			return
+		else:
+			body.m.tracker.arrived_on_edge(jump_data.target_edge)
+			return
 
 func _on_Tween_tween_all_completed():
 	finish_jump()
@@ -193,6 +218,8 @@ func find_valid_jumping_dir(params):
 	var max_dist = 3000.0
 	if params.move_type == "fly": max_dist = FLY_JUMP_DIST
 	
+	var epsilon = 3.0
+	
 	while bad_direction:
 		bad_direction = true
 		vec = get_random_vec()
@@ -204,7 +231,7 @@ func find_valid_jumping_dir(params):
 		
 		# check where we should land
 		# the edges of the map always have bounds, so we always stop at the edge (if we hit nothing else)
-		var result = space_state.intersect_ray(from, to, params.exclude, col_layer)
+		var result = space_state.intersect_ray(from + vec*epsilon, to, params.exclude, col_layer)
 		if not result: continue
 		if result.collider.is_in_group("Bounds"): continue
 		

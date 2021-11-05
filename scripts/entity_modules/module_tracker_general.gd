@@ -20,6 +20,10 @@ func force_change_edge(e):
 	if not active_module.has_method("force_change_edge"): return
 	active_module.force_change_edge(e)
 
+func force_set_edge(e):
+	if not active_module.has_method("force_set_edge"): return
+	active_module.force_set_edge(e)
+
 func get_current_edge():
 	if not active_module.has_method("get_current_edge"): return
 	return active_module.get_current_edge()

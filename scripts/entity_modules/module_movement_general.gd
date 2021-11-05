@@ -11,6 +11,8 @@ onready var shuffler = $Shuffler
 onready var stamina = $Stamina
 onready var jumper = $Jumper
 
+signal move_vec(vec, dt)
+
 func initialize():
 	if not active_module: return
 	active_module.initialize()
@@ -71,12 +73,14 @@ func check_flee_and_chase():
 		var vec_to = (hit_body.position - body.position).normalized()
 		active_module.set_vector(vec_to)
 
-func has_fleeing_behavior(other_body):
+func has_fleeing_behavior(other_body = null):
 	if not data.has('flee'): return false
-	if data.has('flee_type') and not other_body.m.status.same_type(data.flee_type): return false
+	if other_body:
+		if data.has('flee_type') and not other_body.m.status.same_type(data.flee_type): return false
 	return data.flee
 
-func has_chasing_behavior(other_body):
+func has_chasing_behavior(other_body = null):
 	if not data.has('chase'): return false
-	if data.has('chase_type') and not other_body.m.status.same_type(data.chase_type): return false
+	if other_body:
+		if data.has('chase_type') and not other_body.m.status.same_type(data.chase_type): return false
 	return data.chase

@@ -55,7 +55,7 @@ func did_we_walk_off_the_edge(edge):
 	
 	var closest_point = edge.m.body.get_closest_point(body)
 	if (body.position - closest_point.position).length() > 5.0: return false
-	
+
 	body.m.tracker.arrived_on_point(closest_point)
 	return true
 

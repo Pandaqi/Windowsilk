@@ -6,6 +6,9 @@ var cfg = {
 	
 	'debug_terrain_types': true,
 	'line_thickness': 20,
+	
+	# TO DO: If I ever set this to true, I should change collision layer/mask on entities to hit each other
+	'entities_obstruct_each_other': false
 }
 
 var silk_categories = {
@@ -105,6 +108,7 @@ var entities = {
 	},
 	
 	# NOTE: combining "jump" and "static" automatically makes a creature that ONLY jumps, never walks/moves normally
+	
 	"grasshopper": {
 		"frame": 5,
 		"points": 4,

@@ -37,10 +37,25 @@ func hard_remove_from_edge():
 	cur_edge = null
 
 func force_set_edge(e):
+	hard_remove_from_point()
+	
 	cur_edge = e
 	e.m.entities.add(body)
+	
+	keep_positioned_on_web()
 
 	tracker_handler.emit_signal("arrived_on_edge", e)
+
+func force_set_point(p):
+	hard_remove_from_edge()
+	
+	cur_point = p
+	cur_point.add_entity(body)
+	
+	# TO DO: position on point precisely
+	# NOTE: although this function is, currently, never even called
+	
+	tracker_handler.emit_signal("arrived_on_point", p)
 
 # the edge we were standing on has been removed (split by someone else jumping)
 # so we only need to update our edge, not call anything else
@@ -83,6 +98,8 @@ func keep_positioned_on_web():
 		
 		new_pos = cur_edge.m.body.start.position + dist_to_extremes.start * cur_edge.m.body.get_vec().normalized()
 	
+	if not new_pos: return
+	
 	body.position = new_pos
 
 func recalculate_dist_to_extremes():
@@ -101,6 +118,7 @@ func arrived_on_edge(e):
 	
 	cur_edge = e
 	e.m.entities.add(body)
+
 	body.set_position(e.m.body.get_closest_point(body).position)
 	
 	recalculate_dist_to_extremes()

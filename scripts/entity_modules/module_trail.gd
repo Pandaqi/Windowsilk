@@ -27,7 +27,7 @@ func paint_specific_edge(e):
 func paint():
 	if type == "": return
 	if not painting_allowed: return
-	if not last_known_edge: return
+	if not last_known_edge or not is_instance_valid(last_known_edge): return
 	
 	last_known_edge.m.type.set_to(type)
 	

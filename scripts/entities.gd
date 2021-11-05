@@ -1,6 +1,8 @@
 extends Node2D
 
-const BOUNDS = { 'min': 3, 'max': 8 }
+# DEBUGGING
+#good values are 3-8, setting to 1 is just for testing
+const BOUNDS = { 'min': 1, 'max': 1 }
 const TIME_BOUNDS = { 'min': 3.0, 'max': 7.0 }
 
 var entity_scene = preload("res://scenes/entity.tscn")
@@ -18,11 +20,11 @@ var placement_params = {
 }
 
 func activate():
-	#available_types = ['larva']
-	return
-	
 	available_types = GlobalDict.entities.keys()
 	available_types.erase("player_spider")
+	
+	# DEBUGGING
+	available_types = ['grasshopper']
 	
 	_on_Timer_timeout()
 
@@ -35,7 +37,7 @@ func restart_timer():
 	timer.start()
 
 func check_placement():
-	var num_entities = get_tree().get_nodes_in_group("Entities").size()
+	var num_entities = get_tree().get_nodes_in_group("NonPlayers").size()
 	if num_entities >= BOUNDS.max: return
 	
 	place_entity()
