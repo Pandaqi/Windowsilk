@@ -19,6 +19,8 @@ var placement_params = {
 
 func activate():
 	available_types = GlobalDict.entities.keys()
+	available_types.erase("player_spider")
+	
 	_on_Timer_timeout()
 
 func _on_Timer_timeout():
@@ -50,4 +52,5 @@ func place_entity():
 	add_child(entity)
 	
 	entity.m.status.set_type(rand_type)
+	entity.m.status.make_non_player()
 	entity.m.status.initialize(placement_params)

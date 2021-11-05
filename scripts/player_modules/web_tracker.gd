@@ -4,23 +4,16 @@ var cur_edge
 var dist_to_extremes = { 'start': 0, 'end': 0 }
 var cur_point
 
-var updating_disabled : bool = false
-
-onready var body = get_parent()
+onready var tracker_handler = get_parent()
+onready var body = tracker_handler.get_parent()
 onready var spawner = get_node("/root/Main/Spawner")
 onready var edges = get_node("/root/Main/Web/Edges")
 
-signal arrived_on_point(p)
-signal arrived_on_edge(e)
-
-func start_randomly(params = {}):
+func initialize(params = {}):
 	var data = spawner.get_valid_random_position(params)
 	
 	body.set_position(data.pos)
 	force_set_edge(data.edge)
-	
-	print("WE ARE AT EDGE")
-	print(data.edge)
 
 func get_current_edge():
 	return cur_edge
@@ -43,8 +36,8 @@ func hard_remove_from_edge():
 func force_set_edge(e):
 	cur_edge = e
 	e.m.entities.add(body)
-	
-	emit_signal("arrived_on_edge", e)
+
+	tracker_handler.emit_signal("arrived_on_edge", e)
 
 # the edge we were standing on has been removed (split by someone else jumping)
 # so we only need to update our edge, not call anything else
@@ -74,24 +67,10 @@ func force_change_edge(e):
 	body.set_position(best_option)
 	recalculate_dist_to_extremes()
 
-func _physics_process(dt):
+func module_update(dt):
 	keep_positioned_on_web()
 
-func die():
-	disable_updates()
-	
-	hard_remove_from_point()
-	hard_remove_from_edge()
-
-func disable_updates():
-	updating_disabled = true
-
-func enable_updates():
-	updating_disabled = false
-
 func keep_positioned_on_web():
-	if updating_disabled: return
-	
 	var cur_pos = body.position
 	var new_pos
 	
@@ -125,7 +104,7 @@ func arrived_on_edge(e):
 	
 	recalculate_dist_to_extremes()
 
-	emit_signal("arrived_on_edge", e)
+	tracker_handler.emit_signal("arrived_on_edge", e)
 
 func arrived_on_point(p):
 	hard_remove_from_point()
@@ -137,4 +116,10 @@ func arrived_on_point(p):
 	
 	recalculate_dist_to_extremes()
 
-	emit_signal("arrived_on_point", p)
+	tracker_handler.emit_signal("arrived_on_point", p)
+
+func die():
+	tracker_handler.disable()
+	
+	hard_remove_from_point()
+	hard_remove_from_edge()

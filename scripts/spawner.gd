@@ -43,6 +43,9 @@ func get_valid_random_position(params = {}):
 	var avoid_web = params.has('avoid_web')
 	var avoid_entities = params.has('avoid_entities')
 	
+	var avoid_bounds = true
+	if params.has('avoid_bounds'): avoid_bounds = params.avoid_bounds
+	
 	var num_tries = 0
 	var max_tries = 500
 	
@@ -56,6 +59,11 @@ func get_valid_random_position(params = {}):
 		
 		var small_result = get_intersections(data.pos, small_radius)
 		for res in small_result:
+			if avoid_bounds:
+				if res.collider.is_in_group("Bounds"):
+					bad_pos = true
+					break
+			
 			if avoid_web and num_tries < 200:
 				if res.collider.is_in_group("Edges"):
 					bad_pos = true

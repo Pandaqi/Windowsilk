@@ -49,5 +49,21 @@ func find_edge_closest_to_vec(vec : Vector2):
 	
 	return best
 
+# TO DO: Should probably be a function on edge.gd script => "has_threat(body)"
+# Also, lots of overlap, but is it worth it to merge these functions?
+func get_edges_without_threat(body):
+	var arr = []
+	for e in edges:
+		if e.m.entities.has_threat_to(body): continue
+		arr.append(e)
+	return arr
+
+func get_edges_with_food(body):
+	var arr = []
+	for e in edges:
+		if not e.m.entities.has_food_for(body): continue
+		arr.append(e)
+	return arr
+
 func _draw():
 	draw_circle(Vector2.ZERO, RADIUS, COLOR)

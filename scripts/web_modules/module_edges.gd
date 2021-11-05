@@ -235,9 +235,9 @@ func break_edge_in_two(edge, new_point):
 		var dotB = vecB.dot(vec_to_split_point)
 		
 		if dotA > dotB:
-			e.m.webtracker.force_change_edge(edgeA)
+			e.m.tracker.force_change_edge(edgeA)
 		else:
-			e.m.webtracker.force_change_edge(edgeB)
+			e.m.tracker.force_change_edge(edgeB)
 
 func get_closest_point(pos : Vector2):
 	var space_state = get_world_2d().direct_space_state

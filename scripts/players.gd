@@ -2,7 +2,7 @@ extends Node2D
 
 const POINT_TARGET : int = 10
 
-var player_scene = preload("res://scenes/player.tscn")
+var entity_scene = preload("res://scenes/entity.tscn")
 var players = []
 
 func activate():
@@ -13,11 +13,17 @@ func activate():
 	players = get_tree().get_nodes_in_group("Players")
 
 func create_player(num):
-	var p = player_scene.instance()
+	var p = entity_scene.instance()
 	add_child(p)
 	
 	var team_num = num # for now;; read from "player_data" when I have menus
-	p.m.status.initialize(num, team_num)
+	p.m.status.set_type("player_spider") # for now;; different teams will have different types?
+	p.m.status.make_player(num, team_num)
+	
+	var params = {
+		'avoid_players': true
+	}
+	p.m.status.initialize(params)
 
 func get_closest_dist(pos):
 	if players.size() <= 0: return INF

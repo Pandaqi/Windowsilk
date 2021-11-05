@@ -16,7 +16,8 @@ onready var legs = {
 
 var leg_color = Color(121/255.0, 55/255.0, 0)
 
-onready var body = get_parent()
+onready var visuals = get_parent()
+onready var body = visuals.get_parent()
 
 func _ready():
 	reset_legs()

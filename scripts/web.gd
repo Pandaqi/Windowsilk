@@ -93,9 +93,7 @@ func generate_random_web():
 
 func load_default_web():
 	var res = edges.shoot(corners[0], corners[2] - corners[0])
-	
-	get_node("/root/Main/Players/Player/WebTracker").arrived_on_edge(res.new_edge)
-	
+
 	yield(get_tree(), "idle_frame")
 	
 	edges.shoot(corners[1], corners[3] - corners[1])

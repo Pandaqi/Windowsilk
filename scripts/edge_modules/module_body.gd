@@ -31,11 +31,14 @@ func set_end(e):
 func get_center():
 	return 0.5*(start.position + end.position)
 
+func get_vec():
+	return (end.position - start.position)
+
 func get_length():
 	return get_vec().length()
 
-func get_vec():
-	return (end.position - start.position)
+func get_vec_norm():
+	return get_vec().normalized()
 
 func get_vec_starting_from(node):
 	if node == start: return get_vec()
@@ -66,7 +69,6 @@ func get_closest_point(e):
 
 func get_random_pos_on_me(margin = 0.0):
 	var vec = get_vec()
-	var vec_norm = vec.normalized()
 	var rand = (randf()*(1.0-2*margin)) + margin
 	return start.position + rand*vec
 

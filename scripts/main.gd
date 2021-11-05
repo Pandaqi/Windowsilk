@@ -34,4 +34,5 @@ func on_player_progression(p):
 
 func game_over(winning_team):
 	print("GAME OVER")
+	print("WINNING TEAM: " + str(winning_team))
 	pass

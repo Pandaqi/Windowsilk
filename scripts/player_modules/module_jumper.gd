@@ -3,7 +3,7 @@ extends Node2D
 const JUMP_DURATION : float = 0.5
 const JUMP_SCALE : float = 1.3
 
-const DIST_PER_SILK : float = 150.0
+const DIST_PER_POINT : float = 150.0
 
 var active : bool = false
 var input_disabled : bool = false
@@ -18,10 +18,10 @@ var tween_data = {
 }
 
 func pay_for_travel(dist):
-	return clamp(-round(dist / DIST_PER_SILK), -INF, -1)
+	return clamp(-round(dist / DIST_PER_POINT), -INF, -1)
 
 func get_max_dist():
-	return DIST_PER_SILK * body.m.silk.count()
+	return DIST_PER_POINT * body.m.points.count()
 
 func _on_Input_move_vec(vec, dt):
 	if not active: return
@@ -46,12 +46,10 @@ func get_forward_vec():
 	return Vector2(cos(rot), sin(rot))
 
 func prepare_jump():
-	if body.m.silk.is_empty(): return
+	if body.m.points.is_empty(): return
 	
-	# TO DO: Use _signals_ instead of hardcoding module existence?
-	if body.has_module('webmover'):
-		body.m.webmover.disable()
-		body.m.webtracker.disable_updates()
+	body.m.mover.disable()
+	body.m.tracker.disable()
 	
 	active = true
 
@@ -67,10 +65,10 @@ func create_new_silk_line():
 	var dir = get_forward_vec()
 	
 	var exclude_bodies = []
-	var edge = body.m.webtracker.get_current_edge()
+	var edge = body.m.tracker.get_current_edge()
 	if edge: exclude_bodies = [edge]
 	
-	var point = body.m.webtracker.get_current_point()
+	var point = body.m.tracker.get_current_point()
 	if point: 
 		exclude_bodies.append(point)
 		exclude_bodies += point.get_edges()
@@ -89,8 +87,8 @@ func create_new_silk_line():
 	#params.destroy = true
 
 	var res = edges.shoot(params)
-	if res.failed or res.destroy:
-		# TO DO: give feedback
+	if res.failed or res.destroy or not res.new_edge:
+		# TO DO: give feedback => and differentiate, as these cases are really not the same
 		print("No jump possible or needed")
 		finish_jump()
 		return
@@ -129,13 +127,12 @@ func finish_jump():
 	var actually_jumped = (pos and start_pos)
 	if actually_jumped:
 		var dist = (pos.position - start_pos).length()
-		body.m.silk.change(pay_for_travel(dist))
+		body.m.points.change(pay_for_travel(dist))
 		
-		body.m.webtracker.arrived_on_point(pos)
+		body.m.tracker.arrived_on_point(pos)
 
-	if body.has_module('webmover'):
-		body.m.webmover.enable()
-		body.m.webtracker.enable_updates()
+	body.m.mover.enable()
+	body.m.tracker.enable()
 
 func _on_Tween_tween_all_completed():
 	finish_jump()

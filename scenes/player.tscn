@@ -1,22 +1,18 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://scripts/player_modules/module_input.gd" type="Script" id=1]
-[ext_resource path="res://scripts/player_modules/collector.gd" type="Script" id=2]
-[ext_resource path="res://assets/fonts/main_medium.tres" type="DynamicFont" id=3]
+[ext_resource path="res://scenes/modules/input.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/modules/jumper.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/modules/collector.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scripts/module_manager.gd" type="Script" id=4]
 [ext_resource path="res://scenes/modules/mover.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scripts/player_modules/module_status.gd" type="Script" id=6]
 [ext_resource path="res://scenes/modules/legs.tscn" type="PackedScene" id=7]
-[ext_resource path="res://scripts/player_modules/module_jumper.gd" type="Script" id=8]
-[ext_resource path="res://scripts/player_modules/module_silk.gd" type="Script" id=9]
+[ext_resource path="res://scenes/modules/silk.tscn" type="PackedScene" id=8]
 [ext_resource path="res://scenes/modules/web_tracker.tscn" type="PackedScene" id=10]
 [ext_resource path="res://assets/spider.png" type="Texture" id=11]
 [ext_resource path="res://scripts/player_modules/module_points.gd" type="Script" id=12]
 
 [sub_resource type="CircleShape2D" id=1]
-
-[sub_resource type="CircleShape2D" id=2]
-radius = 17.6625
 
 [node name="Player" type="KinematicBody2D" groups=[
 "Players",
@@ -40,59 +36,17 @@ texture = ExtResource( 11 )
 
 [node name="WebMover" parent="." instance=ExtResource( 5 )]
 
-[node name="Input" type="Node2D" parent="."]
-script = ExtResource( 1 )
-player_num = 0
+[node name="Input" parent="." instance=ExtResource( 1 )]
 
 [node name="WebTracker" parent="." instance=ExtResource( 10 )]
 
-[node name="Jumper" type="Node2D" parent="."]
-script = ExtResource( 8 )
+[node name="Jumper" parent="." instance=ExtResource( 2 )]
 
-[node name="Tween" type="Tween" parent="Jumper"]
+[node name="Silk" parent="." instance=ExtResource( 8 )]
 
-[node name="Silk" type="Node2D" parent="."]
-script = ExtResource( 9 )
-
-[node name="LabelContainer" type="Node2D" parent="Silk"]
-position = Vector2( -13.6862, 0 )
-
-[node name="Label" type="Label" parent="Silk/LabelContainer"]
-margin_left = -19.8214
-margin_top = -19.8214
-margin_right = 20.1786
-margin_bottom = 24.1786
-custom_fonts/font = ExtResource( 3 )
-text = "0"
-align = 1
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Collector" type="Node2D" parent="."]
-script = ExtResource( 2 )
-
-[node name="Area2D" type="Area2D" parent="Collector"]
-position = Vector2( 25.9566, 0.23597 )
-collision_layer = 4
-collision_mask = 4
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Collector/Area2D"]
-shape = SubResource( 2 )
+[node name="Collector" parent="." instance=ExtResource( 3 )]
 
 [node name="Legs" parent="." instance=ExtResource( 7 )]
 
 [node name="Points" type="Node2D" parent="."]
 script = ExtResource( 12 )
-
-[connection signal="button_press" from="Input" to="WebMover" method="_on_Input_button_press"]
-[connection signal="button_press" from="Input" to="Jumper" method="_on_Input_button_press"]
-[connection signal="button_release" from="Input" to="WebMover" method="_on_Input_button_release"]
-[connection signal="button_release" from="Input" to="Jumper" method="_on_Input_button_release"]
-[connection signal="move_vec" from="Input" to="WebMover" method="_on_Input_move_vec"]
-[connection signal="move_vec" from="Input" to="Jumper" method="_on_Input_move_vec"]
-[connection signal="arrived_on_edge" from="WebTracker" to="WebMover" method="_on_WebTracker_arrived_on_edge"]
-[connection signal="arrived_on_point" from="WebTracker" to="WebMover" method="_on_WebTracker_arrived_on_point"]
-[connection signal="tween_all_completed" from="Jumper/Tween" to="Jumper" method="_on_Tween_tween_all_completed"]
-[connection signal="body_entered" from="Collector/Area2D" to="Collector" method="_on_Area2D_body_entered"]
