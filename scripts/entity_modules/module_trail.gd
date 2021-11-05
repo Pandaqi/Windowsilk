@@ -17,7 +17,7 @@ func die():
 func _on_Tracker_arrived_on_edge(e):
 	last_known_edge = e
 
-func _on_Tracker_arrived_on_point(p):
+func _on_Tracker_arrived_on_point(_p):
 	paint()
 
 func paint_specific_edge(e):

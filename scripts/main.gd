@@ -25,8 +25,6 @@ func on_player_death(p):
 	game_over(teams_left[0])
 
 func on_player_progression(p):
-	print("PLAYER PROGRESSED")
-	
 	var team_num = p.m.status.team_num
 	if players.team_total_below_target(team_num): return
 	

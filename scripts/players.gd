@@ -67,7 +67,9 @@ func team_total_below_target(team_num):
 	var total = 0
 	var team = get_players_in_team(team_num)
 	var num_players = team.size()
+	if num_players <= 0: return true
+	
 	for player in team:
 		total += player.m.points.count()
-	
+
 	return total < num_players*POINT_TARGET

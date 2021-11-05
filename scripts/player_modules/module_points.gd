@@ -10,4 +10,6 @@ func count():
 
 func collect(val : int):
 	num = clamp(num + val, 0, 99)
+	
+	if not body.m.status.is_player(): return
 	main_node.on_player_progression(body)

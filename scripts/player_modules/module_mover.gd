@@ -59,7 +59,7 @@ func did_we_walk_off_the_edge(edge):
 	body.m.tracker.arrived_on_point(closest_point)
 	return true
 
-func try_point_move(vec, dt):
+func try_point_move(vec, _dt):
 	if not can_move_from_point: return
 	
 	var point = body.m.tracker.get_current_point()
@@ -72,13 +72,18 @@ func try_point_move(vec, dt):
 
 	return true
 
-func enter_point(p):
+func enter_point(_p):
+	if body.m.status.data.move.has('always'): return
+	
+	delay_continued_travel()
+
+func enter_edge(_e):
+	pass
+
+func delay_continued_travel():
 	point_delay_timer.wait_time = DELAY_AT_POINT
 	point_delay_timer.start()
 	can_move_from_point = false
-
-func enter_edge(e):
-	pass
 
 func _on_PointDelayTimer_timeout():
 	can_move_from_point = true

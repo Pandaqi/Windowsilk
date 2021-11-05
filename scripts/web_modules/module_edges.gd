@@ -18,6 +18,7 @@ func shoot(params = {}):
 	if not params.has('exclude'): params.exclude = []
 	if not params.has('origin_edge'): params.origin_edge = null
 	if not params.has('destroy'): params.destroy = false
+	if not params.has('dont_create_new_edges'): params.dont_create_new_edges = false
 
 	var data = {
 		'failed': true,
@@ -34,6 +35,8 @@ func shoot(params = {}):
 		'from_edge': params.origin_edge,
 		'to_edge': null,
 		'new_edge': null,
+		
+		'dont_create_new_edges': params.dont_create_new_edges
 	}
 	
 	var res = shoot_raycast(data)
@@ -184,6 +187,8 @@ func is_too_similar_to_existing_edge(data):
 	return null
 
 func create_new_points_and_edges_if_needed(data):
+	if data.dont_create_new_edges: return
+	
 	if not data.from.already_created:
 		data.from.point = points.create_at(data.from.pos)
 		

@@ -36,7 +36,7 @@ func get_desired_leg_pos(leg):
 func reset_leg(leg):
 	leg.end = get_desired_leg_pos(leg)
 
-func _physics_process(dt):
+func _physics_process(_dt):
 	check_legs()
 	update()
 

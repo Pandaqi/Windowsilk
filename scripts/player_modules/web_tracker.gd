@@ -15,7 +15,7 @@ func initialize(params = {}):
 	body.set_position(data.pos)
 	force_set_edge(data.edge)
 
-func module_update(dt):
+func module_update(_dt):
 	keep_positioned_on_web()
 
 func get_current_edge():
@@ -73,7 +73,6 @@ func update_positions():
 	recalculate_dist_to_extremes()
 
 func keep_positioned_on_web():
-	var cur_pos = body.position
 	var new_pos
 	
 	if cur_point and is_instance_valid(cur_point):

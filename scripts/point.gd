@@ -11,7 +11,7 @@ onready var col_shape = get_node("CollisionShape2D").shape
 func _ready():
 	col_shape.radius = GlobalDict.cfg.line_thickness
 
-func move(vec, dt):
+func move(vec, _dt):
 	move_and_slide(vec)
 	
 	# TO DO: maybe add a general "status" module to edges, so we can just call "update" on that and it handles this?

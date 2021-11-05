@@ -4,6 +4,8 @@ const BASE_SPEED : float = 50.0
 var speed : float = BASE_SPEED
 var is_static : float = false
 
+signal on_move_completed(vec)
+
 func _on_Movement_move_vec(vec, dt):
 	if not active: return
 	if is_static: return
@@ -11,7 +13,11 @@ func _on_Movement_move_vec(vec, dt):
 	var not_moving = (vec.length() <= 0.03)
 	if not_moving: return
 	
+	var cur_pos = body.position
 	active_module._on_Input_move_vec(vec, dt)
+	
+	var new_pos = body.position
+	emit_signal("on_move_completed", (new_pos - cur_pos))
 
 func _on_Tracker_arrived_on_edge(e):
 	if not active_module.has_method("_on_Tracker_arrived_on_edge"): return

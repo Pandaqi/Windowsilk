@@ -32,8 +32,7 @@ func get_random_position(params = {}):
 
 func get_valid_random_position(params = {}):
 	var bad_pos = true
-	var pos
-	
+
 	var small_radius = DEFAULT_SPAWN_CHECK_RADIUS
 	var large_radius = small_radius * 4
 	if params.has('small_radius'): small_radius = params.small_radius

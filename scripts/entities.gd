@@ -18,7 +18,7 @@ var placement_params = {
 }
 
 func activate():
-	available_types = ['larva']
+	#available_types = ['larva']
 	return
 	
 	available_types = GlobalDict.entities.keys()

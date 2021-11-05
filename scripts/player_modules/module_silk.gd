@@ -23,7 +23,7 @@ func change(val):
 	
 	main_node.on_player_progression(body)
 
-func _physics_process(dt):
+func _physics_process(_dt):
 	label_container.set_rotation(-body.rotation)
 
 func is_empty():

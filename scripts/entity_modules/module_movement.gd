@@ -14,7 +14,7 @@ func module_update(dt):
 func set_vector(new_vec):
 	vec = new_vec
 
-func pick_new_vec(point, edge):
+func pick_new_vec(point, _edge):
 	var rot = 2*PI*randf()
 	vec = Vector2(cos(rot), sin(rot))
 	
@@ -35,6 +35,9 @@ func pick_new_vec(point, edge):
 	if candidates.size() > 0:
 		var rand_candidate = candidates[randi() % candidates.size()]
 		vec = rand_candidate.m.body.get_vec_starting_from(point).normalized()
+
+func pick_opposite_vec():
+	vec = -vec
 
 func _on_Tracker_arrived_on_edge(e):
 	var already_has_chosen_dir = (vec.length() >= 0.03)

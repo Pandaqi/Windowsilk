@@ -47,14 +47,14 @@ func is_on_me(e, epsilon = 5.0):
 	
 	return body.m.body.point_is_between(start_pos, end_pos, e.position, epsilon)
 
-func has_threat_to(body):
+func has_threat_to(other_body):
 	for entity in entities:
-		if entity.m.collector.can_collect(body):
+		if entity.m.collector.can_collect(other_body):
 			return true
 	return false
 
-func has_food_for(body):
+func has_food_for(other_body):
 	for entity in entities:
-		if body.m.collector.can_collect(entity):
+		if other_body.m.collector.can_collect(entity):
 			return true
 	return false

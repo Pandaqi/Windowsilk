@@ -57,7 +57,7 @@ func check_area():
 	var avg_vector = vector/total_weight
 	set_vector(avg_vector)
 
-func custom_check_raycast(entity_rc, web_rc):
+func custom_check_raycast(_entity_rc, web_rc):
 	if not web_rc.is_colliding(): return
 	paint_edges(web_rc)
 	move_away_from_bounds(web_rc)
@@ -85,6 +85,9 @@ func pick_new_vec():
 	var rot = 2*PI*randf()
 	vec = Vector2(cos(rot), sin(rot))
 
+func pick_opposite_vec():
+	vec = -vec
+
 func _on_Timer_timeout():
 	restart_timer()
 	pick_new_vec()
@@ -94,5 +97,5 @@ func restart_timer():
 	timer.wait_time = rand_range(TIMER_BOUNDS.min, TIMER_BOUNDS.max)
 	timer.start()
 
-func _on_Points_point_change(val):
+func _on_Points_point_change(_val):
 	pick_new_vec()

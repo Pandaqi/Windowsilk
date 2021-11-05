@@ -7,6 +7,10 @@ var data
 onready var entity_rc = $EntityRaycast
 onready var web_rc = $WebRaycast
 
+onready var shuffler = $Shuffler
+onready var stamina = $Stamina
+onready var jumper = $Jumper
+
 func initialize():
 	if not active_module: return
 	active_module.initialize()
@@ -16,6 +20,15 @@ func set_data(new_data):
 		data = {}
 	else:
 		data = new_data.move
+	
+	if data.has('shuffle'):
+		shuffler.activate()
+	
+	if data.has('stamina'):
+		stamina.activate(data.stamina)
+	
+	if data.has('jump'):
+		jumper.activate()
 
 func _on_Tracker_arrived_on_edge(e):
 	if not active: return

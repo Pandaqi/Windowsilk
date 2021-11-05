@@ -86,13 +86,13 @@ func generate_random_web():
 		total_edge_length += res.new_edge.m.body.get_length()
 		counter += 1
 		
-		for j in range(num_debug_frames):
+		for _j in range(num_debug_frames):
 			yield(get_tree(), "idle_frame")
 
 	main_node.web_loading_done()
 
 func load_default_web():
-	var res = edges.shoot(corners[0], corners[2] - corners[0])
+	edges.shoot(corners[0], corners[2] - corners[0])
 
 	yield(get_tree(), "idle_frame")
 	

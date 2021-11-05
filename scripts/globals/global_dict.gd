@@ -90,7 +90,7 @@ var entities = {
 		"move": {
 			"flee": true,
 			"speed": 140.0,
-			"stamina": 300.0 # TO DO: Implement
+			"stamina": 300.0
 		}
 	},
 	
@@ -100,10 +100,11 @@ var entities = {
 		"trail": "slippery",
 		"move": {
 			"speed": 200.0,
-			"always": true # TO DO: Implement
+			"always": true
 		}
 	},
 	
+	# NOTE: combining "jump" and "static" automatically makes a creature that ONLY jumps, never walks/moves normally
 	"grasshopper": {
 		"frame": 5,
 		"points": 4,
@@ -111,7 +112,7 @@ var entities = {
 		"specialty": "trampoline",
 		"move": {
 			"static": true,
-			"jump": true # TO DO: implement
+			"jump": true
 		}
 	},
 	
@@ -121,7 +122,7 @@ var entities = {
 		"trail": "doubler",
 		"specialty": "doubler",
 		"move": {
-			"shuffle": true, # TO DO: implement
+			"shuffle": true,
 			"jump": true
 		}
 	},

@@ -24,7 +24,7 @@ func _ready():
 
 func create_debugging_players():
 	var num_players = 2
-	for i in range(num_players):
+	for _i in range(num_players):
 		add_new_player('keyboard')
 
 #
