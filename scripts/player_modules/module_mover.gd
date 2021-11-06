@@ -67,6 +67,9 @@ func try_point_move(vec, _dt):
 	
 	var best_edge = point.find_edge_closest_to_vec(vec)
 	if not best_edge: return false
+	if best_edge.m.type.direction_forbidden(vec): 
+		print("Feedback: One way edge!")
+		return false
 	
 	body.m.tracker.arrived_on_edge(best_edge)
 

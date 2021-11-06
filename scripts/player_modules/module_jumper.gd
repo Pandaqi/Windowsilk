@@ -181,10 +181,14 @@ func handle_new_position_in_web():
 	if body.is_in_group("Players"):
 		body.m.points.change(pay_for_travel(dist))
 	
-	if (not jump_data.target_edge) and (not jump_data.target_point):
-		print("Something went wrong => no target edge or point at end of jump")
-		return
+	var no_valid_edge = (not jump_data.target_edge) or (not is_instance_valid(jump_data.target_edge))
+	var no_valid_point = (not jump_data.target_point) or (not is_instance_valid(jump_data.target_point))
+	var target_has_disappeared = no_valid_edge and no_valid_point
 	
+	if target_has_disappeared:
+		body.m.status.die()
+		return
+
 	if jump_data.target_point:
 		body.m.tracker.arrived_on_point(jump_data.target_point)
 		return

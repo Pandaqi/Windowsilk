@@ -112,9 +112,7 @@ func shoot_raycast(data):
 	# DEBUGGING: is this actually a good idea/necessary?
 	var compensate_for_imprecision = 0.5*dir*GlobalDict.cfg.line_thickness
 	if data.to_edge.is_in_group("Bounds"): compensate_for_imprecision = Vector2.ZERO
-	
-	print("RAYCAST FOUND SOMETHING")
-	
+
 	data.to = data.result.position + compensate_for_imprecision
 	return true
 

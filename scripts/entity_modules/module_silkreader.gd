@@ -68,3 +68,6 @@ func _on_Tracker_arrived_on_edge(e):
 
 func _on_Tracker_arrived_on_point(p):
 	reset_silk_type()
+
+func _on_Status_on_death():
+	reset_silk_type()

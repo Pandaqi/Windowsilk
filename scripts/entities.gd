@@ -26,7 +26,39 @@ func activate():
 	# DEBUGGING
 	available_types = ['grasshopper']
 	
+	precalculate_probabilities()
 	_on_Timer_timeout()
+
+# This gives all entities a certain probabililty (based on their point value + some optional extra data)
+# And saves that in a way that is very easy/cheap to calculate at runtime
+func precalculate_probabilities():
+	var e = GlobalDict.entities
+	var sum : float = 0.0
+	for key in available_types:
+		var data = e[key]
+		
+		# basic weight is inverse of point total => entities worth more points are less likely to appear
+		var weight = 1.0 / float(max(data.points, 1.0))
+		
+		# but this can be scaled with an optional "prob" parameter
+		if data.has('scale_prob'):
+			weight *= data.scale_prob
+		
+		data.prob = weight
+		sum += weight
+	
+	var running_sum : float = 0.0
+	for key in available_types:
+		running_sum += (e[key].prob / sum)
+		e[key].weight = running_sum
+
+func get_random_type():
+	if available_types.size() <= 0: return null 
+	
+	var target = randf()
+	for key in available_types:
+		if GlobalDict.entities[key].weight >= target:
+			return key
 
 func _on_Timer_timeout():
 	check_placement()
@@ -46,9 +78,6 @@ func check_placement():
 	while num_entities < BOUNDS.min:
 		place_entity()
 		num_entities += 1
-
-func get_random_type():
-	return available_types[randi() % available_types.size()]
 
 func place_entity():
 	var entity = entity_scene.instance()

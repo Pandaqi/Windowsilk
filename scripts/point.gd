@@ -54,7 +54,6 @@ func find_edge_closest_to_vec(vec : Vector2):
 	for e in edges:
 		var edge_vec = e.m.body.get_vec_starting_from(self)
 		var dot = edge_vec.normalized().dot(vec)
-		if e.m.type.direction_forbidden(vec): continue
 		if dot <= best_dot: continue
 		
 		best_dot = dot
