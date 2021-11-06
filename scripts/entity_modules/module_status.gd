@@ -35,6 +35,7 @@ func initialize(placement_params):
 		body.m.movement.initialize()
 	else:
 		body.m.movement.disable()
+	
 	body.m.tracker.initialize(placement_params)
 
 func set_move_type(tp):
@@ -63,8 +64,9 @@ func set_type(tp):
 	
 	data = GlobalDict.entities[type]
 	
-	if data.move.has('speed'): body.m.mover.set_speed(data.move.speed)
-	if data.move.has('static'): body.m.mover.make_static()
+	if data.has('move'):
+		if data.move.has('speed'): body.m.mover.set_speed(data.move.speed)
+		if data.move.has('static'): body.m.mover.make_static()
 	
 	if data.has('trail'): body.m.trail.set_to(data.trail)
 	

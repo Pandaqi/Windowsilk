@@ -6,7 +6,7 @@ onready var movement_handler = get_parent()
 onready var timer = $Timer
 
 func activate():
-	_on_Timer_timeout()
+	restart_timer()
 
 func _on_Timer_timeout():
 	restart_timer()

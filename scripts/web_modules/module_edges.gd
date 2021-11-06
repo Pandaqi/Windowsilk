@@ -1,6 +1,6 @@
 extends Node2D
 
-const POINT_SNAP_RADIUS : float = 15.0
+const POINT_SNAP_RADIUS : float = 25.0
 const ENTITY_OBSTRUCT_RADIUS : float = 30.0
 const MIN_JUMP_DIST : float = 40.0
 

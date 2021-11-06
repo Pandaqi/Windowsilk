@@ -63,7 +63,7 @@ func try_point_move(vec, _dt):
 	if not can_move_from_point: return
 	
 	var point = body.m.tracker.get_current_point()
-	if not point: return false
+	if not point or not is_instance_valid(point): return false
 	
 	var best_edge = point.find_edge_closest_to_vec(vec)
 	if not best_edge: return false
@@ -76,15 +76,16 @@ func try_point_move(vec, _dt):
 	return true
 
 func enter_point(_p):
-	if body.m.status.data.move.has('always'): return
-	
 	delay_continued_travel()
 
 func enter_edge(_e):
 	pass
 
 func delay_continued_travel():
-	point_delay_timer.wait_time = DELAY_AT_POINT
+	var delay = DELAY_AT_POINT
+	if body.m.status.data.move.has('always'): delay = 0.01
+	
+	point_delay_timer.wait_time = delay
 	point_delay_timer.start()
 	can_move_from_point = false
 

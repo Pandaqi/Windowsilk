@@ -179,7 +179,7 @@ var entities = {
 		"trail": "regular",
 		"specialty": "erase",
 		"move": {
-			"fly": true,
+			"type": "fly",
 			"flee": true,
 			"shuffle": true,
 			"speed": 80.0

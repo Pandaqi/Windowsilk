@@ -22,10 +22,7 @@ var placement_params = {
 func activate():
 	available_types = GlobalDict.entities.keys()
 	available_types.erase("player_spider")
-	
-	# DEBUGGING
-	available_types = ['grasshopper']
-	
+
 	precalculate_probabilities()
 	_on_Timer_timeout()
 
@@ -84,6 +81,9 @@ func place_entity():
 
 	var rand_type = get_random_type()
 	add_child(entity)
+	
+	print("PLACED TYPE")
+	print(rand_type)
 	
 	entity.m.status.set_type(rand_type)
 	entity.m.status.make_non_player()

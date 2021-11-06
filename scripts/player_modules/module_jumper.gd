@@ -223,14 +223,13 @@ func find_valid_jumping_dir(params):
 	if params.move_type == "fly": max_dist = FLY_JUMP_DIST
 	
 	var epsilon = 3.0
+	var space_state = get_world_2d().direct_space_state
 	
 	while bad_direction:
 		bad_direction = true
 		vec = get_random_vec()
 		
-		var space_state = get_world_2d().direct_space_state
 		var to = from + vec*max_dist
-		var exclude = []
 		var col_layer = 1
 		
 		# check where we should land
