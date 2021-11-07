@@ -12,6 +12,8 @@ var cfg = {
 	'bigger_entities_move_slower': true,
 	'paint_trails_when_jumping': true,
 	
+	"ai_can_move_over_owned_silk": true,
+	
 	# TO DO: If I ever set this to true, I should change collision layer/mask on entities to hit each other
 	'entities_obstruct_each_other': false,
 	
@@ -56,8 +58,14 @@ var silk_types = {
 	
 	"worthless": { "frame": 12, "category": "collecting" },
 	"doubler": { "frame": 13, "category": "collecting" },
+	"shield": { "frame": 14, "category": "collecting" },
+	"time_gainer": { "frame": 15, "category": "collecting" },
+	"time_loser": { "frame": 16, "category": "collecting" },
+	"gobbler": { "frame": 17, "category": "collecting" },
 	
-	"noisemaker": { "frame": 13, "category": "misc" }
+	"noisemaker": { "frame": 18, "category": "misc" },
+	"attractor": { "frame": 19, "category": "misc" }
+	
 }
 
 # All parameters are FALSE by default (this means simplified code and consistency)
@@ -90,7 +98,6 @@ var entities = {
 	"larva": {
 		"frame": 1,
 		"points": 1,
-		"trail": null,
 		"move": {
 			"static": true
 		},
@@ -102,7 +109,8 @@ var entities = {
 	"tiny_spider": { 
 		"frame": 2, 
 		"points": 1,
-		"trail": null,
+		"trail": "featherlight",
+		"specialty": "featherlight",
 		"move": {
 			"speed": 40.0,
 		},
@@ -116,9 +124,9 @@ var entities = {
 		"frame": 3,
 		"points": 2,
 		"trail": "speedy",
+		"specialty": "speedy",
 		"move": {
 			"flee": true,
-			"speed": 120.0,
 			"stamina": 1500.0
 		},
 		"legs": {
@@ -135,6 +143,7 @@ var entities = {
 		"frame": 4,
 		"points": 3,
 		"trail": "slippery",
+		"specialty": "slippery",
 		"move": {
 			"speed": 120.0,
 			"always": true
@@ -184,11 +193,15 @@ var entities = {
 		}
 	},
 	
+	# NOTE: the "noisemaker" specialty overrides the jump button to make noise instead, that's why jumping must be enabled ... but the cricket doesn't actually jump
 	"cricket": {
 		"frame": 7,
 		"points": 5, 
 		"trail": "noisemaker",
 		"specialty": "noisemaker",
+		"move": {
+			"jump": true 
+		},
 		"legs": {
 			"type": "four",
 			"color": Color(30/255.0, 34/255.0, 148/255.0)
@@ -231,7 +244,7 @@ var entities = {
 		"frame": 10,
 		"points": 1,
 		"trail": "regular",
-		"specialty": "erase",
+		"specialty": "regular",
 		"move": {
 			"flee": true,
 			"speed": 80.0
@@ -246,7 +259,7 @@ var entities = {
 		"frame": 11,
 		"points": 1,
 		"trail": "regular",
-		"specialty": "erase",
+		"specialty": "regular",
 		"move": {
 			"type": "fly",
 			"flee": true,

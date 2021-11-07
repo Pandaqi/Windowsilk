@@ -2,7 +2,7 @@ extends Node2D
 
 # DEBUGGING
 #good values are 3-8, setting to 1 is just for testing
-const BOUNDS = { 'min': 1, 'max': 1 }
+const BOUNDS = { 'min': 3, 'max': 8 }
 const TIME_BOUNDS = { 'min': 3.0, 'max': 7.0 }
 
 var entity_scene = preload("res://scenes/entity.tscn")
@@ -22,6 +22,10 @@ var placement_params = {
 func activate():
 	available_types = GlobalDict.entities.keys()
 	available_types.erase("player_spider")
+	
+	# DEBUGGING
+	#available_types = ['regular_fruit_fly']
+	return
 	
 	precalculate_probabilities()
 	_on_Timer_timeout()

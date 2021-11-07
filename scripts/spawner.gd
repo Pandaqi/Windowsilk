@@ -14,19 +14,15 @@ func get_random_position(params = {}):
 	var edges = get_tree().get_nodes_in_group("Edges")
 	var rand_edge = edges[randi() % edges.size()]
 	data.edge = rand_edge
-	
-	var vec = rand_edge.m.body.get_vec()
-	var vec_norm = vec.normalized()
-	var rand_pos = rand_edge.m.body.start.position + randf()*vec
-	data.pos = rand_pos
+	data.pos = rand_edge.m.body.get_random_pos_on_me(0.2)
 	
 	if not params.has('avoid_web') or not params.avoid_web: return data
 	
+	var vec_norm = rand_edge.m.body.get_vec_norm()
 	var ortho_vec = vec_norm.rotated(0.5*PI)
 	if randf() <= 0.5: ortho_vec = vec_norm.rotated(-0.5*PI)
 	
-	rand_pos += ortho_vec*rand_range(OFFSET_FROM_EDGE.min, OFFSET_FROM_EDGE.max)
-	data.pos = rand_pos
+	data.pos += ortho_vec*rand_range(OFFSET_FROM_EDGE.min, OFFSET_FROM_EDGE.max)
 	
 	return data
 

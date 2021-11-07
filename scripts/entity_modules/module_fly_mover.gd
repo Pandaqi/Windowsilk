@@ -2,6 +2,7 @@ extends Node2D
 
 onready var mover_handler = get_parent()
 onready var body = mover_handler.get_parent()
+onready var web = get_node("/root/Main/Web")
 
 const TURN_SPEED : float = 8.0
 
@@ -22,6 +23,11 @@ func module_update(dt):
 	
 	var final_vec = forward_vec.slerp(vec.normalized(), TURN_SPEED * dt)
 	var final_move_speed = mover_handler.get_final_speed()
+	
+	var projected_end_pos = body.position + final_vec * final_move_speed * dt
+	if web.is_out_of_bounds(projected_end_pos):
+		vec *= -1
+		return
 	
 	body.move_and_slide(final_vec*final_move_speed)
 	body.set_rotation(final_vec.angle())

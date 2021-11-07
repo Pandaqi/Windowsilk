@@ -36,9 +36,28 @@ func position_bounds():
 	$Bounds/Left.position.x = corners[0].x - BOUND_THICKNESS
 	$Bounds/Up.position.y = corners[0].y - BOUND_THICKNESS
 
-func get_random_inner_pos(margin = 0.0):
-	margin = Vector2(1,1)*margin
-	return corners[0] + margin + (corners[2]-corners[0]-2*margin)*Vector2(randf(), randf())
+func get_random_inner_pos(params):
+	var margin = Vector2.ZERO
+	if params.has('margin'): Vector2(1,1)*params.margin
+	
+	var start = corners[0] + margin
+	var width = (corners[2]-corners[0]-2*margin)
+	
+	if params.has('quadrant'):
+		var q = params.quadrant
+		width *= 0.5
+		
+		if q == 1:
+			start = Vector2(0.5*vp.x, 0)
+		elif q == 2:
+			start = Vector2(0, 0.5*vp.y)
+		elif q == 3:
+			start = 0.5*vp
+	
+	return start + width*Vector2(randf(), randf())
+
+func is_out_of_bounds(pos):
+	return pos.x < corners[0].x or pos.y < corners[0].y or pos.x >= corners[2].x or pos.y >= corners[2].y
 
 func get_random_vector():
 	var num_angles = 16
@@ -47,7 +66,7 @@ func get_random_vector():
 	return Vector2(cos(snap_angle), sin(snap_angle))
 
 func generate_random_web():
-	#var start_pos = get_random_inner_pos()
+	#var start_pos = get_random_inner_pos(params)
 	#points.create_at(start_pos)
 	
 	var num_debug_frames = 1
@@ -64,16 +83,25 @@ func generate_random_web():
 	var counter = 0
 	while total_edge_length < target_total_edge_length:
 		
-		if counter >= num_free_shots:
+		var pick_randomly_from_existing = (counter >= num_free_shots)
+		var pick_randomly_from_quadrants = (counter < (num_free_shots + 4))
+		
+		var dir = get_random_vector()
+		
+		if pick_randomly_from_existing:
 			edge = edges.get_random()
 			start_pos = edge.m.body.get_random_pos_on_me()
 			exclude = [edge]
+			
+			if pick_randomly_from_quadrants:
+				var target_pos = get_random_inner_pos({ 'margin': 200, 'quadrant': (counter - num_free_shots) })
+				dir = (target_pos - start_pos).normalized()
 		else:
-			start_pos = get_random_inner_pos(200)
+			start_pos = get_random_inner_pos({ 'margin': 200 })
 		
 		var params = {
 			'from': start_pos, 
-			'dir': get_random_vector(),
+			'dir': dir,
 			'exclude': exclude, 
 			'origin_edge': edge
 		}

@@ -1,6 +1,6 @@
 extends Node2D
 
-const JUMP_DURATION : float = 0.5
+const JUMP_DISTANCE_PER_SECOND : float = 750.0
 const JUMP_SCALE : float = 1.3
 const FLY_JUMP_DIST : float = 80.0
 
@@ -21,9 +21,8 @@ var jump_data = {
 }
 
 func pay_for_travel(dist):
-	if body.m.silkreader.jumping_is_free(): return 0
 	if body.m.specialties.jumping_is_free(): return 0
-	
+
 	var payment = clamp(-round(dist / DIST_PER_POINT), -INF, -1)
 	return payment
 
@@ -40,16 +39,24 @@ func _on_Input_move_vec(vec, dt):
 	var not_enough_input = (vec.length() <= deadzone)
 	if not_enough_input: return
 
-	var input_vec = body.m.silkreader.modify_input_vec(get_forward_vec(), vec, dt)
+	var input_vec = body.m.specialties.modify_input_vec(get_forward_vec(), vec, dt)
 	body.set_rotation(input_vec.angle())
 
 func _on_Input_button_press():
 	if input_disabled: return
-	if body.m.silkreader.jumping_is_forbidden(): return
+	if body.m.specialties.jumping_is_forbidden(): return
+	
+	var res = body.m.specialties.hijack_jump_press()
+	if res: return
+	
 	prepare_jump()
 
 func _on_Input_button_release():
 	if input_disabled: return
+	
+	var res = body.m.specialties.hijack_jump_release()
+	if res: return
+	
 	if not active: return # if we never started the jump, don't do anything when we release
 	execute_jump()
 
@@ -87,7 +94,10 @@ func execute_jump():
 		shoot_silk_line(params)
 	else:
 		jump_data.target_pos = body.position + get_forward_vec()*FLY_JUMP_DIST
-		
+	
+	var actually_jumped = (jump_data.target_pos != null)
+	if actually_jumped:
+		body.m.tracker.remove_from_all()
 	play_jump_tween()
 
 func determine_jump_details():
@@ -111,7 +121,7 @@ func determine_jump_details():
 		'exclude': exclude_bodies,
 		'origin_edge': edge,
 		'shooter': body,
-		'destroy': body.m.silkreader.jumping_is_aggressive(),
+		'destroy': body.m.specialties.jumping_is_aggressive(),
 		'dont_create_new_edges': jump_data.dont_create_new_edges
 	}
 	
@@ -145,7 +155,10 @@ func play_jump_tween():
 	
 	if not target: return
 	
-	var dur = JUMP_DURATION
+	var distance = (target - body.position).length()
+	var dur = distance / JUMP_DISTANCE_PER_SECOND
+	
+	
 	tween.interpolate_property(body, "position",
 		body.position, target, dur,
 		Tween.TRANS_CUBIC, Tween.EASE_OUT)
@@ -211,6 +224,9 @@ func _on_Tween_tween_all_completed():
 func _on_Jumper_on_instant_jump(params):
 	for key in params:
 		jump_data[key] = params[key]
+	
+	var res = body.m.specialties.hijack_jump_release()
+	if res: return
 	
 	prepare_jump()
 	execute_jump()

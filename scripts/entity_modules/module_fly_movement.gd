@@ -59,8 +59,21 @@ func check_area():
 
 func custom_check_raycast(_entity_rc, web_rc):
 	if not web_rc.is_colliding(): return
+	get_stuck_in_edges(web_rc)
 	paint_edges(web_rc)
 	move_away_from_bounds(web_rc)
+
+func get_stuck_in_edges(web_rc):
+	var hit_body = web_rc.get_collider()
+	if not hit_body.is_in_group("Edges"): return
+	
+	if not hit_body.m.boss.has_one(): return
+	
+	# position it more nicely on the edge
+	# this just moves it forward until the RAYCAST doesn't see the edge anymore
+	# Alternative: ignore raycast when incapacitated, move by "0.5*body.m.body.get_thickness()"
+	body.move_and_collide(vec.normalized())
+	body.m.status.incapacitate()
 
 func paint_edges(web_rc):
 	var hit_body = web_rc.get_collider()
@@ -74,7 +87,7 @@ func move_away_from_bounds(web_rc):
 	if not hit_body.is_in_group("Bounds"): return
 	
 	var normal = web_rc.get_collision_normal()
-	var rand_rot = (randf() - 0.5)*PI
+	var rand_rot = (randf() - 0.35)*PI
 	vec = normal.rotated(rand_rot)
 	restart_timer()
 

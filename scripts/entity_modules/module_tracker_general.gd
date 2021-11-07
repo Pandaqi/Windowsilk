@@ -36,6 +36,10 @@ func update_positions():
 	if not active_module.has_method("update_positions"): return
 	active_module.update_positions()
 
+func remove_from_all():
+	if not active_module.has_method("remove_from_all"): return
+	active_module.remove_from_all()
+
 # TO DO: This is hacky => I should find out what causes entities to not be properly removed from edges (sometimes) and fix THAT
 func no_valid_web_position():
 	var edge = get_current_edge()

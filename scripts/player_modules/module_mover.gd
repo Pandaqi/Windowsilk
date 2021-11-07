@@ -19,7 +19,7 @@ func stop():
 	desired_vec = Vector2.ZERO
 
 func module_update(dt):
-	var final_vec = body.m.silkreader.modify_input_vec(cur_vec, desired_vec, dt)
+	var final_vec = body.m.specialties.modify_input_vec(cur_vec, desired_vec, dt)
 	move_along_web(final_vec, dt)
 	
 	cur_vec = final_vec
@@ -50,7 +50,7 @@ func try_edge_move(vec, dt):
 	body.set_rotation(final_move_vec.angle())
 	
 	var final_move_speed = mover_handler.get_final_speed()
-	final_move_vec = body.m.silkreader.modify_speed(final_move_vec, final_move_speed, input_vec)
+	final_move_vec = body.m.specialties.modify_speed(final_move_vec, final_move_speed, input_vec)
 
 	var new_velocity = final_move_vec * dt
 	body.move_and_collide(new_velocity)
@@ -82,6 +82,11 @@ func try_point_move(vec, _dt):
 	
 	var best_edge = point.find_edge_closest_to_vec(vec)
 	if not best_edge: return false
+	
+	if not best_edge.m.boss.can_enter(body):
+		print("Can't enter; owned by someone else")
+		return false
+	
 	if best_edge.m.type.direction_forbidden(vec): 
 		print("Feedback: One way edge!")
 		return false

@@ -43,12 +43,12 @@ func _on_Tracker_arrived_on_point(p):
 	active_module._on_Tracker_arrived_on_point(p)
 
 func _physics_process(dt):
-	._physics_process(dt)
-	
 	check_raycast()
 	
 	if active_module.has_method("custom_check_raycast"):
 		active_module.custom_check_raycast(entity_rc, web_rc)
+	
+	._physics_process(dt)
 
 func check_raycast():
 	entity_rc.cast_to = Vector2.RIGHT * ENTITY_RAYCAST_DIST

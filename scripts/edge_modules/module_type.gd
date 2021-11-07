@@ -13,6 +13,9 @@ onready var body = get_parent()
 func create_debug_terrain_type():
 	var all_types = GlobalDict.silk_types.keys()
 	set_to(all_types[randi() % all_types.size()])
+	
+	# DEBUGGING:
+	set_to("noisemaker")
 
 func set_to(tp):
 	if too_short_for_terrain():

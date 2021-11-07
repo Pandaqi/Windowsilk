@@ -75,11 +75,20 @@ func set_type(tp):
 	body.m.collector.set_data(data)
 	body.m.movement.set_data(data)
 	
-	if data.has('specialty'): body.m.specialties.set_to(data.specialty)
+	if data.has('specialty'):
+		body.m.specialties.set_to(data.specialty)
 
-func same_type(node):
+func same_type_as_node(node):
 	var other_type = node.m.status.type
 	return (type == other_type)
+
+func same_type(tp):
+	return type == tp
+
+# For catching/trapping bugs => we don't want to KILL them, as they'd just disappear from the map then => killing happens when a player stumbles upon them and eats
+func incapacitate():
+	body.m.movement.disable()
+	body.m.mover.disable()
 
 func die():
 	if is_dead: return

@@ -24,6 +24,10 @@ func get_current_edge():
 func get_current_point():
 	return cur_point
 
+func remove_from_all():
+	hard_remove_from_point()
+	hard_remove_from_edge()
+
 func hard_remove_from_point():
 	if not cur_point: return
 	if not is_instance_valid(cur_point): 
@@ -41,6 +45,8 @@ func hard_remove_from_edge():
 	
 	cur_edge.m.entities.remove(body)
 	cur_edge = null
+	
+	body.m.silkreader.reset_silk_type()
 
 func force_set_edge(e):
 	hard_remove_from_point()
