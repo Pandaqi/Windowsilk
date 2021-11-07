@@ -2,8 +2,12 @@ extends Node2D
 
 const SLIPPERY_FACTOR : float = 3.0 # lower = more slippery
 const TIMEBOMB_THRESHOLD : float = 5.0
+
 const DURATION : float = 8.0
 const NOISE_MAKER_FORCE : float = 100.0
+
+const FEATHERLIGHT_SPEED : float = 0.1 # how fast points move inwards
+const MARGIN_BEFORE_FEATHERLIGHT_STARTS : float = 20.0
 
 var type : String = ""
 var time_spent_on_edge : float = 0.0
@@ -12,8 +16,16 @@ onready var timer = $Timer
 onready var icon = $Sprite
 onready var body = get_parent()
 
+var m = {}
+
 func _ready():
+	load_modules()
 	hide_icon()
+
+func load_modules():
+	for child in $Modules.get_children():
+		var key = child.name.to_lower()
+		m[key] = child
 
 func set_to(tp):
 	if (not tp) or (tp == ""): return
@@ -25,6 +37,9 @@ func set_to(tp):
 	show_icon()
 
 func reset():
+	if m.has(type):
+		m[type].deactivate()
+	
 	type = ""
 	hide_icon()
 
@@ -35,12 +50,6 @@ func show_icon():
 	var new_frame = GlobalDict.silk_types[type].frame
 	icon.set_frame(new_frame)
 	icon.set_visible(true)
-	
-	if body.m.status.is_player():
-		print("SETTING ICON")
-		print(type)
-		print(new_frame)
-	
 
 func hide_icon():
 	icon.set_visible(false)
@@ -56,9 +65,25 @@ func _on_Timer_timeout():
 
 func handle_immediate_effect():
 	if type == "": return
+	if m.has(type):
+		m[type].activate()
 
-func handle_continuous_effect():
-	if type == "": return
+func handle_continuous_effect(dt):
+	if type == "" and get_silk_type() == "": return
+	
+	handle_featherlight(dt)
+
+# NOTE: if we immediately start changing points, we might get stuck on the starting point (as it just moved underneath us), so only start slightly later, works wonders
+func handle_featherlight(dt):
+	if not check_type("featherlight"): return
+	
+	var cur_edge = body.m.silkreader.cur_edge
+	if not cur_edge or not is_instance_valid(cur_edge): return
+	
+	var far_enough_on_edge = (cur_edge.m.body.get_dist_to_closest_point(body) > MARGIN_BEFORE_FEATHERLIGHT_STARTS)
+	if not far_enough_on_edge: return
+	
+	cur_edge.m.body.move_extremes_inward(FEATHERLIGHT_SPEED, dt)
 
 func hijack_jump_press():
 	if check_type("noisemaker") or check_type("attractor"): return true
@@ -66,13 +91,13 @@ func hijack_jump_press():
 
 func hijack_jump_release():
 	if check_type("noisemaker") or check_type("attractor"): 
-		execute_noisemaker()
+		execute_blastarea_effect()
 		return true
 	return false
 
 func _physics_process(dt):
 	reposition_icon()
-	handle_continuous_effect()
+	handle_continuous_effect(dt)
 
 func reposition_icon():
 	icon.set_position(Vector2(0,-43).rotated(-body.rotation))
@@ -136,7 +161,7 @@ func update_time_spent_on_edge(dt):
 func _on_Tracker_arrived_on_edge(e):
 	time_spent_on_edge = 0.0
 
-func execute_noisemaker():
+func execute_blastarea_effect():
 	var bodies = $BlastArea.get_overlapping_bodies()
 	var dir = 1
 	if check_type("attractor"): dir = -1

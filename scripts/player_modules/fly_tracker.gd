@@ -9,8 +9,12 @@ func initialize(params):
 	params.avoid_web = true
 	
 	var data = spawner.get_valid_random_position(params)
+	var pos = data.pos
 	
-	body.set_position(data.pos)
+	if params.has('fixed_pos'):
+		pos = params.fixed_pos
+	
+	body.set_position(pos)
 
 func die():
 	pass

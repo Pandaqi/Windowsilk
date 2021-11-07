@@ -8,10 +8,15 @@ onready var body = get_parent()
 onready var timer = $Timer
 
 func set_to(b):
+	if not b: return
+	
 	boss = b
 	
 	body.m.drawer.set_pattern(boss.m.status.team_num)
 	start_timer()
+
+func get_it():
+	return boss
 
 func has_one():
 	return (boss != null)

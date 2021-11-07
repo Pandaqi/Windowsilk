@@ -12,8 +12,20 @@ onready var edges = get_node("/root/Main/Web/Edges")
 func initialize(params = {}):
 	var data = spawner.get_valid_random_position(params)
 	
-	body.set_position(data.pos)
-	force_set_edge(data.edge)
+	var pos = data.pos
+	var edge = data.edge
+	var point = null
+	
+	if params.has('fixed_pos'): pos = params.fixed_pos
+	if params.has('fixed_edge'): edge = params.fixed_edge
+	if params.has('fixed_point'): point = params.fixed_point
+	
+	body.set_position(pos)
+	
+	if edge:
+		force_set_edge(edge)
+	elif point:
+		force_set_point(point)
 
 func module_update(_dt):
 	keep_positioned_on_web()
@@ -64,8 +76,7 @@ func force_set_point(p):
 	cur_point = p
 	cur_point.add_entity(body)
 	
-	# TO DO: position on point precisely
-	# NOTE: although this function is, currently, never even called
+	keep_positioned_on_web()
 	
 	tracker_handler.emit_signal("arrived_on_point", p)
 

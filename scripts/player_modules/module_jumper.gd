@@ -20,6 +20,8 @@ var jump_data = {
 	'dont_create_new_edges': false
 }
 
+signal on_jump_finished()
+
 func pay_for_travel(dist):
 	if body.m.specialties.jumping_is_free(): return 0
 
@@ -29,7 +31,17 @@ func pay_for_travel(dist):
 func get_max_dist():
 	if body.is_in_group("Players"):
 		return DIST_PER_POINT * body.m.points.count()
-	return 3000.0
+	
+	# TO DO: Or ... simply make them use the same system as players? (The more points they have, the further they can jump?) And potentially SCALE that, if needed?
+	var data = body.m.status.data
+	if data.move.has('jump_dist'):
+		return data.move.jump_dist
+	
+	var move_type = body.m.status.get_move_type()
+	if move_type == "fly": 
+		return FLY_JUMP_DIST
+	
+	return 5000.0
 
 func _on_Input_move_vec(vec, dt):
 	if not active: return
@@ -51,13 +63,19 @@ func _on_Input_button_press():
 	
 	prepare_jump()
 
-func _on_Input_button_release():
+func _on_Input_button_release(params = {}):
 	if input_disabled: return
 	
+	# NOTE: important to do this BEFORE the "active" check, as a hijacked jump will not be active
 	var res = body.m.specialties.hijack_jump_release()
 	if res: return
 	
-	if not active: return # if we never started the jump, don't do anything when we release
+	# if we never started the jump, don't do anything when we release
+	if not active: return 
+	
+	for key in params:
+		jump_data[key] = params[key]
+	
 	execute_jump()
 
 func get_forward_vec():
@@ -105,7 +123,7 @@ func determine_jump_details():
 	var move_type = body.m.status.get_move_type()
 	jump_data.move_type = move_type
 	
-	var exclude_bodies = []
+	var exclude_bodies = [body]
 	var edge = body.m.tracker.get_current_edge()
 	if edge: exclude_bodies = [edge]
 	
@@ -118,6 +136,7 @@ func determine_jump_details():
 		'move_type': move_type,
 		'from': body.position,
 		'dir': dir,
+		'max_dist': get_max_dist(),
 		'exclude': exclude_bodies,
 		'origin_edge': edge,
 		'shooter': body,
@@ -158,7 +177,6 @@ func play_jump_tween():
 	var distance = (target - body.position).length()
 	var dur = distance / JUMP_DISTANCE_PER_SECOND
 	
-	
 	tween.interpolate_property(body, "position",
 		body.position, target, dur,
 		Tween.TRANS_CUBIC, Tween.EASE_OUT)
@@ -184,6 +202,8 @@ func finish_jump():
 
 	body.m.mover.enable()
 	body.m.tracker.enable()
+	
+	emit_signal("on_jump_finished")
 
 func handle_new_position_in_web():
 	if jump_data.move_type != "web": return
@@ -235,29 +255,39 @@ func get_random_vec():
 	var rot = 2*PI*randf()
 	return Vector2(cos(rot), sin(rot))
 
-func find_valid_jumping_dir(params):
-	var bad_direction : bool = true
-	var vec
-	var from = body.position
-	var max_dist = 3000.0
-	if params.move_type == "fly": max_dist = FLY_JUMP_DIST
-	
-	var epsilon = 3.0
+func is_dir_valid(params):
 	var space_state = get_world_2d().direct_space_state
 	
+	var epsilon = 3.0
+	var to = params.from + params.dir*params.max_dist
+	var col_layer = 1
+
+	# check where we should land
+	# the edges of the map always have bounds, so we always stop at the edge (if we hit nothing else)
+	var result = space_state.intersect_ray(params.from + params.dir*epsilon, to, params.exclude, col_layer)
+	if not result: return false
+	if result.collider.is_in_group("Bounds"): return false
+	
+	var dist_to_target = (result.collider.position - params.from).length() 
+	var margin = 20
+	
+	# now check for entities that might eat us along this route
+	# (change collision layers + shorten raycast to stop after our target point)
+	col_layer = 2 + 4
+	to = params.from + params.dir*(dist_to_target+margin)
+	result = space_state.intersect_ray(params.from + params.dir*epsilon, to, params.exclude, col_layer)
+	
+	if result and result.collider.m.collector.can_collect(body): return false
+	
+	return true
+
+func find_valid_jumping_dir(params):
+	var bad_direction : bool = true
+
 	while bad_direction:
-		bad_direction = true
-		vec = get_random_vec()
-		
-		var to = from + vec*max_dist
-		var col_layer = 1
-		
-		# check where we should land
-		# the edges of the map always have bounds, so we always stop at the edge (if we hit nothing else)
-		var result = space_state.intersect_ray(from + vec*epsilon, to, params.exclude, col_layer)
-		if not result: continue
-		if result.collider.is_in_group("Bounds"): continue
+		params.dir = get_random_vec()
+		if not is_dir_valid(params): continue
 		
 		bad_direction = false
 	
-	return vec
+	return params.vec

@@ -2,7 +2,7 @@ extends Node2D
 
 # DEBUGGING
 #good values are 3-8, setting to 1 is just for testing
-const BOUNDS = { 'min': 3, 'max': 8 }
+const BOUNDS = { 'min': 1, 'max': 1 }
 const TIME_BOUNDS = { 'min': 3.0, 'max': 7.0 }
 
 var entity_scene = preload("res://scenes/entity.tscn")
@@ -24,8 +24,8 @@ func activate():
 	available_types.erase("player_spider")
 	
 	# DEBUGGING
-	#available_types = ['regular_fruit_fly']
-	return
+	available_types = ['cricket']
+	#return
 	
 	precalculate_probabilities()
 	_on_Timer_timeout()
@@ -80,15 +80,19 @@ func check_placement():
 		place_entity()
 		num_entities += 1
 
-func place_entity():
+func place_entity(params = {}):
 	var entity = entity_scene.instance()
 
 	var rand_type = get_random_type()
 	add_child(entity)
 	
-	print("PLACED TYPE")
-	print(rand_type)
-	
+	if params.has('type'):
+		rand_type = params.type
+
 	entity.m.status.set_type(rand_type)
 	entity.m.status.make_non_player()
+	
+	for key in params:
+		placement_params[key] = params[key]
+	
 	entity.m.status.initialize(placement_params)

@@ -169,7 +169,8 @@ var entities = {
 		"specialty": "trampoline",
 		"move": {
 			"static": true,
-			"jump": true
+			"jump": true,
+			"jump_dist": 600.0,
 		},
 		"legs": {
 			"type": "four",
@@ -179,12 +180,13 @@ var entities = {
 	
 	"locust": {
 		"frame": 6,
-		"points": 1,
+		"points": 0,
 		"trail": "doubler",
 		"specialty": "doubler",
 		"move": {
 			"shuffle": true,
-			"jump": true
+			"jump": true,
+			"jump_dist": 600.0,
 		},
 		"legs": {
 			"type": "six",

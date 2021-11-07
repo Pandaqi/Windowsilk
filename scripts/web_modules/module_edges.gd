@@ -19,6 +19,7 @@ func shoot(params = {}):
 	if not params.has('origin_edge'): params.origin_edge = null
 	if not params.has('destroy'): params.destroy = false
 	if not params.has('dont_create_new_edges'): params.dont_create_new_edges = false
+	if not params.has('max_dist'): params.max_dist = 5000.0
 
 	var data = {
 		'failed': true,
@@ -35,6 +36,8 @@ func shoot(params = {}):
 		'from_edge': params.origin_edge,
 		'to_edge': null,
 		'new_edge': null,
+		
+		'max_dist': params.max_dist,
 		
 		'dont_create_new_edges': params.dont_create_new_edges
 	}
@@ -92,9 +95,7 @@ func shoot_raycast(data):
 	
 	var dir = data.dir.normalized()
 	var epsilon = dir*1.0
-	
-	var max_dist = 3000.0 # some high number, doesn't matter
-	if data.shooter: max_dist = data.shooter.m.jumper.get_max_dist()
+	var max_dist = data.max_dist
 	
 	var from = data.from + epsilon
 	var to = from + dir*max_dist
@@ -252,6 +253,9 @@ func break_edge_in_two(edge, new_point, data):
 	edgeA.m.type.set_to(data_to_transfer.type)
 	edgeB.m.type.set_to(data_to_transfer.type)
 	
+	edgeA.m.boss.set_to(data_to_transfer.boss)
+	edgeB.m.boss.set_to(data_to_transfer.boss)
+	
 	for e in data_to_transfer.entities:
 		var vec_to_split_point = (e.position - new_point.position).normalized()
 		var vecA = edgeA.m.body.get_vec_starting_from(new_point).normalized()
@@ -299,7 +303,7 @@ func get_closest_entity(pos : Vector2, exclude = []):
 	var query_params = Physics2DShapeQueryParameters.new()
 	query_params.set_shape(shp)
 	query_params.transform.origin = pos
-	query_params.collision_layer = 2
+	query_params.collision_layer = 2 + 4
 	
 	var result = space_state.intersect_shape(query_params)
 	if not result: return null
@@ -315,6 +319,7 @@ func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = f
 	edge.m.body.end.remove_edge(edge, destroy_orphan_points)
 	
 	var type = edge.m.type.get_it()
+	var boss = edge.m.boss.get_it()
 	var entities = edge.m.entities.get_them()
 	if not keep_entities_alive:
 		for entity in entities:
@@ -324,7 +329,8 @@ func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = f
 	
 	return {
 		'entities': entities,
-		'type': type
+		'type': type,
+		'boss': boss
 	}
 
 func create_between(a, b):
