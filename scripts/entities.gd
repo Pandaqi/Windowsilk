@@ -22,7 +22,7 @@ var placement_params = {
 func activate():
 	available_types = GlobalDict.entities.keys()
 	available_types.erase("player_spider")
-
+	
 	precalculate_probabilities()
 	_on_Timer_timeout()
 

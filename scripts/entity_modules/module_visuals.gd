@@ -4,16 +4,30 @@ const SCALE_BOUNDS = { 'min': 0.65, 'max': 1.5 }
 const SCALE_PER_POINT = 0.05
 
 onready var sprite = $Sprite
+onready var eyes = $Sprite/Eyes
+onready var legs = $Legs
+onready var antenna = $Antenna
 onready var body = get_parent()
 
-func set_sprite(frm):
-	sprite.set_frame(frm)
+var player_num : int = -1
 
-func set_move_type(tp):
-	if tp == "web":
-		$Legs.set_visible(true)
-	else:
-		$Legs.set_visible(false)
+func set_data(data):
+	sprite.set_frame(data.frame)
+	
+	if data.has('legs'):
+		legs.initialize(data.legs)
+	
+	if data.has('antenna'):
+		antenna.initialize(data.antenna)
+
+func set_player_num(pnum):
+	player_num = pnum
+	
+	var new_color = GlobalDict.player_data[player_num].color
+	sprite.modulate = new_color
+	eyes.set_visible(true)
+	
+	legs.set_color(new_color)
 
 func update_scale(num):
 	var new_scale = SCALE_BOUNDS.min + num*SCALE_PER_POINT

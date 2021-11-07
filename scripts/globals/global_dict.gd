@@ -7,9 +7,24 @@ var cfg = {
 	'debug_terrain_types': true,
 	'line_thickness': 20,
 	
+	'point_difference_eating_players': 5,
+	'point_difference_holds_for_all': true,
+	'bigger_entities_move_slower': true,
+	'paint_trails_when_jumping': true,
+	
 	# TO DO: If I ever set this to true, I should change collision layer/mask on entities to hit each other
-	'entities_obstruct_each_other': false
+	'entities_obstruct_each_other': false,
+	
 }
+
+var player_data = [
+	{ 'team': 0, 'color': Color(1.0, 15/255.0, 9/255.0) },
+	{ 'team': 1, 'color': Color(31/255.0, 1.0, 30/255.0) },
+	{ 'team': 2, 'color': Color(41/255.0, 39/255.0, 1.0) },
+	{ 'team': 3, 'color': Color(1.0, 9/255.0, 230/255.0) },
+	{ 'team': 4, 'color': Color(1.0, 213/255.0, 9/255.0) },
+	{ 'team': 5, 'color': Color(9/255.0, 1.0, 235/255.0) },
+]
 
 var silk_categories = {
 	"neutral": { "color": Color(1,1,1) },
@@ -51,17 +66,24 @@ var silk_types = {
 # frame => the frame in the spritesheet
 # points => points rewarded for eating
 # move => type (def=web), static, speed, flee, chase, forbid_backtrack
-# trail => what trail (silk type) it leaves; null means no trail
+# trail => what trail (silk type) it leaves --- leave out for no trail
+# collect => cannibal (eats same species), always (can always be eaten)
+# legs => type (eight, six, four, or custom), color --- leave out for no legs
+# antenna => offset (where it starts), dir (how it points), dist (how much it's allowed to stray from default point)
+
 var entities = {
 	"player_spider": {
 		"frame": 0,
 		"points": 5,
-		"trail": null,
 		"move": {
-			"speed": 170.0
+			"speed": 120.0
 		},
 		"collect": {
 			"cannibal": true
+		},
+		"legs": {
+			"type": "eight",
+			"color": "player_color"
 		}
 	},
 	
@@ -83,6 +105,10 @@ var entities = {
 		"trail": null,
 		"move": {
 			"speed": 40.0,
+		},
+		"legs": {
+			"type": "eight",
+			"color": Color(0,40/255.0,43/255.0) # TO DO
 		}
 	},
 	
@@ -92,8 +118,16 @@ var entities = {
 		"trail": "speedy",
 		"move": {
 			"flee": true,
-			"speed": 140.0,
-			"stamina": 300.0
+			"speed": 120.0,
+			"stamina": 1500.0
+		},
+		"legs": {
+			"type": "six",
+			"color": Color(61/255.0,34/255.0,0)
+		},
+		"antenna": {
+			"type": "flea",
+			"color": Color(1.0, 0.0, 0.0)
 		}
 	},
 	
@@ -102,8 +136,18 @@ var entities = {
 		"points": 3,
 		"trail": "slippery",
 		"move": {
-			"speed": 200.0,
+			"speed": 120.0,
 			"always": true
+		},
+		"legs": {
+			"type": "six",
+			"color": Color(41/255.0, 41/255.0, 41/255.0),
+			"scale_offset": 0.25,
+			"scale_thickness": 0.5
+		},
+		"antenna": {
+			"type": "silverfish",
+			"color": Color(0.9, 0.9, 0.9)
 		}
 	},
 	
@@ -117,6 +161,10 @@ var entities = {
 		"move": {
 			"static": true,
 			"jump": true
+		},
+		"legs": {
+			"type": "four",
+			"color": Color(129/255.0, 21/255.0, 26/255.0)
 		}
 	},
 	
@@ -128,6 +176,11 @@ var entities = {
 		"move": {
 			"shuffle": true,
 			"jump": true
+		},
+		"legs": {
+			"type": "six",
+			"color": Color(0, 42/255.0, 7/255.0),
+			"scale_offset": 0.25
 		}
 	},
 	
@@ -135,7 +188,11 @@ var entities = {
 		"frame": 7,
 		"points": 5, 
 		"trail": "noisemaker",
-		"specialty": "noisemaker"
+		"specialty": "noisemaker",
+		"legs": {
+			"type": "four",
+			"color": Color(30/255.0, 34/255.0, 148/255.0)
+		}
 	},
 	
 	"cockroach": {
@@ -149,6 +206,10 @@ var entities = {
 		},
 		"collect": {
 			"cannibal": true
+		},
+		"legs": {
+			"type": "six",
+			"color": Color(136/255.0, 9/255.0, 41/255.0) # TO DO
 		}
 	},
 	
@@ -159,6 +220,10 @@ var entities = {
 		"specialty": "shield",
 		"move": {
 			"speed": 50.0
+		},
+		"legs": {
+			"type": "six",
+			"color": Color(71/255.0, 24/255.0, 99/255.0) # TO DO
 		}
 	},
 	
@@ -170,6 +235,10 @@ var entities = {
 		"move": {
 			"flee": true,
 			"speed": 80.0
+		},
+		"legs": {
+			"type": "six",
+			"color": Color(109/255.0, 48/255.0, 11/255.0) # TO DO
 		}
 	},
 	
@@ -183,7 +252,7 @@ var entities = {
 			"flee": true,
 			"shuffle": true,
 			"speed": 80.0
-		}
+		},
 	}
 	
 }

@@ -11,3 +11,6 @@ func initialize(params):
 	var data = spawner.get_valid_random_position(params)
 	
 	body.set_position(data.pos)
+
+func die():
+	pass

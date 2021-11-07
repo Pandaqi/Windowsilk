@@ -2,6 +2,11 @@ extends "res://scripts/module_selector.gd"
 
 const BASE_SPEED : float = 50.0
 var speed : float = BASE_SPEED
+
+const SPEED_SCALE_BOUNDS = { 'min': 0.5, 'max': 1.5 }
+const SPEED_LOSS_PER_POINT = 0.05
+
+var speed_scale : float = 1.0
 var is_static : float = false
 
 signal on_move_completed(vec)
@@ -11,7 +16,9 @@ func _on_Movement_move_vec(vec, dt):
 	if is_static: return
 	
 	var not_moving = (vec.length() <= 0.03)
-	if not_moving: return
+	if not_moving: 
+		active_module.stop()
+		return
 	
 	var cur_pos = body.position
 	active_module._on_Input_move_vec(vec, dt)
@@ -34,10 +41,15 @@ func try_edge_move(vec, dt):
 func set_speed(sp):
 	speed = sp
 
+func get_final_speed():
+	return speed * speed_scale
+
+func update_speed_scale(num):
+	if not GlobalDict.cfg.bigger_entities_move_slower: return
+	
+	speed_scale = max(SPEED_SCALE_BOUNDS.max - SPEED_LOSS_PER_POINT*num, SPEED_SCALE_BOUNDS.min)
+
 func make_static():
 	is_static = true
-
-
-
 
 

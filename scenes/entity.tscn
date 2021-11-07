@@ -1,7 +1,7 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://scenes/modules/web_tracker.tscn" type="PackedScene" id=1]
-[ext_resource path="res://scenes/modules/legs.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scripts/player_modules/module_legs.gd" type="Script" id=2]
 [ext_resource path="res://scenes/modules/mover.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scripts/module_manager.gd" type="Script" id=4]
 [ext_resource path="res://assets/entities.png" type="Texture" id=5]
@@ -24,6 +24,9 @@
 [ext_resource path="res://scripts/movement_modules/module_shuffler.gd" type="Script" id=22]
 [ext_resource path="res://scripts/movement_modules/module_stamina.gd" type="Script" id=23]
 [ext_resource path="res://scripts/movement_modules/module_jumper.gd" type="Script" id=24]
+[ext_resource path="res://assets/player_eyes.png" type="Texture" id=25]
+[ext_resource path="res://scripts/entity_modules/module_antenna.gd" type="Script" id=26]
+[ext_resource path="res://scripts/entity_modules/module_specialties.gd" type="Script" id=27]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 13.8734
@@ -52,8 +55,19 @@ scale = Vector2( 0.33, 0.33 )
 texture = ExtResource( 5 )
 hframes = 8
 vframes = 8
+frame = 4
 
-[node name="Legs" parent="Visuals" instance=ExtResource( 2 )]
+[node name="Eyes" type="Sprite" parent="Visuals/Sprite"]
+visible = false
+scale = Vector2( 1, 1 )
+texture = ExtResource( 25 )
+
+[node name="Legs" type="Node2D" parent="Visuals"]
+show_behind_parent = true
+script = ExtResource( 2 )
+
+[node name="Antenna" type="Node2D" parent="Visuals"]
+script = ExtResource( 26 )
 
 [node name="Mover" type="Node2D" parent="."]
 script = ExtResource( 13 )
@@ -150,28 +164,36 @@ one_shot = true
 [node name="SilkReader" type="Node2D" parent="."]
 script = ExtResource( 21 )
 
-[connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Tracker" method="_on_Status_on_death"]
+[node name="Specialties" type="Node2D" parent="."]
+script = ExtResource( 27 )
+
+[node name="Timer" type="Timer" parent="Specialties"]
+one_shot = true
+
 [connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Tracker" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
 [connection signal="on_move_completed" from="Mover" to="Movement/Stamina" method="_on_Mover_on_move_completed"]
 [connection signal="button_press" from="Input" to="Jumper" method="_on_Input_button_press"]
 [connection signal="button_release" from="Input" to="Jumper" method="_on_Input_button_release"]
-[connection signal="move_vec" from="Input" to="Mover" method="_on_Movement_move_vec"]
 [connection signal="move_vec" from="Input" to="Jumper" method="_on_Input_move_vec"]
+[connection signal="move_vec" from="Input" to="Mover" method="_on_Movement_move_vec"]
 [connection signal="move_vec" from="Movement" to="Mover" method="_on_Movement_move_vec"]
 [connection signal="timeout" from="Movement/Shuffler/Timer" to="Movement/Shuffler" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Movement/Stamina/Timer" to="Movement/Stamina" method="_on_Timer_timeout"]
 [connection signal="on_instant_jump" from="Movement/Jumper" to="Jumper" method="_on_Jumper_on_instant_jump"]
 [connection signal="timeout" from="Movement/Jumper/Timer" to="Movement/Jumper" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Movement/FlyMovement/Timer" to="Movement/FlyMovement" method="_on_Timer_timeout"]
-[connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
-[connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
 [connection signal="point_change" from="Points" to="Movement/FlyMovement" method="_on_Points_point_change"]
 [connection signal="timeout" from="Trail/Timer" to="Trail" method="_on_Timer_timeout"]
+[connection signal="timeout" from="Specialties/Timer" to="Specialties" method="_on_Timer_timeout"]

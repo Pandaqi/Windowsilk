@@ -9,10 +9,29 @@ onready var point_delay_timer = $PointDelayTimer
 var can_move_from_point : bool = false
 var last_velocity : Vector2 = Vector2.RIGHT
 
+var cur_vec : Vector2 = Vector2.ZERO
+var desired_vec : Vector2 = Vector2.ZERO
+
 func _on_Input_move_vec(vec, dt):
-	move_along_web(vec, dt)
+	desired_vec = vec
+
+func stop():
+	desired_vec = Vector2.ZERO
+
+func module_update(dt):
+	var final_vec = body.m.silkreader.modify_input_vec(cur_vec, desired_vec, dt)
+	move_along_web(final_vec, dt)
+	
+	cur_vec = final_vec
 
 func move_along_web(vec, dt):
+	if vec.length() <= 0.03: 
+		return
+	
+	if body.m.tracker.no_valid_web_position():
+		body.m.status.die()
+		return 
+	
 	var res = try_edge_move(vec, dt)
 	if res: return
 	
@@ -23,19 +42,15 @@ func try_edge_move(vec, dt):
 	if not edge: return false
 
 	var cur_edge_vec : Vector2 = edge.m.body.get_vec().normalized()
-	var input_vec = body.m.silkreader.modify_input_vec(vec)
-	body.set_rotation(input_vec.angle())
+	var input_vec = vec
 
 	var dot_prod : float = input_vec.normalized().dot(cur_edge_vec)
 	var final_move_vec : Vector2 = cur_edge_vec
 	if dot_prod < 0: final_move_vec *= -1
+	body.set_rotation(final_move_vec.angle())
 	
-	var no_changes_in_rotation = ((input_vec - vec).length() <= 0.03)
-	if no_changes_in_rotation:
-		body.set_rotation(final_move_vec.angle())
-	
-	var final_move_speed = mover_handler.speed
-	final_move_vec = body.m.silkreader.modify_speed(final_move_vec, final_move_speed)
+	var final_move_speed = mover_handler.get_final_speed()
+	final_move_vec = body.m.silkreader.modify_speed(final_move_vec, final_move_speed, input_vec)
 
 	var new_velocity = final_move_vec * dt
 	body.move_and_collide(new_velocity)

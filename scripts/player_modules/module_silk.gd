@@ -20,6 +20,7 @@ func change(val):
 	
 	label.set_text(str(num))
 	body.m.visuals.update_scale(num)
+	body.m.mover.update_speed_scale(num)
 	
 	main_node.on_player_progression(body)
 

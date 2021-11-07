@@ -22,6 +22,7 @@ var jump_data = {
 
 func pay_for_travel(dist):
 	if body.m.silkreader.jumping_is_free(): return 0
+	if body.m.specialties.jumping_is_free(): return 0
 	
 	var payment = clamp(-round(dist / DIST_PER_POINT), -INF, -1)
 	return payment
@@ -31,15 +32,15 @@ func get_max_dist():
 		return DIST_PER_POINT * body.m.points.count()
 	return 3000.0
 
-func _on_Input_move_vec(vec, _dt):
+func _on_Input_move_vec(vec, dt):
 	if not active: return
 	
 	# NOTE: It's common for players to release their aim too soon, causing it to change _just_ before jumping => this prevents that, mostly. 
 	var deadzone = 0.5
 	var not_enough_input = (vec.length() <= deadzone)
 	if not_enough_input: return
-	
-	var input_vec = body.m.silkreader.modify_input_vec(vec)
+
+	var input_vec = body.m.silkreader.modify_input_vec(get_forward_vec(), vec, dt)
 	body.set_rotation(input_vec.angle())
 
 func _on_Input_button_press():
@@ -164,6 +165,9 @@ func finish_jump():
 	input_disabled = false
 	
 	handle_new_position_in_web()
+	
+	var we_died_during_jump = body.m.status.is_dead
+	if we_died_during_jump: return
 
 	body.m.mover.enable()
 	body.m.tracker.enable()

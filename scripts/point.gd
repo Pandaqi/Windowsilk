@@ -26,6 +26,9 @@ func add_entity(e):
 func remove_entity(e):
 	entities.erase(e)
 
+func get_entities():
+	return entities
+
 func add_edge(e):
 	edges.append(e)
 

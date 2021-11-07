@@ -2,25 +2,39 @@ extends Node2D
 
 # NOTE: These values are GLOBAL positions
 # The starts are actual NODES, so they automatically rotate and move correctly with the object
-onready var legs = {
-	'L1': { 'start': $L1, 'end': Vector2.ZERO },
-	'L2': { 'start': $L2, 'end': Vector2.ZERO },
-	'L3': { 'start': $L3, 'end': Vector2.ZERO },
-	'L4': { 'start': $L4, 'end': Vector2.ZERO },
-	
-	'R1': { 'start': $R1, 'end': Vector2.ZERO },
-	'R2': { 'start': $R2, 'end': Vector2.ZERO },
-	'R3': { 'start': $R3, 'end': Vector2.ZERO },
-	'R4': { 'start': $R4, 'end': Vector2.ZERO },
-}
+onready var legs = {}
 
 var leg_color = Color(121/255.0, 55/255.0, 0)
+var leg_thickness = 4
 
 onready var visuals = get_parent()
 onready var body = visuals.get_parent()
 
-func _ready():
+func initialize(data):
+	load_leg_data(data)
+
+func load_leg_data(data):
+	var scene = load("res://scenes/legs/" + data.type + '.tscn').instance()
+	for child in scene.get_children():
+		var key = child.name
+		
+		scene.remove_child(child)
+		self.add_child(child)
+		legs[key] = { 'start': child, 'end': Vector2.ZERO }
+		
+		if data.has('scale_offset'):
+			child.position.y *= data.scale_offset
+	
+	if data.has('color') and (data.color is Color):
+		leg_color = data.color
+	
+	if data.has('scale_thickness'):
+		leg_thickness *= data.scale_thickness
+	
 	reset_legs()
+
+func set_color(col):
+	leg_color = col
 
 func reset_legs():
 	for key in legs:
@@ -38,6 +52,7 @@ func reset_leg(leg):
 
 func _physics_process(_dt):
 	check_legs()
+	set_rotation(-visuals.rotation)
 	update()
 
 func check_legs():
@@ -64,11 +79,10 @@ func check_legs():
 			reset_leg(leg)
 	
 	# wiggle based on which legs are furthest behind
-	var sprite = body.m.visuals.get_node("Sprite")
 	var target_rotation = 0.02*PI
 	if dist_left > dist_right:
 		target_rotation *= -1
-	sprite.set_rotation(lerp(sprite.get_rotation(), target_rotation, 0.1))
+	visuals.set_rotation(lerp(visuals.get_rotation(), target_rotation, 0.1))
 
 func _draw():
 	for key in legs:
@@ -85,4 +99,4 @@ func draw_leg(leg):
 	
 	var middle = 0.5*(start + end) + orthogonal * 5
 	
-	draw_polyline([start, middle, end], leg_color, 4)
+	draw_polyline([start, middle, end], leg_color, leg_thickness)

@@ -5,6 +5,7 @@ var last_known_edge = null
 
 var painting_allowed : bool = true
 onready var timer = $Timer
+onready var body = get_parent()
 
 func set_to(tp):
 	if not tp: return
@@ -16,6 +17,10 @@ func die():
 
 func _on_Tracker_arrived_on_edge(e):
 	last_known_edge = e
+	
+	var switched_to_new_edge = last_known_edge and (e != last_known_edge)
+	if switched_to_new_edge and GlobalDict.cfg.paint_trails_when_jumping:
+		paint()
 
 func _on_Tracker_arrived_on_point(_p):
 	paint()
@@ -25,11 +30,15 @@ func paint_specific_edge(e):
 	paint()
 
 func paint():
-	if type == "": return
-	if not painting_allowed: return
 	if not last_known_edge or not is_instance_valid(last_known_edge): return
+	if not painting_allowed: return
 	
-	last_known_edge.m.type.set_to(type)
+	var temp_type = type
+	if body.m.specialties.erase_silk_types():
+		temp_type = "regular"
+	if temp_type == "": return
+	
+	last_known_edge.m.type.set_to(temp_type)
 	
 	disable_painting()
 

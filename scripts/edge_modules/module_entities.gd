@@ -19,6 +19,10 @@ func add(e):
 		body.m.body.self_destruct()
 
 func remove(e):
+	print("WANT TO REMOVE ENTITY FROM EDGE")
+	if not e in entities:
+		print("... BUT THEY DON'T EXIST")
+	
 	entities.erase(e)
 	
 	if body.m.type.equals("fragile") and entities_passed > 0:
@@ -58,3 +62,7 @@ func has_food_for(other_body):
 		if other_body.m.collector.can_collect(entity):
 			return true
 	return false
+
+func inform_all_of_type_change():
+	for entity in entities:
+		entity.m.silkreader.update_silk_type(body)

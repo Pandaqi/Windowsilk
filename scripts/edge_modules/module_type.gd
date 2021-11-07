@@ -16,8 +16,7 @@ func create_debug_terrain_type():
 
 func set_to(tp):
 	if too_short_for_terrain():
-		type = "regular"
-		return
+		tp = "regular"
 	
 	type = tp
 	data = GlobalDict.silk_types[type]
@@ -27,6 +26,7 @@ func set_to(tp):
 	body.m.drawer.set_color(category_data.color)
 	
 	check_one_way()
+	body.m.entities.inform_all_of_type_change()
 
 func check_one_way():
 	one_way_dir = 1 if randf() <= 0.5 else -1

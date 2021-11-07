@@ -21,5 +21,7 @@ func _physics_process(dt):
 	active_module.module_update(dt)
 
 func _on_Status_on_death():
+	disable()
+	
 	if not active_module.has_method("die"): return
 	active_module.die()

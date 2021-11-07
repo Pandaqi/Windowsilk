@@ -23,22 +23,17 @@ func update_collision_shape(new_scale):
 	col_shape.radius = 128*0.33*0.5*new_scale
 
 func collect(node):
-	handle_specialty(node)
+	var specialty = node.m.specialties.get_it()
+	body.m.specialties.set_to(specialty)
+	
 	handle_points(node)
 	node.m.status.die()
 
 func handle_points(node):
 	var original_points = node.m.points.count()
 	var actual_points = body.m.silkreader.modify_points(original_points)
+	actual_points = body.m.specialties.modify_points(actual_points)
 	body.m.points.change(actual_points)
-
-func handle_specialty(node):
-	var specialty = node.m.status.get_specialty()
-	if not specialty: return
-	
-	match specialty:
-		'trampoline':
-			pass
 
 func _on_Area2D_body_entered(other_body):
 	if not can_collect(other_body): return
@@ -71,7 +66,13 @@ func can_collect(other_body):
 	if other_body.m.status.is_dead: return false
 	
 	# now apply the point check => more points than the other? can eat
-	var we_have_more_points = (body.m.points.count() > other_body.m.points.count())
+	var margin = 0
+	var apply_point_difference_check = body.is_in_group("Players") or GlobalDict.cfg.point_difference_counts_for_all
+	
+	if other_body.is_in_group("Players") and apply_point_difference_check: 
+		margin = GlobalDict.cfg.point_difference_eating_players
+	
+	var we_have_more_points = (body.m.points.count() > (other_body.m.points.count() + margin))
 	var ignore_point_check = other_body.m.collector.can_always_be_eaten()
 	if not we_have_more_points and not ignore_point_check: return false
 	return true

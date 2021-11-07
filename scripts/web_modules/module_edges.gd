@@ -314,6 +314,7 @@ func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = f
 	edge.m.body.start.remove_edge(edge, destroy_orphan_points)
 	edge.m.body.end.remove_edge(edge, destroy_orphan_points)
 	
+	var type = edge.m.type.get_it()
 	var entities = edge.m.entities.get_them()
 	if not keep_entities_alive:
 		for entity in entities:
@@ -323,7 +324,7 @@ func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = f
 	
 	return {
 		'entities': entities,
-		'type': edge.m.type.get_it()
+		'type': type
 	}
 
 func create_between(a, b):

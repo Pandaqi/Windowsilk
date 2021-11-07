@@ -1,12 +1,16 @@
 extends Node2D
 
-const SLIPPERY_FACTOR : float = 0.1 # lower = more slippery
+const SLIPPERY_FACTOR : float = 3.0 # lower = more slippery
 const FEATHERLIGHT_SPEED : float = 0.1 # how fast points move inwards
 
 var cur_edge = null
 var cur_silk_type = null
+var active : bool = true
 
 onready var body = get_parent()
+
+func disable():
+	active = false
 
 func reset_silk_type():
 	cur_silk_type = null
@@ -17,6 +21,7 @@ func update_silk_type(edge):
 	cur_silk_type = edge.m.type.get_it()
 
 func _physics_process(dt):
+	if not active: return
 	handle_continuous_effects(dt)
 
 func handle_continuous_effects(dt):
@@ -36,16 +41,17 @@ func handle_rotation(cur_rot, target_rot, input_vec):
 	var slerped_vec = cur_vec.slerp(target_vec, SLIPPERY_FACTOR)
 	return slerped_vec.angle()
 
-func modify_input_vec(vec):
-	if cur_silk_type != "slippery": return vec
+func modify_input_vec(start_vec, target_vec, dt):
+	if cur_silk_type != "slippery": return target_vec
 	
-	var cur_rot = body.rotation
-	var cur_vec = Vector2(cos(cur_rot), sin(cur_rot))
-	return cur_vec.slerp(vec, SLIPPERY_FACTOR)
+	return start_vec.slerp(target_vec, SLIPPERY_FACTOR * dt)
 
-func modify_speed(new_vec, new_speed):
+func modify_speed(new_vec, new_speed, input_vec):
 	if cur_silk_type == "speedy": new_speed *= 1.5
 	elif cur_silk_type == "slowy": new_speed *= 0.5
+	
+	if cur_silk_type == "slippery":
+		new_speed *= (new_vec.dot(input_vec)+1)*0.5
 
 	return new_vec * new_speed
 
@@ -70,4 +76,5 @@ func _on_Tracker_arrived_on_point(p):
 	reset_silk_type()
 
 func _on_Status_on_death():
+	disable()
 	reset_silk_type()

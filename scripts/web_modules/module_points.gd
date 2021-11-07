@@ -20,10 +20,14 @@ func create_at(pos):
 	return p
 
 func remove_existing(point):
+	var entities_copy = point.get_entities() + []
+	for e in entities_copy:
+		e.m.status.die()
+	
 	var edges_copy = point.get_edges() + []
 	for e in edges_copy:
 		edges.remove_existing(e)
-	
+
 	point.queue_free()
 
 func get_random():

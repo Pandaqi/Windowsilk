@@ -26,12 +26,18 @@ func get_current_point():
 
 func hard_remove_from_point():
 	if not cur_point: return
+	if not is_instance_valid(cur_point): 
+		cur_point = null
+		return
 	
 	cur_point.remove_entity(body)
 	cur_point = null
 
 func hard_remove_from_edge():
 	if not cur_edge: return
+	if not is_instance_valid(cur_edge): 
+		cur_edge = null
+		return
 	
 	cur_edge.m.entities.remove(body)
 	cur_edge = null
