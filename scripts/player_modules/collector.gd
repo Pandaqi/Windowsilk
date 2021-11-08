@@ -62,13 +62,14 @@ func can_collect(other_body):
 	if other_body.m.status.is_dead: return false
 
 	# special properties that mess with eating
-	if is_friendly(): return false
-	
-	if body.m.specialties.can_eat_anything(): return true
-	if other_body.m.collector.can_always_be_eaten(): return true
-	
-	if not other_body.m.specialties.can_be_eaten(): return false
-	if body.m.status.same_type_as_node(other_body) and not is_cannibal(): return false
+	if not data.has('ignore_specialties'):
+		if is_friendly(): return false
+		
+		if body.m.specialties.can_eat_anything(): return true
+		if other_body.m.collector.can_always_be_eaten(): return true
+		
+		if not other_body.m.specialties.can_be_eaten(): return false
+		if body.m.status.same_type_as_node(other_body) and not is_cannibal(): return false
 	
 	# now apply the point check => more points than the other? can eat
 	var margin = 0

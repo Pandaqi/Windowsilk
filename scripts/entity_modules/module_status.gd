@@ -56,11 +56,12 @@ func get_move_type():
 	if not data.move.has('type'): return 'web'
 	return data.move.type
 
+
 func set_type(tp):
 	type = tp
 	
 	data = GlobalDict.entities[type]
-	
+
 	if not data.has('move'): data.move = {}
 	if not data.has('collect'): data.collect = {}
 	

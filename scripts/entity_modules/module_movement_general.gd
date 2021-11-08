@@ -10,6 +10,7 @@ onready var web_rc = $WebRaycast
 onready var shuffler = $Shuffler
 onready var stamina = $Stamina
 onready var jumper = $Jumper
+onready var fake_jumper = $FakeJumper
 
 signal move_vec(vec, dt)
 
@@ -31,6 +32,9 @@ func set_data(new_data):
 	
 	if data.has('jump'):
 		jumper.activate()
+	
+	if data.has('fake_jump'):
+		fake_jumper.activate()
 
 func _on_Tracker_arrived_on_edge(e):
 	if not active: return

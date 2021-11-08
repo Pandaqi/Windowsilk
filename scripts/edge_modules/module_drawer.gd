@@ -7,6 +7,7 @@ var pattern : int = -1
 var icon_width : float = 32.0
 var original_icon_width : float = 128.0
 var icon_scale = Vector2(1,1) * (icon_width / original_icon_width)
+var full_pattern_length : float = 0.0
 var icon_offset : float
 var icon_margin : float = 3.0
 var icon_extrude : float = 0.5 # how much the icon sticks out from the sides of the edge
@@ -19,6 +20,10 @@ onready var sprite = $Sprite
 var team_icon_scene = preload("res://scenes/team_icon.tscn")
 
 func update_visuals():
+	var new_length = body.m.body.get_length()
+	if abs(full_pattern_length - new_length) >= icon_width:
+		recalculate_pattern()
+	
 	update()
 
 func set_color(col):
@@ -44,6 +49,11 @@ func set_icon(frame):
 func rotate_icon(val):
 	sprite.set_rotation(val)
 
+func recalculate_pattern():
+	var old_num = pattern
+	remove_pattern()
+	set_pattern(old_num)
+
 func remove_pattern():
 	pattern = -1
 	
@@ -58,7 +68,7 @@ func set_pattern(num):
 	pattern = num
 	
 	var num_icons = floor(body.m.body.get_length() / (icon_width + icon_margin))
-	var full_pattern_length = (num_icons-1)*(icon_width + icon_margin)
+	full_pattern_length = (num_icons-1)*(icon_width + icon_margin)
 	icon_offset = -0.5*full_pattern_length
 	
 	var angles = [PI, 0]

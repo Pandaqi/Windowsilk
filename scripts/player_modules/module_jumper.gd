@@ -68,7 +68,9 @@ func _on_Input_button_release(params = {}):
 	
 	# NOTE: important to do this BEFORE the "active" check, as a hijacked jump will not be active
 	var res = body.m.specialties.hijack_jump_release()
-	if res: return
+	if res: 
+		finish_fake_jump()
+		return
 	
 	# if we never started the jump, don't do anything when we release
 	if not active: return 
@@ -83,7 +85,9 @@ func get_forward_vec():
 	return Vector2(cos(rot), sin(rot))
 
 func prepare_jump():
-	if body.m.points.is_empty(): return
+	if body.m.points.is_empty() and body.is_in_group("Players"): 
+		print("Feedback: need points to jump!")
+		return
 	
 	body.m.mover.disable()
 	body.m.tracker.disable()
@@ -191,6 +195,9 @@ func play_jump_tween():
 		0.5*dur)
 	
 	tween.start()
+
+func finish_fake_jump():
+	emit_signal("on_jump_finished")
 
 func finish_jump():
 	input_disabled = false

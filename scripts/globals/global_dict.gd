@@ -64,7 +64,8 @@ var silk_types = {
 	"gobbler": { "frame": 17, "category": "collecting" },
 	
 	"noisemaker": { "frame": 18, "category": "misc" },
-	"attractor": { "frame": 19, "category": "misc" }
+	"attractor": { "frame": 19, "category": "misc" },
+	"lowlife": { "frame": 20, "category": "misc" }
 	
 }
 
@@ -161,7 +162,6 @@ var entities = {
 	},
 	
 	# NOTE: combining "jump" and "static" automatically makes a creature that ONLY jumps, never walks/moves normally
-	
 	"grasshopper": {
 		"frame": 5,
 		"points": 4,
@@ -175,6 +175,11 @@ var entities = {
 		"legs": {
 			"type": "four",
 			"color": Color(129/255.0, 21/255.0, 26/255.0)
+		},
+		"antenna": {
+			"type": "grasshopper",
+			"color": Color(193/255.0, 37/255.0, 44/255.0),
+			"scale_thickness": 2.0
 		}
 	},
 	
@@ -192,21 +197,29 @@ var entities = {
 			"type": "six",
 			"color": Color(0, 42/255.0, 7/255.0),
 			"scale_offset": 0.25
+		},
+		"antenna": {
+			"type": "locust",
+			"color": Color(96/255.0, 114/255.0, 61/255.0),
 		}
 	},
 	
-	# NOTE: the "noisemaker" specialty overrides the jump button to make noise instead, that's why jumping must be enabled ... but the cricket doesn't actually jump
+	# NOTE: the "noisemaker" specialty overrides the jump button to make noise instead, that's why we enable the "fake_jump" module here
 	"cricket": {
 		"frame": 7,
 		"points": 5, 
 		"trail": "noisemaker",
 		"specialty": "noisemaker",
 		"move": {
-			"jump": true 
+			"fake_jump": true 
 		},
 		"legs": {
 			"type": "four",
 			"color": Color(30/255.0, 34/255.0, 148/255.0)
+		},
+		"antenna": {
+			"type": "cricket",
+			"color": Color(41/255.0, 46/255.0, 214/255.0)
 		}
 	},
 	
@@ -217,14 +230,18 @@ var entities = {
 			"flee": true,
 			"chase": true,
 			"chase_type": "cockroach",
-			"speed": 150.0,
+			"speed": 110.0,
 		},
 		"collect": {
 			"cannibal": true
 		},
 		"legs": {
 			"type": "six",
-			"color": Color(136/255.0, 9/255.0, 41/255.0) # TO DO
+			"color": Color(136/255.0, 9/255.0, 41/255.0)
+		},
+		"antenna": {
+			"type": "cockroach",
+			"color": Color(193/255.0, 37/255.0, 77/255.0),
 		}
 	},
 	
@@ -234,11 +251,14 @@ var entities = {
 		"trail": "shield",
 		"specialty": "shield",
 		"move": {
-			"speed": 50.0
+			"speed": 50.0,
 		},
 		"legs": {
 			"type": "six",
-			"color": Color(71/255.0, 24/255.0, 99/255.0) # TO DO
+			"color": Color(71/255.0, 24/255.0, 99/255.0)
+		},
+		"collect": {
+			"ignore_specialty": true
 		}
 	},
 	
@@ -253,7 +273,11 @@ var entities = {
 		},
 		"legs": {
 			"type": "six",
-			"color": Color(109/255.0, 48/255.0, 11/255.0) # TO DO
+			"color": Color(109/255.0, 48/255.0, 11/255.0)
+		},
+		"antenna": {
+			"type": "fruit_fly",
+			"color": Color(0, 45/255.0, 1/255.0)
 		}
 	},
 	
@@ -268,6 +292,10 @@ var entities = {
 			"shuffle": true,
 			"speed": 80.0
 		},
+		"antenna": {
+			"type": "fruit_fly",
+			"color": Color(1.0, 242/255.0, 199/255.0)
+		}
 	}
 	
 }

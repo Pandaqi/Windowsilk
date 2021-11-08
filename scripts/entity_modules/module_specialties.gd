@@ -4,7 +4,7 @@ const SLIPPERY_FACTOR : float = 3.0 # lower = more slippery
 const TIMEBOMB_THRESHOLD : float = 5.0
 
 const DURATION : float = 8.0
-const NOISE_MAKER_FORCE : float = 100.0
+const NOISE_MAKER_FORCE : float = 300.0
 
 const FEATHERLIGHT_SPEED : float = 0.1 # how fast points move inwards
 const MARGIN_BEFORE_FEATHERLIGHT_STARTS : float = 20.0
@@ -146,6 +146,7 @@ func can_be_eaten():
 	return true
 
 func can_eat_anything():
+	if not body.is_in_group("Players"): return false
 	return check_type("gobbler")
 
 func update_time_spent_on_edge(dt):

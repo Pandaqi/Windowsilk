@@ -23,7 +23,7 @@ func add(e):
 func remove(e):
 	entities.erase(e)
 	
-	if body.m.type.equals("fragile") and entities_passed > 0:
+	if (body.m.type.equals("fragile") and entities_passed > 0) or body.m.specialties.check_type("fragile"):
 		body.m.body.self_destruct()
 
 # TO DO: It's way better for performance to just save the time we "enter" a new edge, and then compare it to the current time, but there's currently no 100% correct system for checking an edge switch.

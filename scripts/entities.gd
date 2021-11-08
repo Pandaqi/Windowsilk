@@ -4,6 +4,7 @@ extends Node2D
 #good values are 3-8, setting to 1 is just for testing
 const BOUNDS = { 'min': 1, 'max': 1 }
 const TIME_BOUNDS = { 'min': 3.0, 'max': 7.0 }
+const MAX_NUM_PER_TYPE : int = 15
 
 var entity_scene = preload("res://scenes/entity.tscn")
 
@@ -24,7 +25,7 @@ func activate():
 	available_types.erase("player_spider")
 	
 	# DEBUGGING
-	available_types = ['cricket']
+	available_types = ['locust']
 	#return
 	
 	precalculate_probabilities()
@@ -80,16 +81,26 @@ func check_placement():
 		place_entity()
 		num_entities += 1
 
-func place_entity(params = {}):
-	var entity = entity_scene.instance()
+func too_many_of_type(tp):
+	var num = get_tree().get_nodes_in_group(tp).size()
+	return (num >= MAX_NUM_PER_TYPE)
 
+func get_group_name(type):
+	return type.capitalize() + "s"
+
+func place_entity(params = {}):
 	var rand_type = get_random_type()
-	add_child(entity)
+	if params.has('type'): rand_type = params.type
 	
-	if params.has('type'):
-		rand_type = params.type
+	var group = get_group_name(rand_type)
+	if too_many_of_type(group):
+		return
+	
+	var entity = entity_scene.instance()
+	add_child(entity)
 
 	entity.m.status.set_type(rand_type)
+	entity.add_to_group(group)
 	entity.m.status.make_non_player()
 	
 	for key in params:

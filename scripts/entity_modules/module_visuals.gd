@@ -24,7 +24,7 @@ func set_player_num(pnum):
 	player_num = pnum
 	
 	var new_color = GlobalDict.player_data[player_num].color
-	sprite.modulate = new_color
+	sprite.self_modulate = new_color
 	eyes.set_visible(true)
 	
 	legs.set_color(new_color)

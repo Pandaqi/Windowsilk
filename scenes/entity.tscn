@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://scenes/modules/web_tracker.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/player_modules/module_legs.gd" type="Script" id=2]
@@ -30,6 +30,7 @@
 [ext_resource path="res://scenes/silk_type_icon.tscn" type="PackedScene" id=28]
 [ext_resource path="res://scripts/entity_modules/module_knockback.gd" type="Script" id=29]
 [ext_resource path="res://scripts/specialty_modules/module_doubler.gd" type="Script" id=30]
+[ext_resource path="res://scripts/movement_modules/module_fake_jumper.gd" type="Script" id=31]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 13.8734
@@ -61,7 +62,7 @@ scale = Vector2( 0.33, 0.33 )
 texture = ExtResource( 5 )
 hframes = 8
 vframes = 8
-frame = 4
+frame = 6
 
 [node name="Eyes" type="Sprite" parent="Visuals/Sprite"]
 visible = false
@@ -113,6 +114,12 @@ one_shot = true
 script = ExtResource( 24 )
 
 [node name="Timer" type="Timer" parent="Movement/Jumper"]
+one_shot = true
+
+[node name="FakeJumper" type="Node2D" parent="Movement"]
+script = ExtResource( 31 )
+
+[node name="Timer" type="Timer" parent="Movement/FakeJumper"]
 one_shot = true
 
 [node name="FlyMovement" type="Node2D" parent="Movement"]
@@ -199,9 +206,9 @@ script = ExtResource( 29 )
 
 [connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Tracker" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
 [connection signal="on_move_completed" from="Mover" to="Movement/Stamina" method="_on_Mover_on_move_completed"]
 [connection signal="button_press" from="Input" to="Jumper" method="_on_Input_button_press"]
 [connection signal="button_release" from="Input" to="Jumper" method="_on_Input_button_release"]
@@ -212,15 +219,17 @@ script = ExtResource( 29 )
 [connection signal="timeout" from="Movement/Shuffler/Timer" to="Movement/Shuffler" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Movement/Stamina/Timer" to="Movement/Stamina" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Movement/Jumper/Timer" to="Movement/Jumper" method="_on_Timer_timeout"]
+[connection signal="on_instant_jump" from="Movement/FakeJumper" to="Jumper" method="_on_Jumper_on_instant_jump"]
+[connection signal="timeout" from="Movement/FakeJumper/Timer" to="Movement/FakeJumper" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Movement/FlyMovement/Timer" to="Movement/FlyMovement" method="_on_Timer_timeout"]
 [connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Specialties" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
-[connection signal="arrived_on_point" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
 [connection signal="point_change" from="Points" to="Movement/FlyMovement" method="_on_Points_point_change"]
 [connection signal="timeout" from="Trail/Timer" to="Trail" method="_on_Timer_timeout"]

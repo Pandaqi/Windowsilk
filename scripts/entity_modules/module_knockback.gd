@@ -1,7 +1,7 @@
 extends Node2D
 
 const MIN_SPEED : float = 20.0
-const DAMPING : float = 0.985
+const DAMPING : float = 0.995
 
 var vec : Vector2 = Vector2.ZERO
 

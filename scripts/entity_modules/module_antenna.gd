@@ -33,6 +33,10 @@ func load_antenna_data(data):
 			'vec': get_random_vec(),
 			'end': Vector2.ZERO 
 		}
+		
+		# optional middle node to create more unique/curved antennas
+		if child.has_node("Mid"):
+			antennas[key].mid = child.get_node("Mid")
 
 	if data.has('max_dist'):
 		max_dist = data.max_dist
@@ -96,12 +100,13 @@ func _draw():
 		#var ideal_pos = to_local(antenna.ideal_pos)
 		
 		var control = start + Vector2.RIGHT*5
+		if antenna.has('mid'):
+			control = start + antenna.mid.position
 		
 		var point_list = build_point_list(start, control, end)
 		
 		draw_polyline(point_list, color, thickness)
 
-# NOTE: THe "ideal position" is used as the control point for the bezier curve
 func build_point_list(start, control, end):
 	var num_points = 7
 	var list = []
