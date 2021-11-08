@@ -23,7 +23,9 @@ func add(e):
 func remove(e):
 	entities.erase(e)
 	
-	if (body.m.type.equals("fragile") and entities_passed > 0) or body.m.specialties.check_type("fragile"):
+	var edge_is_fragile = (body.m.type.equals("fragile") and entities_passed > 0)
+	var entity_makes_fragile = (e.is_in_group("Players") and e.m.specialties.check_type("fragile"))
+	if edge_is_fragile or entity_makes_fragile:
 		body.m.body.self_destruct()
 
 # TO DO: It's way better for performance to just save the time we "enter" a new edge, and then compare it to the current time, but there's currently no 100% correct system for checking an edge switch.
@@ -73,3 +75,10 @@ func has_food_for(other_body):
 func inform_all_of_type_change():
 	for entity in entities:
 		entity.m.silkreader.update_silk_type(body)
+
+func has_strong_one():
+	for entity in entities:
+		if entity.m.specialties.check_type("strong"):
+			return true
+	
+	return false

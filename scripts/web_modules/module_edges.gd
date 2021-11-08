@@ -1,6 +1,6 @@
 extends Node2D
 
-const POINT_SNAP_RADIUS : float = 25.0
+var POINT_SNAP_RADIUS : float = 25.0
 const ENTITY_OBSTRUCT_RADIUS : float = 30.0
 const MIN_JUMP_DIST : float = 40.0
 
@@ -10,6 +10,9 @@ onready var points = get_node("../Points")
 onready var web = get_parent()
 
 var debug : bool = false
+
+func _ready():
+	POINT_SNAP_RADIUS = (GlobalDict.cfg.line_thickness + 5.0)
 
 func shoot(params = {}):
 	
@@ -315,6 +318,12 @@ func get_closest_entity(pos : Vector2, exclude = []):
 	return null
 
 func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = false):
+	
+	# if the plan was to destroy entities, but (at least) one of them is strong
+	# any destroying is disallowed and we return here
+	if not keep_entities_alive and edge.m.entities.has_strong_one():
+		return
+	
 	edge.m.body.start.remove_edge(edge, destroy_orphan_points)
 	edge.m.body.end.remove_edge(edge, destroy_orphan_points)
 	

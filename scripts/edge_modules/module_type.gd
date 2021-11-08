@@ -52,3 +52,6 @@ func equals(tp):
 
 func get_it():
 	return type
+
+func is_special():
+	return type != "regular"

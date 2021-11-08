@@ -63,6 +63,8 @@ func jump():
 	body.m.jumper._on_Input_button_release(params)
 
 func _on_Jumper_on_jump_finished():
+	if not active: return
+	
 	is_jumping = false
 	restart_timer()
 	pick_new_vec()

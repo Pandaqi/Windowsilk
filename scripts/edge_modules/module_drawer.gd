@@ -39,7 +39,7 @@ func set_icon(frame):
 	
 	var line_thickness = body.m.body.get_thickness()
 	var full_scale : float = 128.0
-	var new_scale = 2 * Vector2(1,1) * (line_thickness / full_scale)
+	var new_scale =  Vector2(1,1) * (line_thickness / full_scale)
 	
 	sprite.set_scale(new_scale)
 	sprite.set_frame(frame)
@@ -50,6 +50,8 @@ func rotate_icon(val):
 	sprite.set_rotation(val)
 
 func recalculate_pattern():
+	if pattern < 0: return
+	
 	var old_num = pattern
 	remove_pattern()
 	set_pattern(old_num)
@@ -92,6 +94,9 @@ func draw_rectangle():
 	var rect = Rect2(-col_rect, 2*col_rect)
 
 	draw_rect(rect, color, true)
+	
+	if GlobalDict.cfg.draw_outlines_on_web:
+		draw_rect(rect, color.darkened(0.5), false, GlobalDict.cfg.outline_width, true)
 
 func draw_pattern():
 	var line_thickness = body.m.body.get_thickness()

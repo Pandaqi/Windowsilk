@@ -5,7 +5,9 @@ var cfg = {
 	'allow_eating_same_species': false,
 	
 	'debug_terrain_types': true,
-	'line_thickness': 20,
+	'line_thickness': 30,
+	'draw_outlines_on_web': true,
+	'outline_width': 3,
 	
 	'point_difference_eating_players': 5,
 	'point_difference_holds_for_all': true,
@@ -213,6 +215,9 @@ var entities = {
 		"move": {
 			"fake_jump": true 
 		},
+		"collect": {
+			"friendly": true
+		},
 		"legs": {
 			"type": "four",
 			"color": Color(30/255.0, 34/255.0, 148/255.0)
@@ -295,6 +300,117 @@ var entities = {
 		"antenna": {
 			"type": "fruit_fly",
 			"color": Color(1.0, 242/255.0, 199/255.0)
+		}
+	},
+	
+	"aphid": {
+		"frame": 12,
+		"points": 2,
+		"trail": "fragile",
+		"specialty": "fragile",
+		"move": {
+			"flee": true,
+			"speed": 70.0
+		},
+		"collect": {
+			"friendly": true
+		},
+		"legs": {
+			"type": "six",
+			"color": Color(169/255.0, 195/255.0, 33/255.0)
+		},
+		"antenna": {
+			"type": "aphid",
+			"color": Color(169/255.0, 195/255.0, 33/255.0)
+		}
+	},
+	
+	"mealybug": {
+		"frame": 13,
+		"points": 2,
+		"trail": "sticky",
+		"specialty": "sticky",
+		"collect": {
+			"friendly": true
+		},
+		"move": {
+			"speed": 50.0
+		},
+		"antenna": {
+			"type": "mealybug",
+			"color": Color(1.0, 249/255.0, 233/255.0)
+		}
+	},
+	
+	"ant": {
+		"frame": 14,
+		"points": 5,
+		"trail": "strong",
+		"move": {
+			"speed": 90.0
+		},
+		"legs": {
+			"type": "six",
+			"color": Color(122/255.0, 51/255.0, 19/255.0)
+		},
+		"antenna": {
+			"type": "ant",
+			"color": Color(122/255.0, 51/255.0, 19/255.0)
+		}
+	},
+	
+	# NOTE: Giving something low stamina, but high speed
+	# Makes it a "sprinter" that moves in short bursts
+	"mealworm": {
+		"frame": 15,
+		"points": 7,
+		"trail": "timebomb",
+		"move": {
+			"stamina": 500,
+			"speed": 120.0,
+			"worm": true
+		},
+		"antenna": {
+			"type": "mealworm",
+			"color": Color(1.0, 166/255.0, 41/255.0)
+		}
+	},
+	
+	"small_caterpillar": {
+		"frame": 16,
+		"points": 3,
+		"trail": "gobbler",
+		"specialty": "gobbler",
+		"move": {
+			"worm": true
+		},
+		"collect": {
+			"cannibal": true
+		},
+		"antenna": {
+			"type": "caterpillar",
+			"color": Color(134/255.0, 165/255.0, 2/255.0)
+		}
+	},
+	
+	"earwig": {
+		"frame": 17,
+		"points": 2,
+		"trail": "aggressor",
+		"specialty": "aggressor",
+		"move": {
+			"chase": true,
+		},
+		"collect": {
+			"cannibal": true
+		},
+		"legs": {
+			"type": "six",
+			"color": Color(53/255.0, 33/255.0, 43/255.0)
+		},
+		"antenna": {
+			"type": "earwig",
+			"color": Color(53/255.0, 33/255.0, 43/255.0)
 		}
 	}
 	

@@ -19,12 +19,8 @@ func _on_Movement_move_vec(vec, dt):
 	if not_moving: 
 		active_module.stop()
 		return
-	
-	var cur_pos = body.position
+
 	active_module._on_Input_move_vec(vec, dt)
-	
-	var new_pos = body.position
-	emit_signal("on_move_completed", (new_pos - cur_pos))
 
 func _on_Tracker_arrived_on_edge(e):
 	if not active_module.has_method("_on_Tracker_arrived_on_edge"): return

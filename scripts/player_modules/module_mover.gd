@@ -19,10 +19,14 @@ func stop():
 	desired_vec = Vector2.ZERO
 
 func module_update(dt):
+	var cur_pos = body.position
 	var final_vec = body.m.specialties.modify_input_vec(cur_vec, desired_vec, dt)
 	move_along_web(final_vec, dt)
 	
 	cur_vec = final_vec
+	
+	var new_pos = body.position
+	mover_handler.emit_signal("on_move_completed", (new_pos - cur_pos))
 
 func move_along_web(vec, dt):
 	if vec.length() <= 0.03: 
@@ -53,7 +57,10 @@ func try_edge_move(vec, dt):
 	final_move_vec = body.m.specialties.modify_speed(final_move_vec, final_move_speed, input_vec)
 
 	var new_velocity = final_move_vec * dt
-	body.move_and_collide(new_velocity)
+	var prevent_movement = body.m.visuals.worm.receive_move_vector(new_velocity)
+
+	if not prevent_movement:
+		body.move_and_collide(new_velocity)
 	
 	last_velocity = new_velocity
 	

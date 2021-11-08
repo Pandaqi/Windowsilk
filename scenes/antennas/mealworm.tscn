@@ -1,0 +1,15 @@
+[gd_scene format=2]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="L" type="Node2D" parent="."]
+position = Vector2( 39.2366, -3.56926 )
+
+[node name="Offset" type="Node2D" parent="L"]
+position = Vector2( 4.46006, -2.75009 )
+
+[node name="R" type="Node2D" parent="."]
+position = Vector2( 39.5505, 3.4868 )
+
+[node name="Offset" type="Node2D" parent="R"]
+position = Vector2( 5.13763, 3.22754 )

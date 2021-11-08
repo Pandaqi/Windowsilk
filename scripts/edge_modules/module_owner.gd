@@ -28,6 +28,11 @@ func reset():
 func can_enter(entity):
 	if not boss: return true
 	if entity.is_in_group("NonPlayers") and GlobalDict.cfg.ai_can_enter_owned_silk: return true
+	
+	# handles the Lowlife specialty => both silk type and powerup
+	if body.m.type.equals("lowlife") and entity.m.specialties.has_one(): return false
+	if entity.m.specialties.check_type("lowlife") and body.m.type.is_special(): return false
+	
 	return boss.m.status.team_num == entity.m.status.team_num
 
 # TO DO: Might put this on a slower timer, as we really don't need this precision/speed of updates

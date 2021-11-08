@@ -46,6 +46,9 @@ func reset():
 func get_it():
 	return type
 
+func has_one():
+	return (type != null) and (type != "")
+
 func show_icon():
 	var new_frame = GlobalDict.silk_types[type].frame
 	icon.set_frame(new_frame)
@@ -122,6 +125,7 @@ func get_silk_type():
 
 func modify_input_vec(start_vec, target_vec, dt):
 	if start_vec.length() <= 0.03: return target_vec
+	if target_vec.length() <= 0.03: return start_vec
 	if not check_type("slippery"): return target_vec
 	
 	return start_vec.slerp(target_vec, SLIPPERY_FACTOR * dt)

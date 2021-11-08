@@ -7,6 +7,7 @@ onready var sprite = $Sprite
 onready var eyes = $Sprite/Eyes
 onready var legs = $Legs
 onready var antenna = $Antenna
+onready var worm = $Worm
 onready var body = get_parent()
 
 var player_num : int = -1
@@ -19,6 +20,9 @@ func set_data(data):
 	
 	if data.has('antenna'):
 		antenna.initialize(data.antenna)
+	
+	if data.move.has('worm'):
+		worm.initialize()
 
 func set_player_num(pnum):
 	player_num = pnum

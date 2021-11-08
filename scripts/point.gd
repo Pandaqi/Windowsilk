@@ -82,3 +82,6 @@ func get_edges_with_food(body):
 
 func _draw():
 	draw_circle(Vector2.ZERO, col_shape.radius, COLOR)
+	
+	if GlobalDict.cfg.draw_outlines_on_web:
+		draw_arc(Vector2.ZERO, col_shape.radius, 0, 2*PI, 16, COLOR.darkened(0.5), GlobalDict.cfg.outline_width, true)

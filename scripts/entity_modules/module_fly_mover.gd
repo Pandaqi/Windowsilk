@@ -18,6 +18,7 @@ func stop():
 func module_update(dt):
 	if vec.length() <= 0.03: return
 	
+	var cur_pos = body.position
 	var rot = body.rotation
 	var forward_vec = Vector2(cos(rot), sin(rot))
 	
@@ -31,3 +32,6 @@ func module_update(dt):
 	
 	body.move_and_slide(final_vec*final_move_speed)
 	body.set_rotation(final_vec.angle())
+	
+	var new_pos = body.position
+	mover_handler.emit_signal("on_move_completed", (new_pos - cur_pos))

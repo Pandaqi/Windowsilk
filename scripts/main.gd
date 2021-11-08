@@ -4,6 +4,8 @@ onready var web = $Web
 onready var entities = $Entities
 onready var players = $Players
 
+var game_over_state : bool = false
+
 func _ready():
 	randomize()
 	
@@ -17,6 +19,8 @@ func web_loading_done():
 	entities.activate()
 
 func on_player_death(p):
+	if game_over_state: return
+	
 	print("PLAYER DIED")
 	
 	var teams_left = players.get_teams_left()
@@ -25,12 +29,16 @@ func on_player_death(p):
 	game_over(teams_left[0])
 
 func on_player_progression(p):
+	if game_over_state: return
+	
 	var team_num = p.m.status.team_num
 	if players.team_total_below_target(team_num): return
 	
 	game_over(team_num)
 
 func game_over(winning_team):
+	game_over_state = true
+	
 	print("GAME OVER")
 	print("WINNING TEAM: " + str(winning_team))
 	pass

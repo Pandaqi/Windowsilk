@@ -1,0 +1,21 @@
+[gd_scene format=2]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="L" type="Node2D" parent="."]
+position = Vector2( 39.8753, -7.22797 )
+
+[node name="Offset" type="Node2D" parent="L"]
+position = Vector2( -34.0917, -22.6454 )
+
+[node name="Mid" type="Node2D" parent="L"]
+position = Vector2( 6.4571, -13.8591 )
+
+[node name="R" type="Node2D" parent="."]
+position = Vector2( 39.9509, 1.16407 )
+
+[node name="Offset" type="Node2D" parent="R"]
+position = Vector2( -32.3761, 25.5378 )
+
+[node name="Mid" type="Node2D" parent="R"]
+position = Vector2( 6.77208, 14.1741 )
