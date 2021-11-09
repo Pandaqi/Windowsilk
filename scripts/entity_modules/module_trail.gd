@@ -11,7 +11,7 @@ func set_to(tp):
 	if not tp: return
 	type = tp
 
-func die():
+func reset():
 	type = ""
 	last_known_edge = null
 
@@ -48,3 +48,6 @@ func disable_painting():
 
 func _on_Timer_timeout():
 	painting_allowed = true
+
+func _on_Status_on_death():
+	reset()

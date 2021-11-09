@@ -15,6 +15,3 @@ func initialize(params):
 		pos = params.fixed_pos
 	
 	body.set_position(pos)
-
-func die():
-	pass

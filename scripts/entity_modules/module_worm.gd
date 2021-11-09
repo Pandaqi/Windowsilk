@@ -12,6 +12,7 @@ onready var butt = $Back
 onready var head = $Front
 
 var full_length : float
+var debug : bool = false
 
 func initialize():
 	active = true
@@ -67,7 +68,7 @@ func _on_Mover_on_move_completed(vec):
 	position_sprite_between_points()
 
 func _draw():
-	return
+	if not debug: return
 	draw_circle(butt.position, 10, Color(0,1,0))
 	draw_circle(Vector2.ZERO, 10, Color(1,0,0))
 	

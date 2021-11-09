@@ -12,6 +12,8 @@ func create_at(pos):
 	p.set_position(pos)
 	add_child(p)
 	
+	p.m.status.check()
+	
 	if debug:
 		print("Point Created")
 		print(pos)
@@ -20,11 +22,13 @@ func create_at(pos):
 	return p
 
 func remove_existing(point):
-	var entities_copy = point.get_entities() + []
+	if point.m.status.is_home_base(): return
+	
+	var entities_copy = point.m.entities.get_them() + []
 	for e in entities_copy:
 		e.m.status.die()
 	
-	var edges_copy = point.get_edges() + []
+	var edges_copy = point.m.edges.get_them() + []
 	for e in edges_copy:
 		edges.remove_existing(e)
 

@@ -14,7 +14,7 @@ signal on_move_completed(vec)
 func _on_Movement_move_vec(vec, dt):
 	if not active: return
 	if is_static: return
-	
+
 	var not_moving = (vec.length() <= 0.03)
 	if not_moving: 
 		active_module.stop()
@@ -47,5 +47,3 @@ func update_speed_scale(num):
 
 func make_static():
 	is_static = true
-
-

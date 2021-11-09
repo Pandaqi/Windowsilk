@@ -3,6 +3,10 @@ extends Node
 var cfg = {
 	'player_starting_points': 5,
 	'allow_eating_same_species': false,
+	'objective_points_per_player': 20,
+	'objective_uses_home_base': true,
+	
+	'respawn_on_death': true,
 	
 	'debug_terrain_types': true,
 	'line_thickness': 30,
@@ -14,7 +18,7 @@ var cfg = {
 	'bigger_entities_move_slower': true,
 	'paint_trails_when_jumping': true,
 	
-	"ai_can_move_over_owned_silk": true,
+	"ai_can_enter_owned_silk": true,
 	
 	# TO DO: If I ever set this to true, I should change collision layer/mask on entities to hit each other
 	'entities_obstruct_each_other': false,

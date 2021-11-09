@@ -9,6 +9,9 @@ onready var body = get_parent()
 func disable():
 	active = false
 
+func enable():
+	active = true
+
 func reset_silk_type():
 	cur_silk_type = null
 	cur_edge = null
@@ -26,3 +29,6 @@ func _on_Tracker_arrived_on_point(p):
 func _on_Status_on_death():
 	disable()
 	reset_silk_type()
+
+func _on_Respawner_on_revive():
+	enable()

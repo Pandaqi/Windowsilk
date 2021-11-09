@@ -22,17 +22,18 @@ func pick_new_vec(point, _edge):
 	
 	if not point: return
 	
-	var point_has_only_one_route = (point.get_edges().size() == 1)
+	var edges = point.m.edges.get_them()
+	var point_has_only_one_route = (edges.size() == 1)
 	if point_has_only_one_route:
-		var vec_over_route = point.get_edges()[0].m.body.get_vec_starting_from(point)
+		var vec_over_route = edges[0].m.body.get_vec_starting_from(point)
 		vec = vec_over_route.normalized()
 		return
 	
 	var candidates = []
 	if movement_handler.has_fleeing_behavior():
-		candidates = point.get_edges_without_threat(body)
+		candidates = point.m.edges.get_without_threat(body)
 	elif movement_handler.has_chasing_behavior():
-		candidates = point.get_edges_with_food(body)
+		candidates = point.m.edges.get_with_food(body)
 	
 	# discourage backtracking
 	var candidates_copy = candidates + []

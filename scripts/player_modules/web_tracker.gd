@@ -18,7 +18,9 @@ func initialize(params = {}):
 	
 	if params.has('fixed_pos'): pos = params.fixed_pos
 	if params.has('fixed_edge'): edge = params.fixed_edge
-	if params.has('fixed_point'): point = params.fixed_point
+	if params.has('fixed_point') and params.fixed_point: 
+		point = params.fixed_point
+		pos = point.position
 	
 	# somehow, we tried to spawn on non-existing stuff
 	if (not edge or not is_instance_valid(edge)) and (not point or not is_instance_valid(point)):
@@ -30,8 +32,6 @@ func initialize(params = {}):
 		force_set_edge(edge)
 	elif point:
 		force_set_point(point)
-	
-	
 
 func module_update(_dt):
 	keep_positioned_on_web()
@@ -52,7 +52,7 @@ func hard_remove_from_point():
 		cur_point = null
 		return
 	
-	cur_point.remove_entity(body)
+	cur_point.m.entities.remove(body)
 	cur_point = null
 
 func hard_remove_from_edge():
@@ -80,7 +80,7 @@ func force_set_point(p):
 	hard_remove_from_edge()
 	
 	cur_point = p
-	cur_point.add_entity(body)
+	p.m.entities.add(body)
 	
 	keep_positioned_on_web()
 	
@@ -159,7 +159,7 @@ func arrived_on_point(p):
 	hard_remove_from_edge()
 	
 	cur_point = p
-	p.add_entity(body)
+	p.m.entities.add(body)
 	body.set_position(cur_point.position)
 	
 	recalculate_dist_to_extremes()
@@ -167,7 +167,8 @@ func arrived_on_point(p):
 	tracker_handler.emit_signal("arrived_on_point", p)
 
 func die():
-	tracker_handler.disable()
-	
 	hard_remove_from_point()
 	hard_remove_from_edge()
+
+func revive():
+	pass

@@ -16,6 +16,8 @@ var corners = [
 	Vector2(0, 1080)
 ]
 
+var home_bases = []
+
 func activate():
 	inset_corners()
 	position_bounds()
@@ -75,29 +77,22 @@ func generate_random_web():
 	var exclude = []
 	var edge
 	
-	# a value of 1 ensures everything is connected
-	# (higher values create more varied/expansive webs, but lose that certainty)
-	var num_free_shots = 1
-	
 	var start_pos
 	var counter = 0
 	while total_edge_length < target_total_edge_length:
 		
-		var pick_randomly_from_existing = (counter >= num_free_shots)
-		var pick_randomly_from_quadrants = (counter < (num_free_shots + 4))
+		var pick_randomly_from_existing = counter >= 4
+		var pick_randomly_from_quadrants = counter < 4
 		
 		var dir = get_random_vector()
 		
-		if pick_randomly_from_existing:
+		if pick_randomly_from_quadrants:
+			start_pos = get_random_inner_pos({ 'margin': 200, 'quadrant': counter })
+		
+		elif pick_randomly_from_existing:
 			edge = edges.get_random()
 			start_pos = edge.m.body.get_random_pos_on_me()
 			exclude = [edge]
-			
-			if pick_randomly_from_quadrants:
-				var target_pos = get_random_inner_pos({ 'margin': 200, 'quadrant': (counter - num_free_shots) })
-				dir = (target_pos - start_pos).normalized()
-		else:
-			start_pos = get_random_inner_pos({ 'margin': 200 })
 		
 		var params = {
 			'from': start_pos, 
@@ -111,6 +106,11 @@ func generate_random_web():
 		var nothing_happened = not res.created_something
 		if nothing_happened: continue
 		
+		var from_point_created = res.from.point
+		var create_home_base = (counter < GlobalInput.get_player_count())
+		if create_home_base:
+			home_bases.append(from_point_created)
+		
 		total_edge_length += res.new_edge.m.body.get_length()
 		counter += 1
 		
@@ -118,6 +118,12 @@ func generate_random_web():
 			yield(get_tree(), "idle_frame")
 
 	main_node.web_loading_done()
+
+func assign_home_bases():
+	var counter = 0
+	for b in home_bases:
+		b.m.status.convert_to_home_base(counter)
+		counter += 1
 
 func load_default_web():
 	edges.shoot(corners[0], corners[2] - corners[0])

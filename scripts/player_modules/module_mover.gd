@@ -22,7 +22,7 @@ func module_update(dt):
 	var cur_pos = body.position
 	var final_vec = body.m.specialties.modify_input_vec(cur_vec, desired_vec, dt)
 	move_along_web(final_vec, dt)
-	
+
 	cur_vec = final_vec
 	
 	var new_pos = body.position
@@ -61,7 +61,7 @@ func try_edge_move(vec, dt):
 
 	if not prevent_movement:
 		body.move_and_collide(new_velocity)
-	
+
 	last_velocity = new_velocity
 	
 	var res = did_we_walk_off_the_edge(edge)
@@ -87,7 +87,7 @@ func try_point_move(vec, _dt):
 	var point = body.m.tracker.get_current_point()
 	if not point or not is_instance_valid(point): return false
 	
-	var best_edge = point.find_edge_closest_to_vec(vec)
+	var best_edge = point.m.edges.find_closest_to_vec(vec)
 	if not best_edge: return false
 	
 	if not best_edge.m.boss.can_enter(body):

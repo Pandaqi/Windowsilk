@@ -2,6 +2,8 @@ extends Node2D
 
 const POINT_TARGET : int = 10
 
+onready var web = get_node("/root/Main/Web")
+
 var entity_scene = preload("res://scenes/entity.tscn")
 var players = []
 
@@ -20,8 +22,10 @@ func create_player(num):
 	p.m.status.set_type("player_spider") # for now;; different teams will have different types?
 	p.m.status.make_player(num, team_num)
 	
+	var home_base_point = web.home_bases[team_num]
 	var params = {
-		'avoid_players': true
+		'nearby_point': home_base_point,
+		'nearby_radius': 40,
 	}
 	p.m.status.initialize(params)
 

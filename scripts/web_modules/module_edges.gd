@@ -141,7 +141,10 @@ func does_edge_already_exist(data):
 	if not data.from.already_created: return false
 	if not data.to.already_created: return false
 	
-	return data.to.point.get_edge_to(data.from.point)
+	var starting_point = data.from.point
+	var target_point = data.to.point
+	
+	return target_point.m.edges.get_to(starting_point)
 
 func is_edge_too_short(data):
 	if data.dont_create_new_edges: return false
@@ -183,7 +186,7 @@ func is_too_similar_to_existing_edge(data):
 	
 	if data.from.point:
 		var from_p = data.from.point
-		for edge in from_p.get_edges():
+		for edge in from_p.m.edges.get_them():
 			var edge_vec = edge.m.body.get_vec_starting_from(from_p).normalized()
 			var dot = edge_vec.dot(vec)
 			if dot < 0.93: continue
@@ -194,7 +197,7 @@ func is_too_similar_to_existing_edge(data):
 	
 	if data.to.point:
 		var to_p = data.to.point
-		for edge in to_p.get_edges():
+		for edge in to_p.m.edges.get_them():
 			var edge_vec = -edge.m.body.get_vec_starting_from(to_p).normalized()
 			var dot = edge_vec.dot(vec)
 			if dot < 0.93: continue
@@ -324,8 +327,14 @@ func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = f
 	if not keep_entities_alive and edge.m.entities.has_strong_one():
 		return
 	
-	edge.m.body.start.remove_edge(edge, destroy_orphan_points)
-	edge.m.body.end.remove_edge(edge, destroy_orphan_points)
+	var start_node = edge.m.body.start
+	var end_node = edge.m.body.end
+	
+	start_node.m.edges.remove(edge, destroy_orphan_points)
+	
+	var end_isnt_already_destroyed = is_instance_valid(end_node)
+	if end_isnt_already_destroyed:
+		end_node.m.edges.remove(edge, destroy_orphan_points)
 	
 	var type = edge.m.type.get_it()
 	var boss = edge.m.boss.get_it()
@@ -347,8 +356,8 @@ func create_between(a, b):
 	add_child(e)
 	e.m.body.set_extremes(a, b)
 	
-	a.add_edge(e)
-	b.add_edge(e)
+	a.m.edges.add(e)
+	b.m.edges.add(e)
 	
 	if debug:
 		print("Edge Created")

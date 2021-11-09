@@ -6,6 +6,28 @@ const DEFAULT_SPAWN_CHECK_RADIUS : float = 50.0
 onready var players = get_node("../Players")
 
 func get_random_position(params = {}):
+	if params.has('nearby_point'):
+		var center_pos = params.nearby_point.position
+		var rad = params.nearby_radius
+		
+		var edges = get_intersections(center_pos, rad, true)
+		if edges.size() <= 0:
+			return {
+				'pos': center_pos,
+				'edge': null
+			}
+		
+		var rand_edge = edges[randi() % edges.size()]
+		var vec = rand_edge.m.body.get_vec_starting_from(params.nearby_point)
+		
+		var progression_on_edge = 0.5+randf()*0.5
+		var pos = center_pos + progression_on_edge*rad*vec.normalized()
+		
+		return {
+			'pos': pos,
+			'edge': rand_edge
+		}
+	
 	var data = {
 		'pos': Vector2.ZERO,
 		'edge': null
@@ -77,7 +99,7 @@ func get_valid_random_position(params = {}):
 
 	return data
 
-func get_intersections(pos : Vector2, radius : float = 10.0):
+func get_intersections(pos : Vector2, radius : float = 10.0, only_edges : bool = false):
 	var space_state = get_world_2d().direct_space_state
 
 	var shp = CircleShape2D.new()
@@ -88,4 +110,13 @@ func get_intersections(pos : Vector2, radius : float = 10.0):
 	query_params.transform.origin = pos
 	
 	var result = space_state.intersect_shape(query_params)
+	
+	if only_edges:
+		var edges = []
+		for res in result:
+			if res.collider.is_in_group("Edges"):
+				edges.append(res.collider)
+		
+		return edges
+	
 	return result

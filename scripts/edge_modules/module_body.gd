@@ -27,8 +27,8 @@ func move_extremes_inward(speed, dt):
 	if get_length() <= MIN_LENGTH_FOR_POINT_MOVING: return
 	
 	var vel = get_vec() * speed
-	start.move(vel, dt)
-	end.move(-vel, dt)
+	start.m.body.move(vel, dt)
+	end.m.body.move(-vel, dt)
 
 func set_start(s):
 	start = s
@@ -60,8 +60,7 @@ func get_vec_starting_from(node):
 func on_change():
 	if (not start) or (not end): return
 	
-	update_body()
-	body.m.drawer.update_visuals()
+	body.m.status.check()
 
 # NOTE: default rotation is RIGHT, so X is the distance between points, Y is the thickness
 func update_body():

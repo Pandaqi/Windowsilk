@@ -5,6 +5,7 @@ onready var col_shape_node = $Area2D/CollisionShape2D
 var col_shape
 
 var data
+var active : bool = true
 
 func _ready():
 	col_shape = col_shape_node.shape
@@ -36,6 +37,7 @@ func handle_points(node):
 	body.m.points.change(actual_points)
 
 func _on_Area2D_body_entered(other_body):
+	if not active: return
 	if not can_collect(other_body): return
 	
 	collect(other_body)
@@ -60,6 +62,10 @@ func can_collect(other_body):
 	
 	# if the other is no (longer) a valid entity, abort
 	if other_body.m.status.is_dead: return false
+	
+	# conversely, if the other is incapacitated, they cannot defend themselves and eating is always possible
+	# (mostly applies to flying bugs getting stuck in player-owned silk)
+	if other_body.m.status.is_incapacitated: return true
 
 	# special properties that mess with eating
 	if not data.has('ignore_specialties'):
@@ -81,3 +87,15 @@ func can_collect(other_body):
 	var we_have_more_points = (body.m.points.count() > (other_body.m.points.count() + margin))
 	if not we_have_more_points: return false
 	return true
+
+func disable():
+	active = false
+
+func enable():
+	active = true
+
+func _on_Status_on_death():
+	disable()
+
+func _on_Respawner_on_revive():
+	enable()

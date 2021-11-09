@@ -125,7 +125,7 @@ func get_silk_type():
 
 func modify_input_vec(start_vec, target_vec, dt):
 	if start_vec.length() <= 0.03: return target_vec
-	if target_vec.length() <= 0.03: return start_vec
+	#if target_vec.length() <= 0.03: return start_vec
 	if not check_type("slippery"): return target_vec
 	
 	return start_vec.slerp(target_vec, SLIPPERY_FACTOR * dt)

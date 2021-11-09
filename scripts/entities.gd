@@ -25,8 +25,8 @@ func activate():
 	available_types.erase("player_spider")
 	
 	# DEBUGGING
-	# available_types = ['small_caterpillar']
-	#return
+	#available_types = ['small_caterpillar']
+	return
 	
 	precalculate_probabilities()
 	_on_Timer_timeout()

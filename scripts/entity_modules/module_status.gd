@@ -6,11 +6,17 @@ onready var main_node = get_node("/root/Main")
 var player_num : int = -1
 var team_num : int = -1
 var is_dead : bool = false
+var is_incapacitated : bool = false
 
 var type : String = ""
 var data
 
 signal on_death()
+
+# DEBUGGING (insta-death)
+#func _input(ev):
+#	if ev.is_action_released("ui_up") and player_num == 0:
+#		die()
 
 func make_player(pnum, tnum):
 	player_num = pnum
@@ -20,10 +26,11 @@ func make_player(pnum, tnum):
 	body.m.points.set_to(GlobalDict.cfg.player_starting_points)
 	body.m.visuals.set_player_num(pnum)
 	body.add_to_group("Players")
+	
+	body.m.movement.shutdown()
 
 func make_non_player():
 	body.erase_module("input")
-	
 	body.add_to_group("NonPlayers")
 
 func is_player():
@@ -88,18 +95,26 @@ func same_type(tp):
 
 # For catching/trapping bugs => we don't want to KILL them, as they'd just disappear from the map then => killing happens when a player stumbles upon them and eats
 func incapacitate():
+	is_incapacitated = true
+	
 	body.m.movement.disable()
 	body.m.mover.disable()
 
 func die():
 	if is_dead: return
-	
 	is_dead = true
 
 	emit_signal("on_death")
 	
-	if is_player():
-		body.modulate.a = 0.3
+	if not is_player():
+		body.queue_free()
+		return
+	
+	var should_respawn = GlobalDict.cfg.respawn_on_death
+	if not should_respawn:
 		main_node.on_player_death(body)
 	else:
-		body.queue_free()
+		body.m.respawner.start_respawn()
+
+func _on_Respawner_on_revive():
+	is_dead = false

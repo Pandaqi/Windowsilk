@@ -30,6 +30,9 @@ func pay_for_travel(dist):
 
 func get_max_dist():
 	if body.is_in_group("Players"):
+		if body.m.specialties.jumping_is_free():
+			return 5000.0
+		
 		return DIST_PER_POINT * body.m.points.count()
 	
 	# TO DO: Or ... simply make them use the same system as players? (The more points they have, the further they can jump?) And potentially SCALE that, if needed?
@@ -85,9 +88,10 @@ func get_forward_vec():
 	return Vector2(cos(rot), sin(rot))
 
 func prepare_jump():
-	if body.m.points.is_empty() and body.is_in_group("Players"): 
-		print("Feedback: need points to jump!")
-		return
+	if body.is_in_group("Players"): 
+		if body.m.points.is_empty() and not body.m.specialties.jumping_is_free():
+			print("Feedback: need points to jump!")
+			return
 	
 	body.m.mover.disable()
 	body.m.tracker.disable()
@@ -120,6 +124,11 @@ func execute_jump():
 	var actually_jumped = (jump_data.target_pos != null)
 	if actually_jumped:
 		body.m.tracker.remove_from_all()
+		
+		var dist = (jump_data.target_pos - jump_data.start_pos).length()
+		if body.is_in_group("Players"):
+			body.m.points.change(pay_for_travel(dist))
+	
 	play_jump_tween()
 
 func determine_jump_details():
@@ -134,7 +143,7 @@ func determine_jump_details():
 	var point = body.m.tracker.get_current_point()
 	if point: 
 		exclude_bodies.append(point)
-		exclude_bodies += point.get_edges()
+		exclude_bodies += point.m.edges.get_them()
 	
 	var params = {
 		'move_type': move_type,
@@ -219,11 +228,6 @@ func handle_new_position_in_web():
 	var target_pos = jump_data.target_pos
 	var actually_jumped = (target_pos != null)
 	if not actually_jumped: return
-	
-	var dist = (target_pos - start_pos).length()
-	
-	if body.is_in_group("Players"):
-		body.m.points.change(pay_for_travel(dist))
 	
 	var no_valid_edge = (not jump_data.target_edge) or (not is_instance_valid(jump_data.target_edge))
 	var no_valid_point = (not jump_data.target_point) or (not is_instance_valid(jump_data.target_point))

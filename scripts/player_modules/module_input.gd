@@ -40,3 +40,6 @@ func _input(ev):
 
 func _on_Status_on_death():
 	active = false
+
+func _on_Respawner_on_revive():
+	active = true
