@@ -26,7 +26,8 @@ func initialize(params = {}):
 	if (not edge or not is_instance_valid(edge)) and (not point or not is_instance_valid(point)):
 		body.m.status.die()
 	
-	body.set_position(pos)
+	if pos:
+		body.set_position(pos)
 	
 	if edge:
 		force_set_edge(edge)

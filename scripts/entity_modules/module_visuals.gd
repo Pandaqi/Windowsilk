@@ -7,6 +7,7 @@ onready var sprite = $Sprite
 onready var eyes = $Sprite/Eyes
 onready var legs = $Legs
 onready var antenna = $Antenna
+onready var wings = $Wings
 onready var worm = $Worm
 onready var body = get_parent()
 
@@ -23,6 +24,11 @@ func set_data(data):
 	
 	if data.move.has('worm'):
 		worm.initialize()
+	
+	if data.has('wings'):
+		wings.initialize(data.wings)
+	else:
+		wings.disable()
 
 func set_player_num(pnum):
 	player_num = pnum
@@ -39,3 +45,8 @@ func update_scale(num):
 	set_scale(Vector2(1,1)*new_scale)
 	
 	body.m.collector.update_collision_shape(new_scale)
+
+# TO DO: Also use this to handle collapsing of wings and stuff (and tweening?)
+func on_move_type_changed(new_type):
+	legs.on_move_type_changed(new_type)
+	wings.on_move_type_changed(new_type)

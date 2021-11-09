@@ -37,32 +37,12 @@ func is_player():
 	return (player_num >= 0)
 
 func initialize(placement_params):
-	var move_type = get_move_type()
-	set_move_type(move_type)
-	
-	if not is_player(): 
-		body.m.movement.initialize()
-	else:
-		body.m.movement.disable()
-	
-	body.m.tracker.initialize(placement_params)
-
-func set_move_type(tp):
-	if tp == "web":
-		body.m.mover.select_module("WebMover")
-		body.m.movement.select_module("WebMovement")
-		body.m.tracker.select_module("WebTracker")
-	
-	elif tp == "fly":
-		body.m.mover.select_module("FlyMover")
-		body.m.movement.select_module("FlyMovement")
-		body.m.tracker.select_module("FlyTracker")
+	body.m.tracker.set_move_type(get_move_type(), placement_params)
 
 func get_move_type():
 	if not data.has('move'): return 'web'
 	if not data.move.has('type'): return 'web'
 	return data.move.type
-
 
 func set_type(tp):
 	type = tp
@@ -76,6 +56,8 @@ func set_type(tp):
 	if data.move.has('static'): body.m.mover.make_static()
 	
 	if data.has('trail'): body.m.trail.set_to(data.trail)
+	
+	body.m.tracker.set_data(data.move)
 	
 	body.m.visuals.set_data(data)
 	body.m.points.set_to(data.points)
@@ -107,6 +89,7 @@ func die():
 	emit_signal("on_death")
 	
 	if not is_player():
+		body.m.tracker._on_Status_on_death() # we call this manually as it only needs to be called for non-players
 		body.queue_free()
 		return
 	

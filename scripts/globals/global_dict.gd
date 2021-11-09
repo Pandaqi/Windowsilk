@@ -71,7 +71,9 @@ var silk_types = {
 	
 	"noisemaker": { "frame": 18, "category": "misc" },
 	"attractor": { "frame": 19, "category": "misc" },
-	"lowlife": { "frame": 20, "category": "misc" }
+	"lowlife": { "frame": 20, "category": "misc" },
+	
+	"flight": { "frame": 21, "category": "jumping" }
 	
 }
 
@@ -297,13 +299,17 @@ var entities = {
 		"specialty": "regular",
 		"move": {
 			"type": "fly",
+			"land": true,
 			"flee": true,
-			"shuffle": true,
+			#"shuffle": true,
 			"speed": 80.0
 		},
 		"antenna": {
 			"type": "fruit_fly",
 			"color": Color(1.0, 242/255.0, 199/255.0)
+		},
+		"wings": {
+			"type": "fruit_fly"
 		}
 	},
 	

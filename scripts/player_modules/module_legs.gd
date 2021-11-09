@@ -100,3 +100,6 @@ func draw_leg(leg):
 	var middle = 0.5*(start + end) + orthogonal * 5
 	
 	draw_polyline([start, middle, end], leg_color, leg_thickness)
+
+func on_move_type_changed(new_type):
+	set_visible(new_type == "web")

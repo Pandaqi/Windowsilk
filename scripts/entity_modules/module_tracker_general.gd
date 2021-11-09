@@ -3,6 +3,15 @@ extends "res://scripts/module_selector.gd"
 signal arrived_on_point(p)
 signal arrived_on_edge(e)
 
+onready var switcher = $Switcher
+var data = {}
+
+func set_move_type(tp, params):
+	switcher.switch_to(tp, params)
+
+func set_data(new_data):
+	data = new_data
+
 func initialize(params):
 	active_module.initialize(params)
 
@@ -25,11 +34,9 @@ func force_set_edge(e):
 	active_module.force_set_edge(e)
 
 func get_current_edge():
-	if not active_module.has_method("get_current_edge"): return
 	return active_module.get_current_edge()
 
 func get_current_point():
-	if not active_module.has_method("get_current_point"): return
 	return active_module.get_current_point()
 
 func update_positions():
@@ -37,6 +44,7 @@ func update_positions():
 	active_module.update_positions()
 
 func remove_from_all():
+	if not active_module: return
 	if not active_module.has_method("remove_from_all"): return
 	active_module.remove_from_all()
 
@@ -46,3 +54,6 @@ func no_valid_web_position():
 	var point = get_current_point()
 	if (not edge or not is_instance_valid(edge)) and (not point or not is_instance_valid(point)): return true
 	return false
+
+func state_is(tp):
+	return (switcher.cur_state == tp)

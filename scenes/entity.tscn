@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=46 format=2]
 
 [ext_resource path="res://scenes/modules/web_tracker.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/player_modules/module_legs.gd" type="Script" id=2]
@@ -33,6 +33,9 @@
 [ext_resource path="res://scripts/movement_modules/module_fake_jumper.gd" type="Script" id=31]
 [ext_resource path="res://scripts/entity_modules/module_worm.gd" type="Script" id=32]
 [ext_resource path="res://scripts/player_modules/module_respawner.gd" type="Script" id=33]
+[ext_resource path="res://scripts/player_modules/tracker_switcher.gd" type="Script" id=34]
+[ext_resource path="res://assets/wings.png" type="Texture" id=35]
+[ext_resource path="res://scripts/player_modules/module_wings.gd" type="Script" id=36]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 13.8734
@@ -69,8 +72,95 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0.270588 ) ]
 }
 
+[sub_resource type="Animation" id=8]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("L:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ -45.0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("R:rotation_degrees")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "WingCollapse"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("L:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, -45.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("R:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 45.0 ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "WingFlap"
+length = 0.4
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1, 0.5 ) ]
+}
+
 [sub_resource type="CircleShape2D" id=3]
 radius = 112.207
+
+[sub_resource type="CircleShape2D" id=7]
+radius = 12.0516
 
 [sub_resource type="CircleShape2D" id=4]
 radius = 238.073
@@ -106,7 +196,7 @@ scale = Vector2( 0.33, 0.33 )
 texture = ExtResource( 5 )
 hframes = 8
 vframes = 8
-frame = 16
+frame = 11
 
 [node name="Eyes" type="Sprite" parent="Visuals/Sprite"]
 visible = false
@@ -126,6 +216,41 @@ script = ExtResource( 32 )
 
 [node name="Back" type="Node2D" parent="Visuals/Worm"]
 position = Vector2( -82.5449, 0 )
+
+[node name="Wings" type="Node2D" parent="Visuals"]
+show_behind_parent = true
+script = ExtResource( 36 )
+
+[node name="L" type="Node2D" parent="Visuals/Wings"]
+position = Vector2( 9.43875, 0 )
+rotation = -0.785398
+
+[node name="L" type="Sprite" parent="Visuals/Wings/L"]
+position = Vector2( -1.91505, 4.04148 )
+rotation = 1.15192
+scale = Vector2( 0.33, 0.33 )
+texture = ExtResource( 35 )
+offset = Vector2( -66, 0 )
+hframes = 4
+vframes = 4
+
+[node name="R" type="Node2D" parent="Visuals/Wings"]
+position = Vector2( 9.43875, 0 )
+
+[node name="R" type="Sprite" parent="Visuals/Wings/R"]
+position = Vector2( -3.09489, -4.68936 )
+rotation = -1.15192
+scale = Vector2( 0.33, 0.33 )
+texture = ExtResource( 35 )
+offset = Vector2( -66, 0 )
+flip_v = true
+hframes = 4
+vframes = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Visuals/Wings"]
+anims/RESET = SubResource( 8 )
+anims/WingCollapse = SubResource( 10 )
+anims/WingFlap = SubResource( 9 )
 
 [node name="Mover" type="Node2D" parent="."]
 script = ExtResource( 13 )
@@ -197,6 +322,17 @@ script = ExtResource( 17 )
 [node name="FlyTracker" type="Node2D" parent="Tracker"]
 script = ExtResource( 16 )
 
+[node name="Area2D" type="Area2D" parent="Tracker/FlyTracker"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tracker/FlyTracker/Area2D"]
+shape = SubResource( 7 )
+
+[node name="Switcher" type="Node2D" parent="Tracker"]
+script = ExtResource( 34 )
+
+[node name="Timer" type="Timer" parent="Tracker/Switcher"]
+one_shot = true
+
 [node name="Points" type="Node2D" parent="."]
 script = ExtResource( 12 )
 
@@ -256,26 +392,27 @@ one_shot = true
 [node name="Knockback" type="Node2D" parent="."]
 script = ExtResource( 29 )
 
-[connection signal="on_death" from="Status" to="Trail" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Collector" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Trail" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Collector" method="_on_Status_on_death"]
 [connection signal="on_revive" from="Respawner" to="Status" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="Tracker" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="Collector" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="Input" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Mover" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Input" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Tracker" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Movement" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="SilkReader" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Collector" method="_on_Respawner_on_revive"]
 [connection signal="timeout" from="Respawner/Timer" to="Respawner" method="_on_Timer_timeout"]
+[connection signal="animation_finished" from="Visuals/Wings/AnimationPlayer" to="Visuals/Wings" method="_on_AnimationPlayer_animation_finished"]
 [connection signal="on_move_completed" from="Mover" to="Visuals/Worm" method="_on_Mover_on_move_completed"]
 [connection signal="on_move_completed" from="Mover" to="Movement/Stamina" method="_on_Mover_on_move_completed"]
 [connection signal="button_press" from="Input" to="Jumper" method="_on_Input_button_press"]
 [connection signal="button_release" from="Input" to="Jumper" method="_on_Input_button_release"]
-[connection signal="move_vec" from="Input" to="Jumper" method="_on_Input_move_vec"]
 [connection signal="move_vec" from="Input" to="Mover" method="_on_Movement_move_vec"]
+[connection signal="move_vec" from="Input" to="Jumper" method="_on_Input_move_vec"]
 [connection signal="on_jump_finished" from="Jumper" to="Movement/Jumper" method="_on_Jumper_on_jump_finished"]
 [connection signal="move_vec" from="Movement" to="Mover" method="_on_Movement_move_vec"]
 [connection signal="timeout" from="Movement/Shuffler/Timer" to="Movement/Shuffler" method="_on_Timer_timeout"]
@@ -284,15 +421,18 @@ script = ExtResource( 29 )
 [connection signal="on_instant_jump" from="Movement/FakeJumper" to="Jumper" method="_on_Jumper_on_instant_jump"]
 [connection signal="timeout" from="Movement/FakeJumper/Timer" to="Movement/FakeJumper" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Movement/FlyMovement/Timer" to="Movement/FlyMovement" method="_on_Timer_timeout"]
-[connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Specialties" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_point"]
+[connection signal="body_entered" from="Tracker/FlyTracker/Area2D" to="Tracker/FlyTracker" method="_on_Area2D_body_entered"]
+[connection signal="body_exited" from="Tracker/FlyTracker/Area2D" to="Tracker/FlyTracker" method="_on_Area2D_body_exited"]
+[connection signal="timeout" from="Tracker/Switcher/Timer" to="Tracker/Switcher" method="_on_Timer_timeout"]
 [connection signal="point_change" from="Points" to="Movement/FlyMovement" method="_on_Points_point_change"]
 [connection signal="timeout" from="Trail/Timer" to="Trail" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Specialties/Timer" to="Specialties" method="_on_Timer_timeout"]

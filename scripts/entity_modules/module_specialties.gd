@@ -40,6 +40,8 @@ func reset():
 	if m.has(type):
 		m[type].deactivate()
 	
+	handle_effect_wearout()
+	
 	type = ""
 	hide_icon()
 
@@ -76,6 +78,11 @@ func handle_continuous_effect(dt):
 	
 	handle_featherlight(dt)
 
+func handle_effect_wearout():
+	# if we are flying, but the powerup wears out, fake releasing the button to land
+	if type == "flight" and body.m.tracker.state_is("fly"):
+		body.m.input.emit_signal("button_release")
+
 # NOTE: if we immediately start changing points, we might get stuck on the starting point (as it just moved underneath us), so only start slightly later, works wonders
 func handle_featherlight(dt):
 	if not check_type("featherlight"): return
@@ -89,13 +96,23 @@ func handle_featherlight(dt):
 	cur_edge.m.body.move_extremes_inward(FEATHERLIGHT_SPEED, dt)
 
 func hijack_jump_press():
+	if check_type("flight"): 
+		body.m.tracker.switcher.request_flight()
+		if type != "flight": set_to("flight")
+		return true
+	
 	if check_type("noisemaker") or check_type("attractor"): return true
 	return false
 
 func hijack_jump_release():
+	if body.m.tracker.switcher.is_player_in_flight():
+		body.m.tracker.switcher.request_landing()
+		return true
+	
 	if check_type("noisemaker") or check_type("attractor"): 
 		execute_blastarea_effect()
 		return true
+
 	return false
 
 func _physics_process(dt):

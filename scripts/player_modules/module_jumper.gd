@@ -123,12 +123,12 @@ func execute_jump():
 	
 	var actually_jumped = (jump_data.target_pos != null)
 	if actually_jumped:
-		body.m.tracker.remove_from_all()
-		
 		var dist = (jump_data.target_pos - jump_data.start_pos).length()
 		if body.is_in_group("Players"):
 			body.m.points.change(pay_for_travel(dist))
-	
+		
+		body.m.tracker.remove_from_all()
+		
 	play_jump_tween()
 
 func determine_jump_details():
