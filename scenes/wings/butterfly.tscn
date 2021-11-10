@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/wings.png" type="Texture" id=1]
+
+[node name="Wing" type="Node2D"]
+
+[node name="L" type="Node2D" parent="."]
+position = Vector2( -0.0773954, -20.7991 )
+
+[node name="Sprite" type="Sprite" parent="L"]
+position = Vector2( 0.146869, -0.0539665 )
+scale = Vector2( 0.33, 0.33 )
+texture = ExtResource( 1 )
+hframes = 4
+vframes = 4
+frame = 4

@@ -42,6 +42,20 @@ Many "bad" parts of the project are simply a result of "figuring out the game as
 
 (Yes, this takes time. But the alternative is that I need to know exactly how the game should work before I write any code, and that I need to be 100% _right_ about that. Which won't happen. So write bad code first, learn from it, improve it later.) 
 
+## What will happen to this project?
+Your best ideas are never the first ones. Only after developing the game for a month, was I able to get _actually_ creative, unique, fitting ideas for this game. That's just how it works with creative stuff: experiment until you stumble upon what works.
+
+As such, these are some things that could improve the game further:
+* More unique trails/powerups that have to do with the main mechanic of the game: moving/jumping across a web _and_ the idea of "eat or be eaten". Right now, jumping is just a straight line. Bugs are just what they are - their points never change - and I was only able to implement a few special move patterns.
+* Some more modes and arenas to complement the defaults.
+* Actually give insects the legs they have (now there are just a few default legs everyone uses) + animate the legs during flight.
+* Optimization improvements. Splitting everything into modules/nodes has the downside that even a simple game like this has _thousands_ of nodes active at the same time. Many of those nodes could be simplified to the most basic version ("Node") or optimized some other way.
+
+Besides that, I'm thinking of turning this idea into a puzzle game as well. (With "this idea" being "solve puzzles on a spider web by creating new strands or destroying old ones".) If I make it a bit more abstract/simplified and constrain it to a grid, I think that'd be wonderful. 
+
+(If you read this and think: "yes, great idea, I'm going to make that puzzle game!" That's fine by me, just let me know and maybe we can collaborate.)
+
+
 ## What can I use?
 In the spirit of these game jams, I make absolutely everything available and freely accessible. 
 

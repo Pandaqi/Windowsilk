@@ -43,7 +43,10 @@ func set_player_num(pnum):
 	legs.set_color(new_color)
 
 func update_scale(num):
-	var new_scale = SCALE_BOUNDS.min + num*SCALE_PER_POINT
+	var max_points = GlobalDict.cfg.max_points_capacity
+	var scale_per_point = (SCALE_BOUNDS.max - SCALE_BOUNDS.min)/float(max_points)
+	
+	var new_scale = SCALE_BOUNDS.min + num*scale_per_point
 	new_scale = clamp(new_scale, SCALE_BOUNDS.min, SCALE_BOUNDS.max)
 	set_scale(Vector2(1,1)*new_scale)
 	

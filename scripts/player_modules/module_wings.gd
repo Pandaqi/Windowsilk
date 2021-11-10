@@ -30,6 +30,10 @@ func initialize(new_data):
 	if not data.has('max_rot'):
 		data.max_rot = 0.35*PI
 	
+	show_behind_parent = true
+	if data.has('show_in_front'):
+		show_behind_parent = false
+	
 	create_both_wings()
 	
 	active = true
@@ -57,26 +61,41 @@ func on_move_type_changed(new_type):
 		play_wing_unfold()
 
 func play_wing_collapse():
-	tween.interpolate_property(wingL, "rotation",
-		data.max_rot, data.min_rot, COLLAPSE_DUR,
+	if data.has('collapse_using_scale'):
+		var end_scale = Vector2(1, WING_FLAP_SCALE)
+		if data.has('flap_scale'): end_scale.y = data.flap_scale
+		
+		tween.interpolate_property(self, "scale",
+		Vector2(1,1), end_scale, COLLAPSE_DUR,
 		Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	
-	tween.interpolate_property(wingR, "rotation",
-		-data.max_rot, -data.min_rot, COLLAPSE_DUR,
-		Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	else:
+		tween.interpolate_property(wingL, "rotation",
+			data.max_rot, data.min_rot, COLLAPSE_DUR,
+			Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		
+		tween.interpolate_property(wingR, "rotation",
+			-data.max_rot, -data.min_rot, COLLAPSE_DUR,
+			Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	
 	tween.start()
 	
 	planned_animation = null
 
 func play_wing_unfold():
-	tween.interpolate_property(wingL, "rotation",
-		data.min_rot, data.max_rot, COLLAPSE_DUR,
+	if data.has('collapse_using_scale'):
+		tween.interpolate_property(self, "scale",
+		get_scale(), Vector2(1,1), COLLAPSE_DUR,
 		Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	
-	tween.interpolate_property(wingR, "rotation",
-		-data.min_rot, -data.max_rot, COLLAPSE_DUR,
-		Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	else:
+		tween.interpolate_property(wingL, "rotation",
+			data.min_rot, data.max_rot, COLLAPSE_DUR,
+			Tween.TRANS_LINEAR, Tween.EASE_OUT)
+		
+		tween.interpolate_property(wingR, "rotation",
+			-data.min_rot, -data.max_rot, COLLAPSE_DUR,
+			Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	
 	tween.start()
 	

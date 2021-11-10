@@ -1,6 +1,6 @@
 extends Node2D
 
-const MAX_POINTS : int = 100
+var MAX_POINTS : int = 9
 
 var num : int = 0
 
@@ -11,6 +11,9 @@ onready var body = get_parent()
 onready var main_node = get_node("/root/Main")
 
 signal point_change(val)
+
+func _ready():
+	MAX_POINTS = GlobalDict.cfg.max_points_capacity
 
 func set_to(val):
 	change(val - num)
@@ -33,6 +36,10 @@ func empty():
 
 func is_empty():
 	return (num <= 0)
+	
+func at_max_capacity():
+	return (num >= MAX_POINTS)
 
 func count():
 	return num
+

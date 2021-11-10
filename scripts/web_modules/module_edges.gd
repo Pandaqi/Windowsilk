@@ -125,10 +125,7 @@ func shoot_three_raycasts(data):
 			best_result = i
 	
 	if best_result < 0: return false
-	
-	print("BEST RESULT")
-	print(best_result)
-	
+
 	data.result = results[best_result]
 	data.from = froms[best_result]
 	data.to_edge = data.result.collider

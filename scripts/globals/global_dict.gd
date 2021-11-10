@@ -1,7 +1,9 @@
 extends Node
 
 var cfg = {
-	'player_starting_points': 5,
+	'player_starting_points': 2,
+	'max_points_capacity': 9,
+	
 	'allow_eating_same_species': false,
 	'objective_points_per_player': 20,
 	'objective_uses_home_base': true,
@@ -40,7 +42,7 @@ var silk_categories = {
 	"web": { "color": Color(15/255.0, 156/255.0, 169/255.0) },
 	"jumping": { "color": Color(15/255.0, 51/255.0, 169/255.0) },
 	"collecting": { "color": Color(120/255.0, 15/255.0, 169/255.0) },
-	"??": { "color": Color(169/255.0, 15/255.0, 45/255.0) },
+	"aggression": { "color": Color(169/255.0, 15/255.0, 45/255.0) },
 	"misc": { "color": Color(169/255.0, 107/255.0, 15/255.0) }
 }
 
@@ -73,7 +75,8 @@ var silk_types = {
 	"attractor": { "frame": 19, "category": "misc" },
 	"lowlife": { "frame": 20, "category": "misc" },
 	
-	"flight": { "frame": 21, "category": "jumping" }
+	"flight": { "frame": 21, "category": "jumping" },
+	"poison": { "frame": 22, "category": "aggression" }
 	
 }
 
@@ -423,6 +426,138 @@ var entities = {
 		"antenna": {
 			"type": "earwig",
 			"color": Color(53/255.0, 33/255.0, 43/255.0)
+		}
+	},
+	
+	"fly": {
+		"frame": 18,
+		"points": 1,
+		"trail": "flight",
+		"specialty": "flight",
+		"move": {
+			"type": "fly",
+			"land": true
+		},
+		"wings": {
+			"type": "fly",
+			"show_in_front": true
+		}
+	},
+	
+	"wasp": {
+		"frame": 19,
+		"points": 0,
+		"trail": "worthless",
+		"specialty": "worthless",
+		"move": {
+			"type": "fly",
+			"shuffle": true
+		},
+		"wings": {
+			"type": "wasp",
+			"show_in_front": true
+		}
+	},
+	
+	"gnat": {
+		"frame": 20,
+		"points": 2,
+		"trail": "slowy",
+		"specialty": "slowy",
+		"move": {
+			"type": "fly",
+			"land": true,
+			"chase": true
+		},
+		"wings": {
+			"type": "gnat",
+			"show_in_front": true
+		}
+	},
+	
+	"butterfly": {
+		"frame": 21,
+		"points": 5,
+		"trail": "attractor",
+		"specialty": "attractor",
+		"move": {
+			"type": "fly",
+			"land": true,
+			"flee": true
+		},
+		"wings": {
+			"type": "butterfly",
+			"min_rot": 0,
+			"max_rot": 0,
+			"collapse_using_scale": true
+		}
+	},
+	
+	"bee": {
+		"frame": 22,
+		"points": 5,
+		"trail": "time_gainer",
+		"specialty": "time_gainer",
+		"move": {
+			"type": "fly",
+			"land": true,
+			"flee": true,
+			"smooth": true # TO DO: IMPLEMENT?
+		},
+		"wings": {
+			"type": "bee"
+		}
+	},
+	
+	"moth": {
+		"frame": 23,
+		"points": 2,
+		"trail": "oneway",
+		"specialty": "oneway",
+		"move": {
+			"type": "fly",
+			"land": true
+		},
+		"wings": {
+			"type": "moth",
+			"min_rot": -0.1*PI,
+			"max_rot": 0.05*PI,
+			"show_in_front": true
+		}
+	},
+	
+	"hornet": {
+		"frame": 24,
+		"points": 9,
+		"trail": "poison",
+		"specialty": "poison",
+		"move": {
+			"type": "fly",
+			"chase": true
+		},
+		"wings": {
+			"type": "hornet",
+			"min_rot": 0,
+			"max_rot": 0.2*PI,
+			"show_in_front": true
+		}
+	},
+	
+	"mosquito": {
+		"frame": 25,
+		"points": 3,
+		"trail": "time_loser",
+		"specialty": "time_loser",
+		"move": {
+			"type": "fly",
+			"chase": true,
+			"land": true
+		},
+		"wings": {
+			"type": "mosquito",
+			"min_rot": 0.05*PI,
+			"max_rot": 0.25*PI,
+			"show_in_front": true
 		}
 	}
 	

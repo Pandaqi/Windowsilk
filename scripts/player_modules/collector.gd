@@ -28,8 +28,15 @@ func collect(node):
 		var specialty = node.m.specialties.get_it()
 		body.m.specialties.set_to(specialty)
 	
-	handle_points(node)
-	node.m.status.die()
+	# if we eat something
+	var should_die = true
+	if body.m.specialties.check_type("poison"):
+		node.m.specialties.set_to("poison")
+		should_die = false
+	
+	if should_die:
+		handle_points(node)
+		node.m.status.die()
 
 func handle_points(node):
 	var original_points = node.m.points.count()
@@ -59,6 +66,11 @@ func can_collect(other_body):
 	# cannot eat ourselves or non-entities
 	if other_body == body: return false
 	if not other_body.is_in_group("Entities"): return false
+	
+	# we're at max capacity?
+	if body.m.points.at_max_capacity(): 
+		print("Feedback; At max capacity")
+		return false
 	
 	# if the other is no (longer) a valid entity, abort
 	if other_body.m.status.is_dead: return false

@@ -16,6 +16,8 @@ onready var timer = $Timer
 onready var icon = $Sprite
 onready var body = get_parent()
 
+var last_known_move_direction : Vector2 = Vector2.ZERO
+
 var m = {}
 
 func _ready():
@@ -142,10 +144,17 @@ func get_silk_type():
 
 func modify_input_vec(start_vec, target_vec, dt):
 	if start_vec.length() <= 0.03: return target_vec
-	#if target_vec.length() <= 0.03: return start_vec
-	if not check_type("slippery"): return target_vec
 	
-	return start_vec.slerp(target_vec, SLIPPERY_FACTOR * dt)
+	if check_type("slippery"): 
+		return start_vec.slerp(target_vec, SLIPPERY_FACTOR * dt)
+	
+	return target_vec
+
+func forbidden_due_to_one_way(vec):
+	if not check_type("oneway"): return false
+	
+	var dot = last_known_move_direction.dot(vec.normalized())
+	return (dot < 0)
 
 func modify_speed(new_vec, new_speed, input_vec):
 	if check_type("speedy"): new_speed *= 1.5
@@ -153,6 +162,9 @@ func modify_speed(new_vec, new_speed, input_vec):
 	
 	if check_type("slippery"):
 		new_speed *= (new_vec.dot(input_vec)+1)*0.5
+	
+	if check_type("poison"):
+		new_speed *= m.poison.get_speed_multiplier()
 
 	return new_vec * new_speed
 
@@ -196,3 +208,7 @@ func execute_blastarea_effect():
 		
 		var vec_away = (b.position - body.position).normalized()
 		b.m.knockback.apply(dir * vec_away * NOISE_MAKER_FORCE)
+
+func _on_Mover_on_move_completed(vec):
+	if vec.length() <= 0.03: return
+	last_known_move_direction = vec.normalized()

@@ -51,8 +51,12 @@ func try_edge_move(vec, dt):
 	var dot_prod : float = input_vec.normalized().dot(cur_edge_vec)
 	var final_move_vec : Vector2 = cur_edge_vec
 	if dot_prod < 0: final_move_vec *= -1
-	body.set_rotation(final_move_vec.angle())
 	
+	var res = body.m.specialties.forbidden_due_to_one_way(final_move_vec)
+	if res: return
+	
+	body.set_rotation(final_move_vec.angle())
+
 	var final_move_speed = mover_handler.get_final_speed()
 	final_move_vec = body.m.specialties.modify_speed(final_move_vec, final_move_speed, input_vec)
 
@@ -64,7 +68,7 @@ func try_edge_move(vec, dt):
 
 	last_velocity = new_velocity
 	
-	var res = did_we_walk_off_the_edge(edge)
+	res = did_we_walk_off_the_edge(edge)
 	if res: return false
 	
 	return true
