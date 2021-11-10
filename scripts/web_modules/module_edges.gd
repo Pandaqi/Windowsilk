@@ -45,8 +45,11 @@ func shoot(params = {}):
 		'dont_create_new_edges': params.dont_create_new_edges
 	}
 	
-	var res = shoot_raycast(data)
-	if not res: return data
+	# We shoot three raycasts: one straight ahead, one just to the left, one just to the right
+	# This prevents us from _narrowly_ missing an obvious landing spot
+	var res = shoot_three_raycasts(data)
+	if not res: 
+		return data
 	
 	snap_to_existing_point(data, 'from')
 	snap_to_existing_point(data, 'to')
@@ -93,32 +96,66 @@ func shoot(params = {}):
 	
 	return data
 
+func shoot_three_raycasts(data):
+	var froms = [data.from]
+	var old_from = data.from
+	var ortho_dir = data.dir.normalized().rotated(0.5*PI)
+	var offset = 15.0
+	
+	var res = shoot_raycast(data)
+	
+	data.from = old_from + ortho_dir * offset
+	froms.append(data.from)
+	var resL = shoot_raycast(data)
+	
+	data.from = old_from - ortho_dir * offset
+	froms.append(data.from)
+	var resR = shoot_raycast(data)
+	
+	var results = [res, resL, resR]
+	var best_result = -1
+	var best_dist = INF
+	
+	for i in range(3):
+		if not results[i]: continue
+		
+		var dist = (results[i].collider.position - old_from).length()
+		if dist < best_dist:
+			best_dist = dist
+			best_result = i
+	
+	if best_result < 0: return false
+	
+	print("BEST RESULT")
+	print(best_result)
+	
+	data.result = results[best_result]
+	data.from = froms[best_result]
+	data.to_edge = data.result.collider
+	
+	# DEBUGGING: is this actually a good idea/necessary?
+	var compensate_for_imprecision = 0.5*data.dir.normalized()*GlobalDict.cfg.line_thickness
+	if data.to_edge.is_in_group("Bounds"): compensate_for_imprecision = Vector2.ZERO
+
+	data.to = data.result.position + compensate_for_imprecision
+	
+	return true
+
 func shoot_raycast(data):
 	var space_state = get_world_2d().direct_space_state
 	
 	var dir = data.dir.normalized()
 	var epsilon = dir*1.0
-	var max_dist = data.max_dist
-	
+
 	var from = data.from + epsilon
-	var to = from + dir*max_dist
+	var to = from + dir*data.max_dist
 	
 	var col_layer = 1
 	
 	# check where we should land
 	# the edges of the map always have bounds, so we always stop at the edge (if we hit nothing else)
-	data.result = space_state.intersect_ray(from, to, data.exclude, col_layer)
-	if not data.result: return false
-
-	data.from = from
-	data.to_edge = data.result.collider
-	
-	# DEBUGGING: is this actually a good idea/necessary?
-	var compensate_for_imprecision = 0.5*dir*GlobalDict.cfg.line_thickness
-	if data.to_edge.is_in_group("Bounds"): compensate_for_imprecision = Vector2.ZERO
-
-	data.to = data.result.position + compensate_for_imprecision
-	return true
+	var result = space_state.intersect_ray(from, to, data.exclude, col_layer)
+	return result
 
 func snap_to_existing_point(data, key):
 	var pos = data[key]

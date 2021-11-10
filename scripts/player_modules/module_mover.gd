@@ -35,7 +35,7 @@ func move_along_web(vec, dt):
 	if body.m.tracker.no_valid_web_position():
 		body.m.status.die()
 		return 
-	
+
 	var res = try_edge_move(vec, dt)
 	if res: return
 	

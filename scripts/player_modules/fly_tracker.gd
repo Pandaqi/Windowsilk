@@ -10,6 +10,9 @@ onready var area = $Area2D
 var cur_edge
 var cur_point
 
+func is_active():
+	return (tracker_handler.active_module == self)
+
 func initialize(params):
 	params.avoid_web = true
 	
@@ -30,18 +33,32 @@ func get_current_point():
 func arrived_on_edge(e):
 	cur_edge = e
 	tracker_handler.switcher.arrived_on_edge(e)
+	
+	paint_trail()
+	handle_getting_stuck()
+
+func paint_trail():
+	body.m.trail.paint_specific_edge(cur_edge)
+
+func handle_getting_stuck():
+	if not cur_edge.m.boss.has_one(): return
+	body.m.status.incapacitate()
 
 func arrived_on_point(p):
 	cur_point = p
 	tracker_handler.switcher.arrived_on_point(p)
 
 func _on_Area2D_body_entered(other_body):
+	if not is_active(): return
+	
 	if other_body.is_in_group("Edges"):
 		arrived_on_edge(other_body)
 	elif other_body.is_in_group("Points"):
 		arrived_on_point(other_body)
 
 func _on_Area2D_body_exited(other_body):
+	if not is_active(): return
+	
 	if other_body == cur_edge:
 		cur_edge = null
 	elif other_body == cur_point:

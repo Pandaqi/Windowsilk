@@ -164,6 +164,9 @@ func arrived_on_point(p):
 	body.set_position(cur_point.position)
 	
 	recalculate_dist_to_extremes()
+	
+	print("ARRIVED ON POINT")
+	print(p)
 
 	tracker_handler.emit_signal("arrived_on_point", p)
 

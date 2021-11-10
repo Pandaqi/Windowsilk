@@ -30,6 +30,9 @@ func set_data(data):
 	else:
 		wings.disable()
 
+func incapacitate():
+	wings.incapacitate()
+
 func set_player_num(pnum):
 	player_num = pnum
 	

@@ -309,7 +309,9 @@ var entities = {
 			"color": Color(1.0, 242/255.0, 199/255.0)
 		},
 		"wings": {
-			"type": "fruit_fly"
+			"type": "regular_fruit_fly",
+			"min_rot": 0.1*PI,
+			"max_rot": 0.3*PI
 		}
 	},
 	

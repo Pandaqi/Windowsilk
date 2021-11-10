@@ -81,6 +81,7 @@ func incapacitate():
 	
 	body.m.movement.disable()
 	body.m.mover.disable()
+	body.m.visuals.incapacitate()
 
 func die():
 	if is_dead: return

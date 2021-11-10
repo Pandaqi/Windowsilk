@@ -15,7 +15,7 @@ func create_debug_terrain_type():
 	set_to(all_types[randi() % all_types.size()])
 	
 	# DEBUGGING
-	set_to('flight')
+	set_to('regular')
 
 func set_to(tp):
 	if too_short_for_terrain():
