@@ -79,7 +79,7 @@ radius = 112.207
 radius = 12.0516
 
 [sub_resource type="CircleShape2D" id=4]
-radius = 238.073
+radius = 191.089
 
 [sub_resource type="DynamicFont" id=8]
 size = 32
@@ -244,7 +244,7 @@ scale = Vector2( 0.33, 0.33 )
 texture = ExtResource( 5 )
 hframes = 8
 vframes = 8
-frame = 23
+frame = 25
 
 [node name="Eyes" type="Sprite" parent="Visuals/Sprite"]
 visible = false
@@ -289,27 +289,28 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Collector" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Trail" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Specialties" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Collector" method="_on_Status_on_death"]
 [connection signal="on_revive" from="Respawner" to="Status" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="Mover" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="Input" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Movement" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Tracker" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Input" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="SilkReader" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Mover" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Collector" method="_on_Respawner_on_revive"]
 [connection signal="timeout" from="Respawner/Timer" to="Respawner" method="_on_Timer_timeout"]
-[connection signal="on_move_completed" from="Mover" to="Visuals/Worm" method="_on_Mover_on_move_completed"]
-[connection signal="on_move_completed" from="Mover" to="Movement/Stamina" method="_on_Mover_on_move_completed"]
 [connection signal="on_move_completed" from="Mover" to="Specialties" method="_on_Mover_on_move_completed"]
+[connection signal="on_move_completed" from="Mover" to="Movement/Stamina" method="_on_Mover_on_move_completed"]
+[connection signal="on_move_completed" from="Mover" to="Visuals/Worm" method="_on_Mover_on_move_completed"]
 [connection signal="button_press" from="Input" to="Jumper" method="_on_Input_button_press"]
 [connection signal="button_release" from="Input" to="Jumper" method="_on_Input_button_release"]
-[connection signal="move_vec" from="Input" to="Mover" method="_on_Movement_move_vec"]
 [connection signal="move_vec" from="Input" to="Jumper" method="_on_Input_move_vec"]
+[connection signal="move_vec" from="Input" to="Mover" method="_on_Movement_move_vec"]
 [connection signal="on_jump_finished" from="Jumper" to="Movement/Jumper" method="_on_Jumper_on_jump_finished"]
 [connection signal="move_vec" from="Movement" to="Mover" method="_on_Movement_move_vec"]
 [connection signal="timeout" from="Movement/Shuffler/Timer" to="Movement/Shuffler" method="_on_Timer_timeout"]
@@ -318,15 +319,15 @@ __meta__ = {
 [connection signal="on_instant_jump" from="Movement/FakeJumper" to="Jumper" method="_on_Jumper_on_instant_jump"]
 [connection signal="timeout" from="Movement/FakeJumper/Timer" to="Movement/FakeJumper" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Movement/FlyMovement/Timer" to="Movement/FlyMovement" method="_on_Timer_timeout"]
-[connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="Specialties" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="Specialties" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_point"]
-[connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
 [connection signal="body_entered" from="Tracker/FlyTracker/Area2D" to="Tracker/FlyTracker" method="_on_Area2D_body_entered"]
 [connection signal="body_exited" from="Tracker/FlyTracker/Area2D" to="Tracker/FlyTracker" method="_on_Area2D_body_exited"]
 [connection signal="timeout" from="Tracker/Switcher/Timer" to="Tracker/Switcher" method="_on_Timer_timeout"]

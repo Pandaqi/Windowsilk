@@ -81,6 +81,8 @@ func handle_continuous_effect(dt):
 	handle_featherlight(dt)
 
 func handle_effect_wearout():
+	if not body.is_in_group("Players"): return
+	
 	# if we are flying, but the powerup wears out, fake releasing the button to land
 	if type == "flight" and body.m.tracker.state_is("fly"):
 		body.m.input.emit_signal("button_release")
@@ -212,3 +214,6 @@ func execute_blastarea_effect():
 func _on_Mover_on_move_completed(vec):
 	if vec.length() <= 0.03: return
 	last_known_move_direction = vec.normalized()
+
+func _on_Status_on_death():
+	reset()

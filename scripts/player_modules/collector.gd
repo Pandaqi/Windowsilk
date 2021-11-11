@@ -24,16 +24,17 @@ func update_collision_shape(new_scale):
 	col_shape.radius = 128*0.33*0.5*new_scale
 
 func collect(node):
-	if body.m.status.is_player():
-		var specialty = node.m.specialties.get_it()
-		body.m.specialties.set_to(specialty)
-	
-	# if we eat something
+	# if we eat something while having the poison powerup
+	# we don't kill it, we just poison it
 	var should_die = true
 	if body.m.specialties.check_type("poison"):
 		node.m.specialties.set_to("poison")
 		should_die = false
 	
+	if body.m.status.is_player():
+		var specialty = node.m.specialties.get_it()
+		body.m.specialties.set_to(specialty)
+
 	if should_die:
 		handle_points(node)
 		node.m.status.die()
@@ -91,12 +92,21 @@ func can_collect(other_body):
 	
 	# now apply the point check => more points than the other? can eat
 	var margin = 0
+	var we_are_player = body.is_in_group("Players")
+	var they_are_player = other_body.is_in_group("Players")
 	var apply_point_difference_check = body.is_in_group("Players") or GlobalDict.cfg.point_difference_holds_for_all
 	
-	if other_body.is_in_group("Players") and apply_point_difference_check: 
+	if they_are_player and apply_point_difference_check: 
 		margin = GlobalDict.cfg.point_difference_eating_players
 	
-	var we_have_more_points = (body.m.points.count() > (other_body.m.points.count() + margin))
+	var our_points = body.m.points.count()
+	var their_points = other_body.m.points.count()
+	
+	if we_are_player and they_are_player:
+		if not GlobalDict.cfg.allow_eating_small_players and other_body.m.points.is_small():
+			return false
+	
+	var we_have_more_points = (our_points > (their_points + margin))
 	if not we_have_more_points: return false
 	return true
 

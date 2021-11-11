@@ -116,7 +116,34 @@ func generate_random_web():
 		
 		for _j in range(num_debug_frames):
 			yield(get_tree(), "idle_frame")
-
+	
+	var min_edges = GlobalDict.cfg.min_edges_on_home_base
+	var num_tries = 0
+	var max_tries = 400
+	
+	for i in range(home_bases.size()):
+		var b = home_bases[i]
+		var from_pos = b.position
+		
+		while b.m.edges.count() < min_edges:
+			var params = {
+				'from': from_pos, 
+				'dir': get_random_vector(),
+				'exclude': b.m.status.build_exclude_array(), 
+			}
+			
+			var res = edges.shoot(params)
+			
+			num_tries += 1
+			if num_tries > max_tries:
+				num_tries = 0
+				break
+			
+			var nothing_happened = not res.created_something
+			if nothing_happened: continue
+			
+			yield(get_tree(), "idle_frame")
+	
 	main_node.web_loading_done()
 
 func assign_home_bases():

@@ -1,6 +1,6 @@
 extends Node2D
 
-const OFFSET_FROM_EDGE : Dictionary = { 'min': 50.0, 'max': 150.0 }
+const OFFSET_FROM_EDGE : Dictionary = { 'min': 40.0, 'max': 100.0 }
 const DEFAULT_SPAWN_CHECK_RADIUS : float = 50.0
 
 onready var players = get_node("../Players")

@@ -14,6 +14,9 @@ func remove(e, destroy_orphan_points = true):
 	if destroy_orphan_points and is_orphan():
 		points.remove_existing(body)
 
+func count():
+	return edges.size()
+
 func is_orphan():
 	return (edges.size() <= 0)
 

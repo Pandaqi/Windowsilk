@@ -25,10 +25,14 @@ func module_update(dt):
 	var final_vec = forward_vec.slerp(vec.normalized(), TURN_SPEED * dt)
 	var final_move_speed = mover_handler.get_final_speed()
 	
+	# NOTE: Check acute dangers (such as "out of bounds") first, to make sure they are always obliged
 	var projected_end_pos = body.position + final_vec * final_move_speed * dt
 	if web.is_out_of_bounds(projected_end_pos):
 		vec *= -1
 		return
+	
+	var res = body.m.specialties.forbidden_due_to_one_way(final_vec)
+	if res: return
 	
 	body.move_and_slide(final_vec*final_move_speed)
 	body.set_rotation(final_vec.angle())

@@ -106,3 +106,21 @@ func point_is_between(a, b, c, epsilon):
 
 func self_destruct():
 	edges.remove_existing(body)
+
+func attached_to_home_base():
+	return start.m.status.is_home_base() or end.m.status.is_home_base()
+
+func cant_destroy_due_to_home_base():
+	if not attached_to_home_base(): return false
+	
+	var min_edges = GlobalDict.cfg.min_edges_on_home_base
+	
+	if start.m.status.is_home_base():
+		if start.m.edges.count() <= min_edges:
+			return true
+	
+	if end.m.status.is_home_base():
+		if end.m.edges.count() <= min_edges:
+			return true
+	
+	return false

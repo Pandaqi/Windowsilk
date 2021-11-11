@@ -53,10 +53,13 @@ func check_player_entrance(p):
 	if p.m.status.team_num != team: return
 	
 	var num_points = p.m.points.count()
-	if num_points <= 0: return
+	var reset_val = GlobalDict.cfg.point_reset_val
+	var actual_point_change = (num_points - reset_val)
 	
-	update_total(num_points)
-	p.m.points.empty()
+	if actual_point_change <= 0: return
+	
+	update_total(actual_point_change)
+	p.m.points.set_to(reset_val)
 	
 	print("Feedback; Safely stored points!")
 

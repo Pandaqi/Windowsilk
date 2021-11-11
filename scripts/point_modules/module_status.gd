@@ -13,3 +13,8 @@ func convert_to_home_base(num):
 
 func is_home_base():
 	return body.m.homebase.active
+
+func build_exclude_array():
+	var exclude = [body]
+	exclude += body.m.edges.get_them()
+	return exclude

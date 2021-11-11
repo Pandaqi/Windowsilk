@@ -12,9 +12,14 @@ onready var worm = $Worm
 onready var body = get_parent()
 
 var player_num : int = -1
+var data = {}
 
-func set_data(data):
+func set_data(new_data):
+	data = new_data
+	
 	sprite.set_frame(data.frame)
+	
+	if not data.has('visuals'): data.visuals = {}
 	
 	if data.has('legs'):
 		legs.initialize(data.legs)
@@ -48,6 +53,10 @@ func update_scale(num):
 	
 	var new_scale = SCALE_BOUNDS.min + num*scale_per_point
 	new_scale = clamp(new_scale, SCALE_BOUNDS.min, SCALE_BOUNDS.max)
+	
+	if data.visuals.has('narrow'):
+		new_scale *= GlobalDict.cfg.narrow_bug_upscale
+	
 	set_scale(Vector2(1,1)*new_scale)
 	
 	body.m.collector.update_collision_shape(new_scale)

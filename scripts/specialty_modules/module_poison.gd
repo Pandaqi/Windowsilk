@@ -23,11 +23,6 @@ func restart_timer():
 	timer.start()
 
 func _on_Timer_timeout():
-	var no_lives_left = (body.m.points.count() <= 0)
-	if no_lives_left:
-		body.m.status.die()
-		return
-	
 	body.m.points.change(-1)
 
 func get_speed_multiplier():

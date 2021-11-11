@@ -2,9 +2,8 @@ extends Node2D
 
 # DEBUGGING
 #good values are 3-8, setting to 1 is just for testing
-const BOUNDS = { 'min': 1, 'max': 1 }
+const BOUNDS = { 'min': 3, 'max': 8 }
 const TIME_BOUNDS = { 'min': 3.0, 'max': 7.0 }
-const MAX_NUM_PER_TYPE : int = 15
 
 var entity_scene = preload("res://scenes/entity.tscn")
 
@@ -14,7 +13,7 @@ onready var spawner = get_node("../Spawner")
 onready var timer = $Timer
 
 var placement_params = {
-	'small_radius': 30.0,
+	'small_radius': 40.0,
 	'large_radius': 250.0,
 	'avoid_entities': true,
 	'avoid_players': true
@@ -26,7 +25,7 @@ func activate():
 	
 	# DEBUGGING
 	#available_types = ['fly', 'wasp', 'gnat', 'butterfly', 'bee', 'moth', 'mosquito', 'hornet']
-	available_types = ['fly']
+	#available_types = ['fly']
 	#return
 	
 	precalculate_probabilities()
@@ -84,7 +83,7 @@ func check_placement():
 
 func too_many_of_type(tp):
 	var num = get_tree().get_nodes_in_group(tp).size()
-	return (num >= MAX_NUM_PER_TYPE)
+	return (num >= GlobalDict.cfg.max_entities_per_type)
 
 func get_group_name(type):
 	return type.capitalize() + "s"

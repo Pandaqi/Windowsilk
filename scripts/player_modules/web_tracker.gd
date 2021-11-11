@@ -97,6 +97,8 @@ func force_change_edge(e):
 # so try all possibilities (start changed, end changed, direction reversed)
 # and find the one with the least distance difference)
 func update_positions():
+	if not cur_edge or not is_instance_valid(cur_edge): return
+	
 	var vec = cur_edge.m.body.get_vec().normalized()
 	var cur_pos = body.position
 	var options = []
@@ -164,9 +166,6 @@ func arrived_on_point(p):
 	body.set_position(cur_point.position)
 	
 	recalculate_dist_to_extremes()
-	
-	print("ARRIVED ON POINT")
-	print(p)
 
 	tracker_handler.emit_signal("arrived_on_point", p)
 

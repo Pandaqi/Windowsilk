@@ -9,18 +9,30 @@ var cfg = {
 	'objective_uses_home_base': true,
 	
 	'respawn_on_death': true,
+	'point_reset_val': 1, # used on respawn AND draining points at storage
 	
 	'debug_terrain_types': true,
 	'line_thickness': 30,
 	'draw_outlines_on_web': true,
 	'outline_width': 3,
 	
-	'point_difference_eating_players': 5,
+	'point_difference_eating_players': 0,
 	'point_difference_holds_for_all': true,
+	
+	'allow_eating_small_players': false,
 	'bigger_entities_move_slower': true,
 	'paint_trails_when_jumping': true,
 	
 	"ai_can_enter_owned_silk": true,
+	
+	"max_entities_per_type": 10,
+	
+	# Narrow bugs tend to be hard to see, so scale them up a bit
+	# A similar thing happens on certain silk icons
+	"narrow_bug_upscale": 1.3,
+	"narrow_icon_upscale": 2.0,
+	
+	"min_edges_on_home_base": 3,
 	
 	# TO DO: If I ever set this to true, I should change collision layer/mask on entities to hit each other
 	'entities_obstruct_each_other': false,
@@ -57,11 +69,11 @@ var silk_types = {
 	
 	# TO DO: jumping will probably get some weird powerups, like being able to CURVE your jump or something => but that's unsure for now, so just continue with other stuff
 	
-	"aggressor": { "frame": 6, "category": "web" },
-	"strong": { "frame": 7, "category": "web" },
-	"fragile": { "frame": 8, "category": "web" },
-	"timebomb": { "frame": 9, "category": "web" },
-	"featherlight": { "frame": 10, "category": "web" },
+	"aggressor": { "frame": 6, "category": "web", "narrow": true },
+	"strong": { "frame": 7, "category": "web", "narrow": true },
+	"fragile": { "frame": 8, "category": "web", "narrow": true },
+	"timebomb": { "frame": 9, "category": "web", "narrow": true },
+	"featherlight": { "frame": 10, "category": "web", "narrow": true },
 	"oneway": { "frame": 11, "category": "web" },
 	
 	"worthless": { "frame": 12, "category": "collecting" },
@@ -199,6 +211,9 @@ var entities = {
 		"points": 0,
 		"trail": "doubler",
 		"specialty": "doubler",
+		"visuals": {
+			"narrow": true
+		},
 		"move": {
 			"shuffle": true,
 			"jump": true,
@@ -380,6 +395,9 @@ var entities = {
 		"frame": 15,
 		"points": 7,
 		"trail": "timebomb",
+		"visuals": {
+			"narrow": true
+		},
 		"move": {
 			"stamina": 500,
 			"speed": 120.0,
@@ -396,6 +414,9 @@ var entities = {
 		"points": 3,
 		"trail": "gobbler",
 		"specialty": "gobbler",
+		"visuals": {
+			"narrow": true
+		},
 		"move": {
 			"worm": true
 		},
@@ -440,7 +461,8 @@ var entities = {
 		},
 		"wings": {
 			"type": "fly",
-			"show_in_front": true
+			"show_in_front": true,
+			"speed": 1.25,
 		}
 	},
 	
@@ -455,7 +477,12 @@ var entities = {
 		},
 		"wings": {
 			"type": "wasp",
-			"show_in_front": true
+			"show_in_front": true,
+			"speed": 1.5,
+		},
+		"antenna": {
+			"type": "wasp",
+			"color": Color(31/255.0, 23/255.0, 0)
 		}
 	},
 	
@@ -471,7 +498,13 @@ var entities = {
 		},
 		"wings": {
 			"type": "gnat",
-			"show_in_front": true
+			"show_in_front": true,
+			"speed": 1.5,
+		},
+		"antenna": {
+			"type": "gnat",
+			"color": Color(22/255.0, 24/255.0, 85/255.0),
+			"scale_thickness": 0.5
 		}
 	},
 	
@@ -483,13 +516,18 @@ var entities = {
 		"move": {
 			"type": "fly",
 			"land": true,
-			"flee": true
+			"flee": true,
+			"fake_jump": true
 		},
 		"wings": {
 			"type": "butterfly",
 			"min_rot": 0,
 			"max_rot": 0,
 			"collapse_using_scale": true
+		},
+		"antenna": {
+			"type": "butterfly",
+			"color": Color(170/255.0, 37/255.0, 22/255.0),
 		}
 	},
 	
@@ -505,7 +543,12 @@ var entities = {
 			"smooth": true # TO DO: IMPLEMENT?
 		},
 		"wings": {
-			"type": "bee"
+			"type": "bee",
+			"speed": 1.25,
+		},
+		"antenna": {
+			"type": "bee",
+			"color": Color(94/255.0, 63/255.0, 32/255.0)
 		}
 	},
 	
@@ -523,6 +566,10 @@ var entities = {
 			"min_rot": -0.1*PI,
 			"max_rot": 0.05*PI,
 			"show_in_front": true
+		},
+		"antenna": {
+			"type": "moth",
+			"color": Color(236/255.0, 72/255.0, 114/255.0)
 		}
 	},
 	
@@ -539,7 +586,12 @@ var entities = {
 			"type": "hornet",
 			"min_rot": 0,
 			"max_rot": 0.2*PI,
+			"speed": 1.75,
 			"show_in_front": true
+		},
+		"antenna": {
+			"type": "hornet",
+			"color": Color(90/255.0, 31/255.0, 13/255.0)
 		}
 	},
 	
@@ -557,7 +609,13 @@ var entities = {
 			"type": "mosquito",
 			"min_rot": 0.05*PI,
 			"max_rot": 0.25*PI,
+			"speed": 2.0,
 			"show_in_front": true
+		},
+		"antenna": {
+			"type": "mosquito",
+			"color": Color(66/255.0, 30/255.0, 89/255.0),
+			"scale_thickness": 0.5
 		}
 	}
 	

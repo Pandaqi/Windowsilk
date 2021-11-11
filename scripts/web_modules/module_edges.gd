@@ -1,8 +1,10 @@
 extends Node2D
 
 var POINT_SNAP_RADIUS : float = 25.0
-const ENTITY_OBSTRUCT_RADIUS : float = 30.0
-const MIN_JUMP_DIST : float = 40.0
+var ENTITY_OBSTRUCT_RADIUS : float = 30.0
+var MIN_JUMP_DIST : float = 40.0
+
+const TRIPLE_RAYCAST_OFFSET : float = 9.0
 
 var edge_scene = preload("res://scenes/web/edge.tscn")
 
@@ -13,6 +15,8 @@ var debug : bool = false
 
 func _ready():
 	POINT_SNAP_RADIUS = (GlobalDict.cfg.line_thickness + 5.0)
+	MIN_JUMP_DIST = POINT_SNAP_RADIUS * 2
+	ENTITY_OBSTRUCT_RADIUS = POINT_SNAP_RADIUS
 
 func shoot(params = {}):
 	
@@ -100,7 +104,7 @@ func shoot_three_raycasts(data):
 	var froms = [data.from]
 	var old_from = data.from
 	var ortho_dir = data.dir.normalized().rotated(0.5*PI)
-	var offset = 15.0
+	var offset = TRIPLE_RAYCAST_OFFSET
 	
 	var res = shoot_raycast(data)
 	
@@ -356,9 +360,10 @@ func get_closest_entity(pos : Vector2, exclude = []):
 
 func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = false):
 	
-	# if the plan was to destroy entities, but (at least) one of them is strong
-	# any destroying is disallowed and we return here
-	if not keep_entities_alive and edge.m.entities.has_strong_one():
+	# if the plan was to destroy entities
+	# but there's a reason this edge must be kept alive
+	var edge_must_stay_alive = edge.m.entities.has_strong_one() or edge.m.body.cant_destroy_due_to_home_base()
+	if not keep_entities_alive and edge_must_stay_alive:
 		return
 	
 	var start_node = edge.m.body.start

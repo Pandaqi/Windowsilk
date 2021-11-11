@@ -104,10 +104,10 @@ func play_wing_unfold():
 func play_wing_flap():
 	var start_scale = Vector2(1,1)
 	var end_scale = Vector2(1, WING_FLAP_SCALE)
-	if data.has('flap_scale'): end_scale.y = data.flap_scale
+	if data.has('scale'): end_scale.y *= data.scale
 	
 	var dur = FLAP_DUR
-	if data.has('flap_dur'): dur = data.flap_dur
+	if data.has('speed'): dur /= data.speed
 	
 	wingL.set_rotation(data.max_rot)
 	wingR.set_rotation(-data.max_rot)

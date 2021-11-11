@@ -30,7 +30,9 @@ func set_color(col):
 	color = col
 	update()
 
-func set_icon(frame):
+func set_icon(data):
+	var frame = data.frame
+	
 	sprite.set_visible(true)
 	
 	var is_default_terrain = (frame == 0)
@@ -40,6 +42,9 @@ func set_icon(frame):
 	var line_thickness = body.m.body.get_thickness()
 	var full_scale : float = 128.0
 	var new_scale =  Vector2(1,1) * (line_thickness / full_scale)
+	
+	if data.has('narrow'):
+		new_scale *= GlobalDict.cfg.narrow_icon_upscale
 	
 	sprite.set_scale(new_scale)
 	sprite.set_frame(frame)

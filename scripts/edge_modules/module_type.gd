@@ -15,17 +15,20 @@ func create_debug_terrain_type():
 	set_to(all_types[randi() % all_types.size()])
 	
 	# DEBUGGING
-	set_to('regular')
+	#set_to('regular')
 
 func set_to(tp):
 	if too_short_for_terrain():
+		tp = "regular"
+	
+	if body.m.body.attached_to_home_base():
 		tp = "regular"
 	
 	type = tp
 	data = GlobalDict.silk_types[type]
 	category_data = GlobalDict.silk_categories[data.category]
 	
-	body.m.drawer.set_icon(data.frame)
+	body.m.drawer.set_icon(data)
 	body.m.drawer.set_color(category_data.color)
 	
 	check_one_way()

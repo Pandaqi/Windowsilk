@@ -19,6 +19,11 @@ func set_to(val):
 	change(val - num)
 
 func change(val):
+	var no_lives_left = (num == 0)
+	if no_lives_left and val < 0:
+		body.m.status.die()
+		return
+	
 	num = clamp(num + val, 0.0, MAX_POINTS)
 	
 	label.set_text(str(num))
@@ -43,3 +48,5 @@ func at_max_capacity():
 func count():
 	return num
 
+func is_small():
+	return num <= GlobalDict.cfg.point_reset_val

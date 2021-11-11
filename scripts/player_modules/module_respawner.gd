@@ -87,4 +87,4 @@ func stop_animation():
 	anim_player.stop(true)
 
 func lose_our_points():
-	body.m.points.empty()
+	body.m.points.set_to(GlobalDict.cfg.point_reset_val)
