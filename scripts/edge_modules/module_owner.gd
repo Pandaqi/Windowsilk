@@ -1,25 +1,34 @@
 extends Node2D
 
-const OWNER_FADE_TIME : float = 20.0
-
 var boss = null
+var total_wait_time : float = 20.0
 
 onready var body = get_parent() 
 onready var timer = $Timer
 
-func set_to(b):
+func set_to_specific_time(tm):
+	if not boss: return
+	if tm <= 0.0: return
+	
+	timer.wait_time = tm
+	timer.start()
+
+func set_to(b, short = true):
 	if not b: return
 	
 	boss = b
 	
 	body.m.drawer.set_pattern(boss.m.status.team_num)
-	start_timer()
+	start_timer(short)
 
 func get_it():
 	return boss
 
 func has_one():
 	return (boss != null)
+
+func is_safe_for(node):
+	return node.m.status.team_num == boss.m.status.team_num
 
 func reset():
 	boss = null
@@ -39,11 +48,17 @@ func can_enter(entity):
 func _physics_process(dt):
 	body.m.drawer.fade_icons(get_fade_ratio())
 
-func get_fade_ratio():
-	return timer.time_left / OWNER_FADE_TIME
+func get_time_left():
+	return timer.time_left
 
-func start_timer():
-	timer.wait_time = OWNER_FADE_TIME
+func get_fade_ratio():
+	return get_time_left() / total_wait_time
+
+func start_timer(short):
+	total_wait_time = GlobalDict.cfg.short_owner_fade_time
+	if not short: total_wait_time = GlobalDict.cfg.long_owner_fade_time
+	
+	timer.wait_time = total_wait_time
 	timer.start()
 
 func _on_Timer_timeout():

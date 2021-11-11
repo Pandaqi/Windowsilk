@@ -58,8 +58,8 @@ func get_random_inner_pos(params):
 	
 	return start + width*Vector2(randf(), randf())
 
-func is_out_of_bounds(pos):
-	return pos.x < corners[0].x or pos.y < corners[0].y or pos.x >= corners[2].x or pos.y >= corners[2].y
+func is_out_of_bounds(pos, margin = 0):
+	return pos.x < (corners[0].x - margin) or pos.y < (corners[0].y - margin) or pos.x >= (corners[2].x + margin) or pos.y >= (corners[2].y + margin)
 
 func get_random_vector():
 	var num_angles = 16

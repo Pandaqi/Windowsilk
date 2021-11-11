@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=2]
+[gd_scene load_steps=46 format=2]
 
 [ext_resource path="res://scenes/modules/web_tracker.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/player_modules/module_legs.gd" type="Script" id=2]
@@ -36,9 +36,13 @@
 [ext_resource path="res://scripts/player_modules/tracker_switcher.gd" type="Script" id=34]
 [ext_resource path="res://scripts/specialty_modules/module_poison.gd" type="Script" id=35]
 [ext_resource path="res://scripts/player_modules/module_wings.gd" type="Script" id=36]
+[ext_resource path="res://scripts/entity_modules/module_generalarea.gd" type="Script" id=37]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 13.8734
+
+[sub_resource type="CircleShape2D" id=9]
+radius = 102.736
 
 [sub_resource type="Animation" id=5]
 length = 0.001
@@ -96,6 +100,12 @@ script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 2 )
+
+[node name="GeneralArea" type="Area2D" parent="."]
+script = ExtResource( 37 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GeneralArea"]
+shape = SubResource( 9 )
 
 [node name="Status" type="Node2D" parent="."]
 script = ExtResource( 6 )
@@ -203,6 +213,8 @@ one_shot = true
 [node name="SilkReader" type="Node2D" parent="."]
 script = ExtResource( 21 )
 
+[node name="StuckTimer" type="Timer" parent="SilkReader"]
+
 [node name="Specialties" type="Node2D" parent="."]
 script = ExtResource( 27 )
 
@@ -289,20 +301,22 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[connection signal="on_death" from="Status" to="Trail" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Specialties" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
+[connection signal="body_entered" from="GeneralArea" to="GeneralArea" method="_on_GeneralArea_body_entered"]
+[connection signal="body_exited" from="GeneralArea" to="GeneralArea" method="_on_GeneralArea_body_exited"]
 [connection signal="on_death" from="Status" to="Collector" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Specialties" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Trail" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
 [connection signal="on_revive" from="Respawner" to="Status" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="Movement" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Collector" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="SilkReader" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Tracker" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Input" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="SilkReader" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Mover" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="Collector" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Movement" method="_on_Respawner_on_revive"]
 [connection signal="timeout" from="Respawner/Timer" to="Respawner" method="_on_Timer_timeout"]
 [connection signal="on_move_completed" from="Mover" to="Specialties" method="_on_Mover_on_move_completed"]
 [connection signal="on_move_completed" from="Mover" to="Movement/Stamina" method="_on_Mover_on_move_completed"]
@@ -319,19 +333,20 @@ __meta__ = {
 [connection signal="on_instant_jump" from="Movement/FakeJumper" to="Jumper" method="_on_Jumper_on_instant_jump"]
 [connection signal="timeout" from="Movement/FakeJumper/Timer" to="Movement/FakeJumper" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Movement/FlyMovement/Timer" to="Movement/FlyMovement" method="_on_Timer_timeout"]
-[connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="Specialties" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="Specialties" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
-[connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_point" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
 [connection signal="body_entered" from="Tracker/FlyTracker/Area2D" to="Tracker/FlyTracker" method="_on_Area2D_body_entered"]
 [connection signal="body_exited" from="Tracker/FlyTracker/Area2D" to="Tracker/FlyTracker" method="_on_Area2D_body_exited"]
 [connection signal="timeout" from="Tracker/Switcher/Timer" to="Tracker/Switcher" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Trail/Timer" to="Trail" method="_on_Timer_timeout"]
+[connection signal="timeout" from="SilkReader/StuckTimer" to="SilkReader" method="_on_StuckTimer_timeout"]
 [connection signal="timeout" from="Specialties/Timer" to="Specialties" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Specialties/Modules/Doubler/Timer" to="Specialties/Modules/Doubler" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Specialties/Modules/Poison/Timer" to="Specialties/Modules/Poison" method="_on_Timer_timeout"]

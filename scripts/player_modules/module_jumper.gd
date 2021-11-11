@@ -4,7 +4,7 @@ const JUMP_DISTANCE_PER_SECOND : float = 750.0
 const JUMP_SCALE : float = 1.3
 const FLY_JUMP_DIST : float = 80.0
 
-const DIST_PER_POINT : float = 150.0
+const DIST_PER_POINT : float = 185.0
 
 var active : bool = false
 var input_disabled : bool = false
@@ -174,7 +174,7 @@ func shoot_silk_line(params):
 		return
 	
 	if res.new_edge:
-		res.new_edge.m.boss.set_to(body)
+		res.new_edge.m.boss.set_to(body, false)
 		res.new_edge.m.type.set_to('regular')
 
 	jump_data.target_pos = res.to.pos

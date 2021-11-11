@@ -6,11 +6,16 @@ var active : bool = true
 
 onready var body = get_parent()
 
+const STUCK_CHECK_INTERVAL : float = 1.5
+onready var stuck_timer = $StuckTimer
+
 func disable():
 	active = false
+	stuck_timer.stop()
 
 func enable():
 	active = true
+	stuck_timer.start()
 
 func reset_silk_type():
 	cur_silk_type = null
@@ -32,3 +37,18 @@ func _on_Status_on_death():
 
 func _on_Respawner_on_revive():
 	enable()
+
+func check_if_were_stuck(edge = null):
+	if not edge: edge = cur_edge
+	
+	if not edge or not is_instance_valid(edge): return
+	if not edge.m.boss.has_one(): return
+	if edge.m.boss.is_safe_for(body): return
+	
+	var prob = 1.0 - body.m.points.count() / 9.0
+	if randf() > prob: return
+	
+	body.m.status.incapacitate()
+
+func _on_StuckTimer_timeout():
+	check_if_were_stuck()

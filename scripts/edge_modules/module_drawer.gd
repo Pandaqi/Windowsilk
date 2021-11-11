@@ -71,6 +71,9 @@ func remove_pattern():
 	pattern_sprites = [[],[]]
 
 func set_pattern(num):
+	var already_has_pattern = (pattern_sprites[0].size() > 0)
+	if already_has_pattern: return
+	
 	# TO DO: set some icon? Update a shader to show a repeated version of an icon?
 	pattern = num
 	

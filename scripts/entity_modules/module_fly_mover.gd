@@ -2,9 +2,11 @@ extends Node2D
 
 onready var mover_handler = get_parent()
 onready var body = mover_handler.get_parent()
+
 onready var web = get_node("/root/Main/Web")
 
 const TURN_SPEED : float = 8.0
+const BOUND_KNOCKBACK_FORCE : float = 20.0
 
 var vec : Vector2 = Vector2.ZERO
 var speed
@@ -25,10 +27,11 @@ func module_update(dt):
 	var final_vec = forward_vec.slerp(vec.normalized(), TURN_SPEED * dt)
 	var final_move_speed = mover_handler.get_final_speed()
 	
-	# NOTE: Check acute dangers (such as "out of bounds") first, to make sure they are always obliged
-	var projected_end_pos = body.position + final_vec * final_move_speed * dt
-	if web.is_out_of_bounds(projected_end_pos):
-		vec *= -1
+	var projected_pos = body.position + final_vec*final_move_speed*dt
+	if web.is_out_of_bounds(projected_pos):
+		print("Feedback; Stay on screen please!")
+		body.set_rotation((-final_vec).angle())
+		body.m.knockback.apply(-final_vec*BOUND_KNOCKBACK_FORCE)
 		return
 	
 	var res = body.m.specialties.forbidden_due_to_one_way(final_vec)

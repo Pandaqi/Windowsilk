@@ -15,7 +15,20 @@ func initialize():
 
 func module_update(dt):
 	check_area()
+	check_general_area()
 	movement_handler.emit_signal("move_vec", vec, dt)
+
+func get_vec_towards_center():
+	var pos = body.position
+	var center = 0.5*Vector2(1920,1080)
+	var vec_to_center = (center - pos).normalized()
+	var rand_vec = vec_to_center.rotated((randf()-0.5)*0.5*PI)
+	return rand_vec
+
+func check_general_area():
+	if not body.m.generalarea.out_of_bounds(): return
+	
+	vec = get_vec_towards_center()
 
 func get_entities_near():
 	var bodies = area.get_overlapping_bodies()

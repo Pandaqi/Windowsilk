@@ -36,8 +36,12 @@ func paint():
 	var temp_type = type
 	if body.m.specialties.erase_silk_types():
 		temp_type = "regular"
-	if temp_type == "": return
 	
+	if GlobalDict.cfg.players_leave_trail and body.m.status.is_player():
+		last_known_edge.m.boss.set_to(body)
+		return
+	
+	if temp_type == "": return
 	last_known_edge.m.type.set_to(temp_type)
 	
 	disable_painting()

@@ -41,8 +41,7 @@ func paint_trail():
 	body.m.trail.paint_specific_edge(cur_edge)
 
 func handle_getting_stuck():
-	if not cur_edge.m.boss.has_one(): return
-	body.m.status.incapacitate()
+	body.m.silkreader.check_if_were_stuck(cur_edge)
 
 func arrived_on_point(p):
 	cur_point = p

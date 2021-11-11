@@ -1,6 +1,7 @@
 extends Node2D
 
 const DELAY_AT_POINT : float = 0.1
+const BOUNDS_CHECK_MARGIN : float = 5.0
 
 onready var mover_handler = get_parent()
 onready var body = mover_handler.get_parent()
@@ -11,6 +12,8 @@ var last_velocity : Vector2 = Vector2.RIGHT
 
 var cur_vec : Vector2 = Vector2.ZERO
 var desired_vec : Vector2 = Vector2.ZERO
+
+onready var web = get_node("/root/Main/Web")
 
 func _on_Input_move_vec(vec, dt):
 	desired_vec = vec
@@ -27,6 +30,9 @@ func module_update(dt):
 	
 	var new_pos = body.position
 	mover_handler.emit_signal("on_move_completed", (new_pos - cur_pos))
+	
+	if web.is_out_of_bounds(body.position, BOUNDS_CHECK_MARGIN):
+		body.m.status.die()
 
 func move_along_web(vec, dt):
 	if vec.length() <= 0.03: 

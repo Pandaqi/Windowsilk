@@ -9,7 +9,7 @@ var cfg = {
 	'objective_uses_home_base': true,
 	
 	'respawn_on_death': true,
-	'point_reset_val': 1, # used on respawn AND draining points at storage
+	'point_reset_val': 0, # used on respawn AND draining points at storage
 	
 	'debug_terrain_types': true,
 	'line_thickness': 30,
@@ -18,6 +18,11 @@ var cfg = {
 	
 	'point_difference_eating_players': 0,
 	'point_difference_holds_for_all': true,
+	
+	'players_leave_trail': true,
+	'short_owner_fade_time': 20.0,
+	'long_owner_fade_time': 300.0,
+	'owned_silk_catches_any_bug': true,
 	
 	'allow_eating_small_players': false,
 	'bigger_entities_move_slower': true,

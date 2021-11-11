@@ -298,7 +298,10 @@ func break_edge_in_two(edge, new_point, data):
 	edgeB.m.type.set_to(data_to_transfer.type)
 	
 	edgeA.m.boss.set_to(data_to_transfer.boss)
+	edgeA.m.boss.set_to_specific_time(data_to_transfer.boss_time_left)
+	
 	edgeB.m.boss.set_to(data_to_transfer.boss)
+	edgeB.m.boss.set_to_specific_time(data_to_transfer.boss_time_left)
 	
 	for e in data_to_transfer.entities:
 		var vec_to_split_point = (e.position - new_point.position).normalized()
@@ -377,6 +380,7 @@ func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = f
 	
 	var type = edge.m.type.get_it()
 	var boss = edge.m.boss.get_it()
+	var boss_time_left = edge.m.boss.get_time_left()
 	var entities = edge.m.entities.get_them()
 	if not keep_entities_alive:
 		for entity in entities:
@@ -387,7 +391,8 @@ func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = f
 	return {
 		'entities': entities,
 		'type': type,
-		'boss': boss
+		'boss': boss,
+		'boss_time_left': boss_time_left
 	}
 
 func create_between(a, b):

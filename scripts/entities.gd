@@ -25,7 +25,7 @@ func activate():
 	
 	# DEBUGGING
 	#available_types = ['fly', 'wasp', 'gnat', 'butterfly', 'bee', 'moth', 'mosquito', 'hornet']
-	#available_types = ['fly']
+	available_types = ['fly']
 	#return
 	
 	precalculate_probabilities()
