@@ -7,6 +7,7 @@ const CONSTANT_FB_THRESHOLD : float = 0.6
 onready var feedback = get_node("/root/Main/Feedback")
 var last_fb_time : float = 0.0
 
+var winner : bool = false
 
 var player_num : int = -1
 var team_num : int = -1
@@ -15,6 +16,8 @@ var is_incapacitated : bool = false
 
 var type : String = ""
 var data
+
+onready var crown = $Crown
 
 signal on_death()
 
@@ -33,10 +36,14 @@ func make_player(pnum, tnum):
 	body.add_to_group("Players")
 	
 	body.m.movement.shutdown()
+	
+	crown.set_visible(false)
 
 func make_non_player():
 	body.erase_module("input")
 	body.add_to_group("NonPlayers")
+	
+	crown.queue_free()
 
 func is_player():
 	return (player_num >= 0)
@@ -124,3 +131,16 @@ func give_constant_feedback(txt):
 	
 	last_fb_time = OS.get_ticks_msec()
 	give_feedback(txt)
+
+func _physics_process(dt):
+	if not winner: return
+	keep_crown_positioned()
+
+func keep_crown_positioned():
+	crown.set_position(to_local(body.position + Vector2.UP*90))
+	crown.set_rotation(-body.rotation)
+
+func make_winner():
+	winner = true
+	crown.set_visible(true)
+	

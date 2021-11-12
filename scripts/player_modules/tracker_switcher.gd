@@ -20,9 +20,7 @@ func restart_timer():
 
 func _on_Timer_timeout():
 	want_to_switch = true
-	
-	print("WANNA SWITCH")
-	
+
 	if cur_state == "web": fly()
 
 func switch_to(tp, params = {}):

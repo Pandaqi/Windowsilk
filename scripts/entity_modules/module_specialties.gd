@@ -36,6 +36,7 @@ func set_to(tp):
 	if (not tp) or (tp == ""): return
 	
 	type = tp
+	anim_player.stop(true)
 	
 	handle_immediate_effect()
 	restart_timer()
@@ -50,7 +51,6 @@ func reset():
 	type = ""
 	hide_icon()
 	
-	modulate.a = 1.0
 	anim_player.stop(true)
 
 func get_it():
@@ -61,6 +61,8 @@ func has_one():
 
 func show_icon():
 	var new_frame = GlobalDict.silk_types[type].frame
+	
+	icon.modulate.a = 1.0
 	icon.set_frame(new_frame)
 	icon.set_visible(true)
 

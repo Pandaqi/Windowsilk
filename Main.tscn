@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scripts/web.gd" type="Script" id=1]
 [ext_resource path="res://scripts/main.gd" type="Script" id=2]
@@ -6,9 +6,66 @@
 [ext_resource path="res://scripts/web_modules/module_points.gd" type="Script" id=4]
 [ext_resource path="res://scenes/level_bound.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scripts/entities.gd" type="Script" id=6]
+[ext_resource path="res://scenes/ui/gui_sign.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scripts/feedback.gd" type="Script" id=8]
+[ext_resource path="res://scripts/gui.gd" type="Script" id=9]
+[ext_resource path="res://assets/fonts/griffy.ttf" type="DynamicFontData" id=10]
+[ext_resource path="res://assets/ui/pause_reminder.png" type="Texture" id=11]
 [ext_resource path="res://scripts/spawner.gd" type="Script" id=14]
 [ext_resource path="res://scripts/players.gd" type="Script" id=16]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform vec2 p1;
+uniform vec2 p2;
+uniform vec2 p3;
+uniform vec2 p4;
+uniform vec2 p5;
+uniform vec2 p6;
+uniform vec2 home_base;
+
+uniform float radius = 50.0;
+uniform vec4 base_color : hint_color;
+
+const vec2 vp = vec2(1920.0, 1080.0);
+
+bool in_circle(vec2 pos, vec2 center) {
+	if(length(center) <= 0.05) { return false; }
+	return length(pos - center) <= radius;
+}
+
+void fragment() {
+	vec2 pos = UV*vp;
+	vec4 color = base_color;
+	if(in_circle(pos, p1)) { color.a = 0.0; }
+	if(in_circle(pos, p2)) { color.a = 0.0; }
+	if(in_circle(pos, p3)) { color.a = 0.0; }
+	if(in_circle(pos, p4)) { color.a = 0.0; }
+	if(in_circle(pos, p5)) { color.a = 0.0; }
+	if(in_circle(pos, p6)) { color.a = 0.0; }
+	if(in_circle(pos, home_base)) { color.a = 0.0; }
+	
+	COLOR = color;
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/p1 = null
+shader_param/p2 = null
+shader_param/p3 = null
+shader_param/p4 = null
+shader_param/p5 = null
+shader_param/p6 = null
+shader_param/home_base = null
+shader_param/radius = 90.0
+shader_param/base_color = Color( 0.0705882, 0.0666667, 0.129412, 0.717647 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 256
+outline_size = 10
+outline_color = Color( 0.180392, 0.180392, 0.180392, 1 )
+font_data = ExtResource( 10 )
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 2 )
@@ -57,4 +114,71 @@ script = ExtResource( 8 )
 
 [node name="Tween" type="Tween" parent="."]
 
+[node name="GUI" type="CanvasLayer" parent="."]
+pause_mode = 2
+script = ExtResource( 9 )
+
+[node name="Cutout" type="ColorRect" parent="GUI"]
+material = SubResource( 2 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BG" type="ColorRect" parent="GUI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 1, 1, 1, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GUISign1" parent="GUI" instance=ExtResource( 7 )]
+position = Vector2( 391.806, 0 )
+line_color = Color( 0.309804, 0, 0.368627, 1 )
+
+[node name="GUISign2" parent="GUI" instance=ExtResource( 7 )]
+position = Vector2( 961.931, 0 )
+line_color = Color( 0, 0.223529, 0.239216, 1 )
+frame = 1
+
+[node name="GUISign3" parent="GUI" instance=ExtResource( 7 )]
+position = Vector2( 1545.17, 0 )
+line_color = Color( 0.239216, 0.133333, 0, 1 )
+frame = 2
+
+[node name="Timer" type="Timer" parent="GUI"]
+one_shot = true
+
+[node name="GameOverTimer" type="Timer" parent="GUI"]
+one_shot = true
+
+[node name="Tween" type="Tween" parent="GUI"]
+
+[node name="Message" type="Node2D" parent="GUI"]
+position = Vector2( 960, 540 )
+
+[node name="Label" type="Label" parent="GUI/Message"]
+margin_left = -890.0
+margin_top = -195.0
+margin_right = 890.0
+margin_bottom = 151.0
+custom_fonts/font = SubResource( 3 )
+text = "Game Over!"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PauseReminder" type="Node2D" parent="GUI"]
+
+[node name="Sprite" type="Sprite" parent="GUI/PauseReminder"]
+position = Vector2( 113.628, 35.7718 )
+scale = Vector2( 0.25, 0.25 )
+texture = ExtResource( 11 )
+
 [connection signal="timeout" from="Entities/Timer" to="Entities" method="_on_Timer_timeout"]
+[connection signal="timeout" from="GUI/Timer" to="GUI" method="_on_Timer_timeout"]
+[connection signal="timeout" from="GUI/GameOverTimer" to="GUI" method="_on_GameOverTimer_timeout"]

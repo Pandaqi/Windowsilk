@@ -3,8 +3,14 @@ extends Node2D
 onready var web = $Web
 onready var entities = $Entities
 onready var players = $Players
+onready var gui = $GUI
 
 var game_over_state : bool = false
+
+# DEBUGGING QUICK GAME OVER
+func _input(ev):
+	if ev.is_action_released("ui_up"):
+		game_over(0)
 
 func _ready():
 	randomize()
@@ -48,8 +54,12 @@ func on_team_won(team_num):
 	game_over(team_num)
 
 func game_over(winning_team):
+	if game_over_state: return
+	
 	game_over_state = true
 	
-	print("GAME OVER")
-	print("WINNING TEAM: " + str(winning_team))
-	pass
+	var players_in_team = players.get_players_in_team(winning_team)
+	for p in players_in_team:
+		p.m.status.make_winner()
+	
+	gui.activate_game_over(winning_team)

@@ -103,7 +103,6 @@ func try_point_move(vec, _dt):
 	if not best_edge: return false
 	
 	if not best_edge.m.boss.can_enter(body):
-		body.m.status.give_constant_feedback("Owned by someone else!")
 		return false
 	
 	if best_edge.m.type.direction_forbidden(vec): 

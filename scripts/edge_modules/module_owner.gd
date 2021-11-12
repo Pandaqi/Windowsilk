@@ -39,10 +39,19 @@ func can_enter(entity):
 	if entity.is_in_group("NonPlayers") and GlobalDict.cfg.ai_can_enter_owned_silk: return true
 	
 	# handles the Lowlife specialty => both silk type and powerup
-	if body.m.type.equals("lowlife") and entity.m.specialties.has_one(): return false
-	if entity.m.specialties.check_type("lowlife") and body.m.type.is_special(): return false
+	if body.m.type.equals("lowlife") and entity.m.specialties.has_one(): 
+		entity.m.status.give_constant_feedback("Can't enter with powerup!")
+		return false
+		
+	if entity.m.specialties.check_type("lowlife") and body.m.type.is_special():
+		entity.m.status.give_constant_feedback("Can't enter special lines!")
+		return false
 	
-	return boss.m.status.team_num == entity.m.status.team_num
+	if boss.m.status.team_num != entity.m.status.team_num:
+		entity.m.status.give_constant_feedback("Owned by someone else!")
+		return false
+	
+	return true
 
 # TO DO: Might put this on a slower timer, as we really don't need this precision/speed of updates
 func _physics_process(dt):
