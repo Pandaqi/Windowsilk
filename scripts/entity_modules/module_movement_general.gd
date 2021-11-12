@@ -66,8 +66,8 @@ func check_flee_and_chase():
 	var hit_body = entity_rc.get_collider()
 	if not hit_body.is_in_group("Entities"): return
 	
-	var body_is_a_threat = hit_body.m.collector.can_collect(body)
-	var body_is_food = body.m.collector.can_collect(hit_body)
+	var body_is_a_threat = hit_body.m.collector.can_collect(body, false)
+	var body_is_food = body.m.collector.can_collect(hit_body, false)
 	
 	if has_fleeing_behavior(hit_body) and body_is_a_threat:
 		var vec_away = (body.position - hit_body.position).normalized()

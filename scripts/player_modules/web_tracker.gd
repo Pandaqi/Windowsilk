@@ -9,6 +9,8 @@ onready var body = tracker_handler.get_parent()
 onready var spawner = get_node("/root/Main/Spawner")
 onready var edges = get_node("/root/Main/Web/Edges")
 
+signal teleported()
+
 func initialize(params = {}):
 	var data = spawner.get_valid_random_position(params)
 	
@@ -33,6 +35,8 @@ func initialize(params = {}):
 		force_set_edge(edge)
 	elif point:
 		force_set_point(point)
+	
+	emit_signal("teleported")
 
 func module_update(_dt):
 	keep_positioned_on_web()

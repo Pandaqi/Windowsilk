@@ -3,7 +3,8 @@ extends Node2D
 const SLIPPERY_FACTOR : float = 3.0 # lower = more slippery
 const TIMEBOMB_THRESHOLD : float = 5.0
 
-const DURATION : float = 8.0
+const DURATION : float = 10.0
+const FLICKER_THRESHOLD : float = 3.0 # from what point the icon starts flickering to indicate it's wearing out
 const NOISE_MAKER_FORCE : float = 300.0
 
 const FEATHERLIGHT_SPEED : float = 0.1 # how fast points move inwards
@@ -15,6 +16,8 @@ var time_spent_on_edge : float = 0.0
 onready var timer = $Timer
 onready var icon = $Sprite
 onready var body = get_parent()
+
+onready var anim_player = $AnimationPlayer
 
 var last_known_move_direction : Vector2 = Vector2.ZERO
 
@@ -46,6 +49,9 @@ func reset():
 	
 	type = ""
 	hide_icon()
+	
+	modulate.a = 1.0
+	anim_player.stop(true)
 
 func get_it():
 	return type
@@ -100,7 +106,8 @@ func handle_featherlight(dt):
 	cur_edge.m.body.move_extremes_inward(FEATHERLIGHT_SPEED, dt)
 
 func hijack_jump_press():
-	if check_type("flight"): 
+	# EXCEPTION: AI bugs that jump aren't influenced by flight powerup, as they'd never land
+	if check_type("flight") and body.m.status.is_player(): 
 		body.m.tracker.switcher.request_flight()
 		if type != "flight": set_to("flight")
 		return true
@@ -121,9 +128,19 @@ func hijack_jump_release():
 
 func _physics_process(dt):
 	reposition_icon()
+	check_wearout_reminder()
 	handle_continuous_effect(dt)
 
+func check_wearout_reminder():
+	if not body.m.status.is_player(): return
+	if type == "": return
+	if timer.time_left >= FLICKER_THRESHOLD: return
+	if anim_player.is_playing(): return
+	
+	anim_player.play("FlickerReminder")
+
 func reposition_icon():
+	if type == "": return
 	icon.set_position(Vector2(0,-43).rotated(-body.rotation))
 	icon.set_rotation(-body.rotation)
 
@@ -176,6 +193,9 @@ func jumping_is_forbidden():
 func jumping_is_aggressive():
 	return check_type("aggressor")
 
+func is_poisoned():
+	return m.poison.is_active()
+
 func can_be_eaten():
 	if check_type("shield"): return false
 	return true
@@ -217,3 +237,9 @@ func _on_Mover_on_move_completed(vec):
 
 func _on_Status_on_death():
 	reset()
+
+func change_icon_visibility(val):
+	icon.set_visible(val)
+
+func _on_GeneralArea_on_nearby_players_changed(val):
+	change_icon_visibility(val)

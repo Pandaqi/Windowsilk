@@ -45,7 +45,6 @@ func update_positions():
 
 func remove_from_all():
 	if not active_module: return
-	if not active_module.has_method("remove_from_all"): return
 	active_module.remove_from_all()
 
 # TO DO: This is hacky => I should find out what causes entities to not be properly removed from edges (sometimes) and fix THAT

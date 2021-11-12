@@ -399,6 +399,7 @@ func create_between(a, b):
 	var e = edge_scene.instance()
 	add_child(e)
 	e.m.body.set_extremes(a, b)
+	e.m.drawer.play_creation_tween()
 	
 	a.m.edges.add(e)
 	b.m.edges.add(e)

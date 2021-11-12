@@ -42,6 +42,9 @@ script = ExtResource( 9 )
 texture = ExtResource( 7 )
 hframes = 6
 
+[node name="IconContainer" type="Node2D" parent="HomeBase"]
+position = Vector2( 0, 32.3501 )
+
 [node name="Points" type="Node2D" parent="HomeBase"]
 
 [node name="Points" type="Label" parent="HomeBase/Points"]

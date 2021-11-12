@@ -3,6 +3,11 @@ extends Node2D
 onready var body = get_parent()
 onready var main_node = get_node("/root/Main")
 
+const CONSTANT_FB_THRESHOLD : float = 0.6
+onready var feedback = get_node("/root/Main/Feedback")
+var last_fb_time : float = 0.0
+
+
 var player_num : int = -1
 var team_num : int = -1
 var is_dead : bool = false
@@ -38,6 +43,7 @@ func is_player():
 
 func initialize(placement_params):
 	body.m.tracker.set_move_type(get_move_type(), placement_params)
+	body.m.generalarea.activate()
 
 func get_move_type():
 	if not data.has('move'): return 'web'
@@ -79,15 +85,19 @@ func same_type(tp):
 func incapacitate():
 	is_incapacitated = true
 	
+	give_feedback("Stuck!")
+	
 	body.m.movement.disable()
 	body.m.mover.disable()
 	body.m.visuals.incapacitate()
+	body.m.collector.disable()
 
 func die():
 	if is_dead: return
 	is_dead = true
 
 	emit_signal("on_death")
+	give_feedback("You died!")
 	
 	if not is_player():
 		body.m.tracker._on_Status_on_death() # we call this manually as it only needs to be called for non-players
@@ -102,3 +112,15 @@ func die():
 
 func _on_Respawner_on_revive():
 	is_dead = false
+
+func give_feedback(txt):
+	if not is_player(): return
+	
+	feedback.create(body.position, txt)
+
+func give_constant_feedback(txt):
+	var time_since_last_fb = (OS.get_ticks_msec() - last_fb_time)/1000.0
+	if time_since_last_fb < CONSTANT_FB_THRESHOLD: return
+	
+	last_fb_time = OS.get_ticks_msec()
+	give_feedback(txt)

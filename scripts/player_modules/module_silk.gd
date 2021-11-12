@@ -32,6 +32,11 @@ func change(val):
 	
 	if not GlobalDict.cfg.objective_uses_home_base:
 		main_node.on_player_progression(body)
+	
+	body.m.tween.interpolate_property(label_container, "scale",
+		Vector2(2,2), Vector2(1,1), 0.5,
+		Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	body.m.tween.start()
 
 func _physics_process(_dt):
 	label_container.set_rotation(-body.rotation)
@@ -50,3 +55,9 @@ func count():
 
 func is_small():
 	return num <= GlobalDict.cfg.point_reset_val
+
+func change_icon_visibility(val):
+	label.set_visible(val)
+
+func _on_GeneralArea_on_nearby_players_changed(val):
+	change_icon_visibility(val)

@@ -63,14 +63,14 @@ func can_always_be_eaten():
 	if not data.has('always'): return false
 	return data.always
 
-func can_collect(other_body):
+func can_collect(other_body, give_feedback = true):
 	# cannot eat ourselves or non-entities
 	if other_body == body: return false
 	if not other_body.is_in_group("Entities"): return false
 	
 	# we're at max capacity?
 	if body.m.points.at_max_capacity(): 
-		print("Feedback; At max capacity")
+		if give_feedback: body.m.status.give_constant_feedback("Max capacity!")
 		return false
 	
 	# if the other is no (longer) a valid entity, abort
@@ -79,15 +79,28 @@ func can_collect(other_body):
 	# conversely, if the other is incapacitated, they cannot defend themselves and eating is always possible
 	# (mostly applies to flying bugs getting stuck in player-owned silk)
 	if other_body.m.status.is_incapacitated: return true
+	
+	# if a player is near their home base, they are invincible
+	if other_body.m.generalarea.has_protection_from_home_base(): 
+		if give_feedback: other_body.m.status.give_constant_feedback("Protected by home!")
+		return false
+	
+	# no need to eat/chase something that's already poisoned if we're poisoned
+	if body.m.specialties.is_poisoned() and other_body.m.specialties.is_poisoned():
+		return false
 
 	# special properties that mess with eating
 	if not data.has('ignore_specialties'):
 		if is_friendly(): return false
 		
-		if body.m.specialties.can_eat_anything(): return true
+		if body.m.specialties.can_eat_anything(): 
+			if give_feedback: body.m.status.give_constant_feedback("Hungry!")
+			return true
 		if other_body.m.collector.can_always_be_eaten(): return true
 		
-		if not other_body.m.specialties.can_be_eaten(): return false
+		if not other_body.m.specialties.can_be_eaten(): 
+			if give_feedback: body.m.status.give_constant_feedback("Can't be eaten!")
+			return false
 		if body.m.status.same_type_as_node(other_body) and not is_cannibal(): return false
 	
 	# now apply the point check => more points than the other? can eat
@@ -104,6 +117,7 @@ func can_collect(other_body):
 	
 	if we_are_player and they_are_player:
 		if not GlobalDict.cfg.allow_eating_small_players and other_body.m.points.is_small():
+			if give_feedback: body.m.status.give_constant_feedback("Too small to eat!")
 			return false
 	
 	var we_have_more_points = (our_points > (their_points + margin))

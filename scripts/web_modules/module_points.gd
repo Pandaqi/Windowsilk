@@ -12,6 +12,7 @@ func create_at(pos):
 	p.set_position(pos)
 	add_child(p)
 	
+	p.m.drawer.play_creation_tween()
 	p.m.status.check()
 	
 	if debug:

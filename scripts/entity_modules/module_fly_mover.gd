@@ -29,7 +29,7 @@ func module_update(dt):
 	
 	var projected_pos = body.position + final_vec*final_move_speed*dt
 	if web.is_out_of_bounds(projected_pos):
-		print("Feedback; Stay on screen please!")
+		body.m.status.give_constant_feedback("Stay on screen!")
 		body.set_rotation((-final_vec).angle())
 		body.m.knockback.apply(-final_vec*BOUND_KNOCKBACK_FORCE)
 		return

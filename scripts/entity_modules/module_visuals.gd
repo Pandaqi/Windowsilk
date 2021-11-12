@@ -56,12 +56,23 @@ func update_scale(num):
 	
 	if data.visuals.has('narrow'):
 		new_scale *= GlobalDict.cfg.narrow_bug_upscale
-	
-	set_scale(Vector2(1,1)*new_scale)
+
+	tween_scale_change(Vector2(1,1)*new_scale)
 	
 	body.m.collector.update_collision_shape(new_scale)
+
+func tween_scale_change(new):
+	set_scale(1.5*new)
+	body.m.tween.interpolate_property(self, "scale",
+		scale, new, 0.5,
+		Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	
+	body.m.tween.start()
 
 # TO DO: Also use this to handle collapsing of wings and stuff (and tweening?)
 func on_move_type_changed(new_type):
 	legs.on_move_type_changed(new_type)
 	wings.on_move_type_changed(new_type)
+
+func _on_WebTracker_teleported():
+	legs.reset_legs()

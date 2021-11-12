@@ -26,6 +26,8 @@ func _on_Timer_timeout():
 	if cur_state == "web": fly()
 
 func switch_to(tp, params = {}):
+	if body.m.status.is_incapacitated: return
+	
 	# first, remove us from any positions we're saved
 	body.m.tracker.remove_from_all()
 	
@@ -106,7 +108,7 @@ func try_landing(point, edge):
 	
 	var nowhere_to_land = (not point) and (not edge)
 	if nowhere_to_land:
-		print("Feedback; Nowhere to land, you die instead")
+		body.m.status.give_feedback("Nowhere to land!")
 		body.m.status.die()
 		return
 	

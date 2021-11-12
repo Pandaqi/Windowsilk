@@ -90,7 +90,7 @@ func get_forward_vec():
 func prepare_jump():
 	if body.is_in_group("Players"): 
 		if body.m.points.is_empty() and not body.m.specialties.jumping_is_free():
-			print("Feedback: need points to jump!")
+			body.m.status.give_feedback("Need points!")
 			return
 	
 	body.m.mover.disable()
@@ -160,16 +160,13 @@ func determine_jump_details():
 	return params
 
 func shoot_silk_line(params):
-	# TO DO: give feedback => and differentiate, as these cases are really not the same
-	# NOTE: If I simply _return_ if "new_edge" is not present, we completely disallow jumping over existing edges - is that a good idea or not?
 	var res = edges.shoot(params)
 	if res.failed:
-		print("No jump possible")
+		body.m.status.give_feedback("No jump possible")
 		finish_jump()
 		return
 	
 	if res.destroy:
-		print("Destroy jump, no need to actually move")
 		finish_jump()
 		return
 	
@@ -288,7 +285,7 @@ func is_dir_valid(params):
 	to = params.from + params.dir*(dist_to_target+margin)
 	result = space_state.intersect_ray(params.from + params.dir*epsilon, to, params.exclude, col_layer)
 	
-	if result and result.collider.m.collector.can_collect(body): return false
+	if result and result.collider.m.collector.can_collect(body, false): return false
 	
 	return true
 
@@ -302,3 +299,9 @@ func find_valid_jumping_dir(params):
 		bad_direction = false
 	
 	return params.vec
+
+func _on_Status_on_death():
+	if tween.is_active():
+		tween.stop_all()
+	
+	input_disabled = false

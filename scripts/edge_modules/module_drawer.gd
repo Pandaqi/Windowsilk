@@ -10,12 +10,14 @@ var icon_scale = Vector2(1,1) * (icon_width / original_icon_width)
 var full_pattern_length : float = 0.0
 var icon_offset : float
 var icon_margin : float = 3.0
-var icon_extrude : float = 0.5 # how much the icon sticks out from the sides of the edge
+var icon_extrude : float = 0.75 # how much the icon sticks out from the sides of the edge
 
 var pattern_sprites = [[],[]]
 
 onready var body = get_parent()
 onready var sprite = $Sprite
+
+onready var tween = get_node("/root/Main/Tween")
 
 var team_icon_scene = preload("res://scenes/team_icon.tscn")
 
@@ -27,8 +29,15 @@ func update_visuals():
 	update()
 
 func set_color(col):
+	tween_color_change(col)
 	color = col
 	update()
+
+func tween_color_change(col):
+	tween.interpolate_property(self, "self_modulate",
+		self_modulate, col, 0.6, 
+		Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	tween.start()
 
 func set_icon(data):
 	var frame = data.frame
@@ -88,6 +97,7 @@ func set_pattern(num):
 			icon.set_scale(icon_scale)
 			icon.set_frame(num)
 			icon.set_rotation(angles[j])
+			icon.show_behind_parent = true
 			add_child(icon)
 			pattern_sprites[j].append(icon)
 
@@ -101,10 +111,10 @@ func draw_rectangle():
 	var col_rect = body.m.body.col_shape.extents
 	var rect = Rect2(-col_rect, 2*col_rect)
 
-	draw_rect(rect, color, true)
+	draw_rect(rect, Color(1,1,1), true)
 	
 	if GlobalDict.cfg.draw_outlines_on_web:
-		draw_rect(rect, color.darkened(0.5), false, GlobalDict.cfg.outline_width, true)
+		draw_rect(rect, Color(1,1,1).darkened(GlobalDict.cfg.outline_darkening), false, GlobalDict.cfg.outline_width, true)
 
 func draw_pattern():
 	var line_thickness = body.m.body.get_thickness()
@@ -119,10 +129,18 @@ func draw_pattern():
 			var icon = arr[j]
 			var pos = (j * (icon_width + icon_margin) + icon_offset)*Vector2.RIGHT + ortho_vec * icon_extrude * line_thickness
 			icon.set_position(pos)
-			icon.modulate = color
+			icon.modulate = color.darkened(GlobalDict.cfg.outline_darkening)
 			icon.modulate.a = ratio
 
 func fade_icons(ratio):
 	for arr in pattern_sprites:
 		for sprite in arr:
 			sprite.modulate.a = ratio
+
+func play_creation_tween():
+	tween.interpolate_property(self, "scale",
+		Vector2(1,1)*1.5, Vector2(1,1), 0.5,
+		Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	tween.start()
+	
+	

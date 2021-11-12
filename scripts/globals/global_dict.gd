@@ -14,6 +14,7 @@ var cfg = {
 	'debug_terrain_types': true,
 	'line_thickness': 30,
 	'draw_outlines_on_web': true,
+	'outline_darkening': 0.5,
 	'outline_width': 3,
 	
 	'point_difference_eating_players': 0,

@@ -52,8 +52,8 @@ func check_area():
 	var max_dist = area.get_node("CollisionShape2D").shape.radius
 	
 	for b in bodies:
-		var body_is_a_threat = b.m.collector.can_collect(body)
-		var body_is_food = body.m.collector.can_collect(b)
+		var body_is_a_threat = b.m.collector.can_collect(body, false)
+		var body_is_food = body.m.collector.can_collect(b, false)
 		var vec_to = (b.position - body.position)
 		var weight = vec_to.length() / max_dist
 		

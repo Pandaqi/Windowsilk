@@ -8,13 +8,19 @@ onready var body = specialty_module.get_parent()
 
 const SPEED_DECREASE_PER_TIMEOUT : float = 0.1
 var speed_multiplier : float = 1.0
+var active : bool = false
 
 func activate():
 	speed_multiplier = 1.0 
 	restart_timer()
+	active = true
 
 func deactivate():
 	timer.stop()
+	active = false
+
+func is_active():
+	return active
 
 func restart_timer():
 	speed_multiplier = max(speed_multiplier - SPEED_DECREASE_PER_TIMEOUT, 0.2)

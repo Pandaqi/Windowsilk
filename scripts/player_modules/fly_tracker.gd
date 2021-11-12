@@ -25,9 +25,27 @@ func initialize(params):
 	body.set_position(pos)
 
 func get_current_edge():
+	if not is_instance_valid(cur_edge):
+		cur_edge = null
+	
+	if not cur_edge:
+		for b in area.get_overlapping_bodies():
+			if b.is_in_group("Edges"):
+				cur_edge = b
+				break
+		
 	return cur_edge
 
 func get_current_point():
+	if not is_instance_valid(cur_point):
+		cur_point = null
+	
+	if not cur_point:
+		for b in area.get_overlapping_bodies():
+			if b.is_in_group("Points"):
+				cur_point = b
+				break
+	
 	return cur_point
 
 func arrived_on_edge(e):
@@ -62,3 +80,7 @@ func _on_Area2D_body_exited(other_body):
 		cur_edge = null
 	elif other_body == cur_point:
 		cur_point = null
+
+func remove_from_all():
+	cur_point = null
+	cur_edge = null
