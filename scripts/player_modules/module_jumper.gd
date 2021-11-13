@@ -48,6 +48,9 @@ func get_max_dist():
 	
 	return 5000.0
 
+func disable_input():
+	input_disabled = true
+
 func _on_Input_move_vec(vec, dt):
 	if not active: return
 	

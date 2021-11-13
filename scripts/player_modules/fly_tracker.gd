@@ -22,6 +22,7 @@ func initialize(params):
 	if params.has('fixed_pos'):
 		pos = params.fixed_pos
 	
+	body.set_rotation(2*PI*randf())
 	body.set_position(pos)
 
 func get_current_edge():

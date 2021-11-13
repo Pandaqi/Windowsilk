@@ -15,6 +15,9 @@ func create_at(pos):
 	p.m.drawer.play_creation_tween()
 	p.m.status.check()
 	
+	if Global.in_game:
+		p.erase_module('menu')
+	
 	if debug:
 		print("Point Created")
 		print(pos)

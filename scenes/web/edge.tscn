@@ -38,5 +38,6 @@ script = ExtResource( 2 )
 script = ExtResource( 3 )
 
 [node name="Sprite" parent="Drawer" instance=ExtResource( 7 )]
+visible = false
 
 [connection signal="timeout" from="Boss/Timer" to="Boss" method="_on_Timer_timeout"]

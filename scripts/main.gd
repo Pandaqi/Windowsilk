@@ -4,6 +4,7 @@ onready var web = $Web
 onready var entities = $Entities
 onready var players = $Players
 onready var gui = $GUI
+onready var arena = $Arena
 
 var game_over_state : bool = false
 
@@ -21,6 +22,7 @@ func _ready():
 	web.activate()
 
 func web_loading_done():
+	arena.activate()
 	players.activate()
 	entities.activate()
 	

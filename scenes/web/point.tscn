@@ -75,6 +75,8 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Menu/Area2D"]
 shape = SubResource( 2 )
 
+[node name="Tween" type="Tween" parent="Menu"]
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 

@@ -4,6 +4,7 @@ var starting_points = []
 var prompts = []
 
 var prompt_scene = preload("res://scenes/ui/prompt.tscn")
+onready var main_node = get_node("/root/Main")
 
 signal player_logged_in()
 
@@ -21,6 +22,10 @@ func create_new(num):
 	p.m.status.set_type("player_spider")
 	p.m.status.make_player(num, team_num)
 	p.m.status.make_menu_entity()
+	
+	if main_node.web_is("arenas") or main_node.web_is("bugs"):
+		p.m.jumper.disable_input()
+		p.m.mover.force_update_speed_scale(2.0)
 
 	var start_point = starting_points[num]
 
@@ -46,7 +51,11 @@ func show_next_register_prompt():
 	var next_player_num = GlobalInput.get_player_count()
 	if next_player_num >= 6: return
 	
-	prompts[next_player_num].set_visible(true)
+	var val = true
+	if not main_node.web_is("menu"):
+		val = false
+	
+	prompts[next_player_num].set_visible(val)
 	prompts[next_player_num].set_frame(10)
 
 func add_starting_position(point, index):

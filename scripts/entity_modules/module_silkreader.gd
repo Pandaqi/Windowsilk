@@ -6,7 +6,7 @@ var active : bool = true
 
 onready var body = get_parent()
 
-const STUCK_CHECK_INTERVAL : float = 1.5
+const STUCK_CHECK_INTERVAL : float = 3.0
 onready var stuck_timer = $StuckTimer
 
 func disable():
@@ -15,6 +15,8 @@ func disable():
 
 func enable():
 	active = true
+	
+	stuck_timer.wait_time = STUCK_CHECK_INTERVAL
 	stuck_timer.start()
 
 func reset_silk_type():
@@ -47,7 +49,7 @@ func check_if_were_stuck(edge = null):
 	
 	var prob = 1.0 - body.m.points.count() / (GlobalDict.cfg.max_points_capacity + 1.0)
 	if randf() > prob: return
-	
+
 	position_precisely_on_edge(edge)
 
 	body.m.status.incapacitate()

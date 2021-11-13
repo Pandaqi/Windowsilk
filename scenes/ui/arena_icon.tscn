@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/ui/arena_icons.png" type="Texture" id=1]
+
+[node name="ArenaIcon" type="Sprite"]
+scale = Vector2( 0.25, 0.25 )
+texture = ExtResource( 1 )
+hframes = 4
+vframes = 4

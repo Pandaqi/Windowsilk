@@ -209,13 +209,18 @@ func can_eat_anything():
 
 func update_time_spent_on_edge(dt):
 	time_spent_on_edge += dt
+	
 	if time_spent_on_edge > TIMEBOMB_THRESHOLD:
+		var should_reset = false
 		if check_type("time_loser"):
 			body.m.points.change(-1)
+			should_reset = true
 		elif check_type("time_gainer"):
 			body.m.points.change(+1)
+			should_reset = true
 		
-		time_spent_on_edge = 0.0
+		if should_reset:
+			time_spent_on_edge = 0.0
 	
 func _on_Tracker_arrived_on_edge(e):
 	time_spent_on_last_edge = time_spent_on_edge

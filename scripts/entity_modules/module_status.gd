@@ -89,6 +89,8 @@ func set_type(tp):
 	body.m.collector.set_data(data)
 	body.m.movement.set_data(data)
 	
+	body.m.silkreader.enable()
+	
 	if data.has('specialty'):
 		body.m.specialties.set_to(data.specialty)
 
@@ -108,6 +110,8 @@ func incapacitate():
 	body.m.movement.disable()
 	body.m.mover.disable()
 	body.m.visuals.incapacitate()
+	body.m.jumper.disable_input()
+	body.m.silkreader.disable()
 	body.m.collector.disable()
 
 func die():

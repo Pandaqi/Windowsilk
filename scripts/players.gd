@@ -16,8 +16,8 @@ func create_player(num):
 	var p = entity_scene.instance()
 	web.entities.add_child(p)
 	
-	var team_num = num # for now;; read from "player_data" when I have menus
-	p.m.status.set_type("player_spider") # for now;; different teams will have different types?
+	var team_num = GlobalDict.player_data[num].team
+	p.m.status.set_type("player_spider")
 	p.m.status.make_player(num, team_num)
 	
 	var home_base_point = web.home_bases[team_num]

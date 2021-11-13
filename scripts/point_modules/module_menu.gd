@@ -5,16 +5,39 @@ var num_players_here : int = 0
 var num_players_nearby : int = 0
 var team_num : int = -1
 
-var react_to_nearby_players = ["arenas", "bugs", "settings", "quit"]
+var react_to_nearby_players = ["arenas", "bugs", "settings", "quit", "config"]
 
 onready var body = get_parent()
 onready var feedback = get_node("/root/Main/Feedback")
 onready var main_node = get_node("/root/Main")
 
+var bug_icon = preload("res://scenes/ui/bug_icon.tscn")
+var arena_icon = preload("res://scenes/ui/arena_icon.tscn")
+
+var bug_tutorial = preload("res://scenes/ui/bug_tutorial.tscn")
+var arena_tutorial = preload("res://scenes/ui/arena_tutorial.tscn")
+
+onready var tween = $Tween
+
+const TUTORIAL_SHOW_RADIUS : float = 30.0
+
+# TO DO: Very ugly, but it works for now
+var item_name = null
+var item_list
+var item_type
+var item_data
+var item_icon = null
+var item_tutorial
+
+var toggled : bool = false
+
 func set_type(tp):
 	type = tp
 	
-	# TO DO: change appearance?
+	if type == "config":
+		var shp = $Area2D/CollisionShape2D.shape.duplicate(true)
+		shp.radius = TUTORIAL_SHOW_RADIUS
+		$Area2D/CollisionShape2D.shape = shp
 
 func on_entity_enter(e):
 	if type == "": return
@@ -76,6 +99,7 @@ func _on_Area2D_body_entered(other_body):
 	
 	if num_players_nearby > 0:
 		main_node.emit_signal("players_nearby", true, type)
+		on_players_nearby(true)
 
 func _on_Area2D_body_exited(other_body):
 	if not other_body.is_in_group("Players"): return
@@ -85,3 +109,75 @@ func _on_Area2D_body_exited(other_body):
 	
 	if num_players_nearby <= 0:
 		main_node.emit_signal("players_nearby", false, type)
+		on_players_nearby(false)
+
+func make_config_item(itm_name, itm_type, lst):
+	item_name = itm_name
+	item_type = itm_type
+	item_list = lst
+	item_data = item_list[item_name]
+	
+	# set icon and tutorial sprite
+	if item_type == "bugs":
+		item_icon = bug_icon.instance()
+		item_tutorial = bug_tutorial.instance()
+	elif item_type == "arenas":
+		item_icon = arena_icon.instance()
+		item_tutorial = arena_tutorial.instance()
+	
+	item_icon.set_frame(item_data.frame)
+	item_tutorial.set_frame(item_data.frame)
+	item_tutorial.modulate.a = 0.0
+	
+	var y_offset = -200
+	if body.position.y < 0.5*1080:
+		y_offset *= -1
+	
+	add_child(item_icon)
+	feedback.add_child(item_tutorial)
+	item_tutorial.set_position(body.position + Vector2(0, y_offset))
+	
+	read_value_from_config()
+
+func read_value_from_config():
+	var val = GlobalConfig.read_game_config(item_type, item_name)
+	
+	if val != toggled:
+		toggle()
+	else:
+		toggle()
+		toggle()
+
+func toggle():
+	if not item_name: return
+	
+	toggled = not toggled
+	
+	if toggled:
+		body.m.drawer.scale_radius(2.0)
+		body.m.drawer.set_color(Color(0,1,0))
+		item_icon.modulate.a = 1.0
+	else:
+		body.m.drawer.scale_radius(1.5)
+		body.m.drawer.set_color(Color(0,0,0))
+		item_icon.modulate.a = 0.5
+	
+	GlobalConfig.update_game_config(item_type, item_name, toggled)
+
+func on_players_nearby(val):
+	if type != "config": return
+	
+	if val: show_tutorial()
+	else: fade_tutorial()
+
+func show_tutorial():
+	tween.interpolate_property(item_tutorial, "modulate",
+		item_tutorial.modulate, Color(1,1,1,1), 0.5,
+		Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	tween.start()
+
+func fade_tutorial():
+	tween.interpolate_property(item_tutorial, "modulate",
+		item_tutorial.modulate, Color(1,1,1,0), 0.5,
+		Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	tween.start()

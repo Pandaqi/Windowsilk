@@ -40,6 +40,9 @@ func set_speed(sp):
 func get_final_speed():
 	return speed * speed_scale
 
+func force_update_speed_scale(val):
+	speed_scale = val
+
 func update_speed_scale(num):
 	if not GlobalDict.cfg.bigger_entities_move_slower: return
 	

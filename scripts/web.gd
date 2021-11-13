@@ -3,6 +3,7 @@ extends Node2D
 onready var edges = $Edges
 onready var points = $Points
 onready var entities = $Entities
+onready var BG = $BG
 
 onready var main_node = get_node("/root/Main")
 
@@ -82,6 +83,7 @@ func generate_random_web():
 	#var start_pos = get_random_inner_pos(params)
 	#points.create_at(start_pos)
 	
+	# shoot the actual web
 	var num_debug_frames = 1
 	var total_edge_length : float = 0.0
 	var target_total_edge_length : float = 5000.0
@@ -128,6 +130,7 @@ func generate_random_web():
 		for _j in range(num_debug_frames):
 			yield(get_tree(), "idle_frame")
 	
+	# place home bases and make sure they are "fair"
 	var min_edges = GlobalDict.cfg.min_edges_on_home_base
 	var num_tries = 0
 	var max_tries = 400
@@ -156,6 +159,18 @@ func generate_random_web():
 			yield(get_tree(), "idle_frame")
 		yield(get_tree(), "idle_frame")
 	
+	# remove any "bad" edges
+	# NOTE: This is quite a costly "fail-safe", is it worth it?
+	var points = get_tree().get_nodes_in_group("Points")
+	for p in points:
+		var intersect = get_intersections(p.position, p.m.body.get_radius())
+		for res in intersect:
+			if not res.collider.is_in_group("Edges"): continue
+			if res.collider.m.body.is_part_of_me(p): continue
+			
+			edges.remove_existing(res.collider)
+			yield(get_tree(), "idle_frame")
+	
 	main_node.web_loading_done()
 
 func assign_home_bases():
@@ -179,6 +194,11 @@ func load_default_web():
 
 func load_custom_web():
 	var scene = load("res://scenes/custom_webs/" + custom_web + ".tscn").instance()
+	
+	if scene.has_node("BG"):
+		var bg = scene.get_node("BG")
+		bg.get_parent().remove_child(bg)
+		BG.add_child(bg)
 	
 	for point in scene.get_node("Points").get_children():
 		point.get_parent().remove_child(point)
@@ -209,11 +229,24 @@ func load_custom_web():
 func snap_to_existing_point(pos:Vector2):
 	return get_closest_point(pos)
 
-func get_closest_point(pos : Vector2):
+func get_intersections(pos : Vector2, radius = POINT_SNAP_RADIUS):
 	var space_state = get_world_2d().direct_space_state
 
 	var shp = CircleShape2D.new()
-	shp.radius = POINT_SNAP_RADIUS
+	shp.radius = radius
+	
+	var query_params = Physics2DShapeQueryParameters.new()
+	query_params.set_shape(shp)
+	query_params.transform.origin = pos
+	
+	var result = space_state.intersect_shape(query_params)
+	return result
+
+func get_closest_point(pos : Vector2, radius = POINT_SNAP_RADIUS):
+	var space_state = get_world_2d().direct_space_state
+
+	var shp = CircleShape2D.new()
+	shp.radius = radius
 	
 	var query_params = Physics2DShapeQueryParameters.new()
 	query_params.set_shape(shp)

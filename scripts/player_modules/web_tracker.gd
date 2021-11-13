@@ -25,9 +25,17 @@ func initialize(params = {}):
 		pos = point.position
 		edge = null
 	
+	if not edge or not is_instance_valid(edge):
+		edge = null
+	
+	if not point or not is_instance_valid(point):
+		point = null
+	
 	# somehow, we tried to spawn on non-existing stuff
-	if (not edge or not is_instance_valid(edge)) and (not point or not is_instance_valid(point)):
+	if (not edge) and (not point):
 		body.m.status.die()
+	
+	body.set_rotation(2*PI*randf())
 	
 	if pos:
 		body.set_position(pos)

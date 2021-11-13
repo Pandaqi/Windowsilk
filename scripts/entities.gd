@@ -23,12 +23,11 @@ var placement_params = {
 }
 
 func activate():
-	available_types = GlobalDict.entities.keys()
-	available_types.erase("player_spider")
+	available_types = GlobalDict.cfg.bugs
 	
 	# DEBUGGING
 	#available_types = ['fly', 'wasp', 'gnat', 'butterfly', 'bee', 'moth', 'mosquito', 'hornet']
-	available_types = ['fly']
+	#available_types = ['fly']
 	#return
 	
 	if is_menu:

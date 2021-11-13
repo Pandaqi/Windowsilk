@@ -170,7 +170,7 @@ func snap_to_existing_point(data, key):
 		'already_created': false
 	}
 	
-	var snap_point = get_closest_point(pos)
+	var snap_point = get_closest_point(pos, data.from_edge)
 	if not snap_point: return
 	
 	data[key] = {
@@ -319,7 +319,7 @@ func break_edge_in_two(edge, new_point, data):
 		else:
 			e.m.tracker.force_change_edge(edgeB)
 
-func get_closest_point(pos : Vector2):
+func get_closest_point(pos : Vector2, from_edge = null):
 	var space_state = get_world_2d().direct_space_state
 
 	var shp = CircleShape2D.new()
@@ -334,6 +334,10 @@ func get_closest_point(pos : Vector2):
 	
 	var best_point = null
 	var best_dist = INF
+	
+	var best_point_same_edge = null
+	var best_dist_same_edge = INF
+	
 	for res in result:
 		if not res.collider.is_in_group("Points"): continue
 		
@@ -341,6 +345,16 @@ func get_closest_point(pos : Vector2):
 		if dist < best_dist:
 			best_dist = dist
 			best_point = res.collider
+		
+		if not from_edge: continue
+		
+		var on_same_edge = from_edge.m.body.is_part_of_me(res.collider)
+		if dist < best_dist_same_edge and on_same_edge:
+			best_dist_same_edge = dist
+			best_point_same_edge = res.collider
+	
+	if best_point_same_edge:
+		return best_point_same_edge
 
 	return best_point
 

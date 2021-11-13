@@ -3,6 +3,7 @@ extends Node2D
 export var type : String = ""
 export var starting_index : int = -1
 export var team_num : int = -1
+export var config_index : int = -1
 
 export var color : Color = Color(1,1,1,1)
 export var scale_factor : float = 1.0
@@ -27,7 +28,10 @@ func add_properties_to_real(p):
 	
 	p.m.body.scale_collision_shape(scale_factor)
 	
-	
 	if starting_index >= 0:
 		var players = get_node("/root/Main/Players")
 		players.add_starting_position(p, starting_index)
+	
+	if type == "config":
+		var config_loader = get_node("/root/Main/ConfigLoader")
+		config_loader.add_config_point(p, config_index)

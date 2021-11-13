@@ -23,6 +23,9 @@ func set_extremes(s,e):
 	set_start(s)
 	set_end(e)
 
+func is_part_of_me(p):
+	return p == start or p == end
+
 func move_extremes_inward(speed, dt):
 	if get_length() <= MIN_LENGTH_FOR_POINT_MOVING: return
 	

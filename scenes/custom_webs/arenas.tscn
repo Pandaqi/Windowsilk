@@ -1,0 +1,162 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/ui/toggle_instruction_arena.png" type="Texture" id=1]
+[ext_resource path="res://scenes/custom_webs/custom_point.tscn" type="PackedScene" id=2]
+[ext_resource path="res://assets/ui/menu_icons.png" type="Texture" id=3]
+[ext_resource path="res://scenes/custom_webs/custom_edge.tscn" type="PackedScene" id=4]
+
+[node name="Arenas" type="Node2D"]
+
+[node name="BG" type="Node2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="BG"]
+position = Vector2( 240.207, 139.185 )
+scale = Vector2( 0.66, 0.66 )
+texture = ExtResource( 1 )
+
+[node name="Edges" type="Node2D" parent="."]
+
+[node name="Edge" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 589.802, 138.889, 1003.3, 138.889 )
+
+[node name="Edge2" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 587.53, 136.617, 819.268, 368.355 )
+
+[node name="Edge3" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 821.54, 366.083, 437.582, 511.488 )
+
+[node name="Edge4" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 435.31, 506.944, 773.829, 693.243 )
+
+[node name="Edge5" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 776.101, 697.787, 632.969, 881.814 )
+
+[node name="Edge6" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 630.697, 888.63, 1087.36, 761.401 )
+
+[node name="Edge7" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1087.36, 763.673, 1425.88, 884.086 )
+
+[node name="Edge8" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1428.15, 886.358, 1246.39, 527.391 )
+
+[node name="Edge9" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1246.39, 527.391, 1598.54, 516.031 )
+
+[node name="Edge10" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1598.54, 513.759, 1153.24, 332.004 )
+
+[node name="Edge11" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1148.7, 332.004, 1462.23, 150.249 )
+
+[node name="Edge12" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1462.23, 150.249, 1003.3, 136.617 )
+
+[node name="Edge13" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 816.996, 375.171, 1010.11, 138.889 )
+
+[node name="Edge14" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1007.84, 132.073, 1150.97, 332.004 )
+
+[node name="Edge15" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1150.97, 329.732, 816.996, 370.627 )
+
+[node name="Edge16" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 816.996, 366.083, 962.401, 550.11 )
+
+[node name="Edge17" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 962.401, 547.839, 776.101, 700.059 )
+
+[node name="Edge18" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 771.557, 695.515, 1085.09, 761.401 )
+
+[node name="Edge19" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1091.9, 759.129, 1248.67, 527.391 )
+
+[node name="Edge20" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1246.39, 529.663, 1148.7, 334.276 )
+
+[node name="Edge21" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1146.43, 329.732, 960.129, 552.382 )
+
+[node name="Edge22" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 962.401, 547.839, 1248.67, 529.663 )
+
+[node name="Edge23" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 960.129, 547.839, 435.31, 511.488 )
+
+[node name="Edge24" parent="Edges" instance=ExtResource( 4 )]
+points = PoolVector2Array( 1082.81, 765.945, 962.401, 556.926 )
+
+[node name="Points" type="Node2D" parent="."]
+
+[node name="Point1" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 590.14, 134.569 )
+type = "start"
+starting_index = 0
+
+[node name="Point2" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 1463.14, 147.283 )
+type = "start"
+starting_index = 1
+
+[node name="Point3" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 1594.4, 513.292 )
+type = "start"
+starting_index = 2
+
+[node name="Point4" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 1426.96, 876.44 )
+type = "start"
+starting_index = 3
+
+[node name="Point5" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 636.326, 876.44 )
+type = "start"
+starting_index = 4
+
+[node name="Point6" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 440.939, 506.113 )
+type = "start"
+starting_index = 5
+
+[node name="PointArena" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 820.354, 362.981 )
+type = "config"
+config_index = 0
+
+[node name="PointArena2" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 777.187, 694.684 )
+type = "config"
+config_index = 1
+
+[node name="PointArena3" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 1086.17, 756.027 )
+type = "config"
+config_index = 2
+
+[node name="PointArena4" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 1247.48, 522.017 )
+type = "config"
+config_index = 3
+
+[node name="PointArena5" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 1152.06, 326.63 )
+type = "config"
+config_index = 4
+
+[node name="PointArena6" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 961.214, 542.464 )
+type = "config"
+config_index = 5
+
+[node name="PointExit" parent="Points" instance=ExtResource( 2 )]
+position = Vector2( 1008.92, 138.058 )
+type = "exit"
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+scale_factor = 2.0
+
+[node name="Sprite" type="Sprite" parent="Points/PointExit"]
+texture = ExtResource( 3 )
+hframes = 4
+frame = 3

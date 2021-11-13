@@ -16,8 +16,10 @@ config/icon="res://icon.png"
 
 [autoload]
 
+GlobalConfig="*res://scripts/globals/global_config.gd"
 GlobalInput="*res://scripts/globals/global_input.gd"
 GlobalDict="*res://scripts/globals/global_dict.gd"
+GlobalAudio="*res://scripts/globals/global_audio.gd"
 Global="*res://scripts/globals/global.gd"
 
 [display]

@@ -1,11 +1,14 @@
 extends Node
 
-var cfg = {
+var base_cfg = {
 	'player_starting_points': 2,
 	'max_points_capacity': 9,
 	
+	'arena': 'windowsill',
+	'bugs': [],
+	
 	'allow_eating_same_species': false,
-	'objective_points_per_player': 20,
+	'objective_points_per_player': 30,
 	'objective_uses_home_base': true,
 	
 	'respawn_on_death': true,
@@ -13,7 +16,7 @@ var cfg = {
 	
 	'allow_quick_paint': false, # "quick_paint" = hopping on an edge, then immediately hopping off to paint it, boring and cheaty strategy
 	
-	'debug_terrain_types': true,
+	'debug_terrain_types': false,
 	'line_thickness': 30,
 	'draw_outlines_on_web': true,
 	'outline_darkening': 0.5,
@@ -44,6 +47,9 @@ var cfg = {
 	
 	# TO DO: If I ever set this to true, I should change collision layer/mask on entities to hit each other
 	'entities_obstruct_each_other': false,
+}
+
+var cfg = {
 	
 }
 
@@ -98,6 +104,10 @@ var silk_types = {
 	"flight": { "frame": 21, "category": "jumping" },
 	"poison": { "frame": 22, "category": "aggression" }
 	
+}
+
+var arenas = {
+	'windowsill': { 'frame': 0, "def": true } 
 }
 
 # All parameters are FALSE by default (this means simplified code and consistency)
@@ -643,3 +653,43 @@ var entities = {
 	}
 	
 }
+
+func update_from_current_config():
+	cfg = {}
+	
+	# make a DEEP copy of the original config
+	for key in base_cfg:
+		var new_prop = base_cfg[key]
+
+		if new_prop is Array or new_prop is Dictionary:
+			new_prop = str2var( var2str(new_prop) )
+
+		cfg[key] = new_prop
+	
+	# ARENA
+	for key in arenas:
+		if GlobalConfig.read_game_config("arenas", key):
+			cfg.arena = key
+			break
+	
+	# BUGS
+	var bugs_included = []
+	for key in entities:
+		if GlobalConfig.read_game_config("bugs", key):
+			bugs_included.append(key)
+	
+	print("BUGS INCLUDED")
+	print(bugs_included)
+	
+	# fail-safe, in case people select no bugs
+	if bugs_included.size() <= 0:
+		bugs_included = entities.keys()
+		bugs_included.erase("player_spider")
+	
+	cfg.bugs = bugs_included
+
+func get_list_corresponding_with_key(key):
+	if key == "arenas":
+		return arenas
+	elif key == "bugs":
+		return entities
