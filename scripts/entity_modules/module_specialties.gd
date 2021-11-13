@@ -12,6 +12,7 @@ const MARGIN_BEFORE_FEATHERLIGHT_STARTS : float = 20.0
 
 var type : String = ""
 var time_spent_on_edge : float = 0.0
+var time_spent_on_last_edge : float = 0.0
 
 onready var timer = $Timer
 onready var icon = $Sprite
@@ -217,7 +218,12 @@ func update_time_spent_on_edge(dt):
 		time_spent_on_edge = 0.0
 	
 func _on_Tracker_arrived_on_edge(e):
+	time_spent_on_last_edge = time_spent_on_edge
 	time_spent_on_edge = 0.0
+
+# NOTE: If called right after entering a new edge, this is obviously 0 and you want "time_spent_on_last_edge" instead
+func get_time_on_edge():
+	return time_spent_on_edge
 
 func execute_blastarea_effect():
 	var bodies = $BlastArea.get_overlapping_bodies()

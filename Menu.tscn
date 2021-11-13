@@ -1,0 +1,80 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://scenes/web.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/main_menu.gd" type="Script" id=2]
+[ext_resource path="res://scripts/menu/players_menu.gd" type="Script" id=3]
+[ext_resource path="res://scripts/menu/input_manager.gd" type="Script" id=4]
+[ext_resource path="res://scenes/spawner.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/feedback.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/entities.tscn" type="PackedScene" id=7]
+[ext_resource path="res://assets/ui/help_texts.png" type="Texture" id=8]
+[ext_resource path="res://scripts/menu/helpers.gd" type="Script" id=9]
+[ext_resource path="res://assets/ui/jump_instruction.png" type="Texture" id=10]
+[ext_resource path="res://scripts/menu/settings.gd" type="Script" id=11]
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="Web" parent="." instance=ExtResource( 1 )]
+type = "custom"
+custom_web = "menu"
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Players" type="Node2D" parent="."]
+script = ExtResource( 3 )
+
+[node name="InputManager" type="Node2D" parent="."]
+script = ExtResource( 4 )
+
+[node name="Spawner" parent="." instance=ExtResource( 5 )]
+
+[node name="Feedback" parent="." instance=ExtResource( 6 )]
+
+[node name="Entities" parent="." instance=ExtResource( 7 )]
+is_menu = true
+
+[node name="Helpers" type="Node2D" parent="."]
+script = ExtResource( 9 )
+
+[node name="Team" type="Sprite" parent="Helpers"]
+position = Vector2( 874.316, 198.981 )
+texture = ExtResource( 8 )
+hframes = 5
+
+[node name="Arenas" type="Sprite" parent="Helpers"]
+position = Vector2( 1617.67, 110.786 )
+texture = ExtResource( 8 )
+hframes = 5
+frame = 1
+
+[node name="Bugs" type="Sprite" parent="Helpers"]
+position = Vector2( 1622.71, 952.413 )
+texture = ExtResource( 8 )
+hframes = 5
+frame = 2
+
+[node name="Settings" type="Sprite" parent="Helpers"]
+position = Vector2( 267.035, 944.854 )
+texture = ExtResource( 8 )
+hframes = 5
+frame = 3
+
+[node name="Quit" type="Sprite" parent="Helpers"]
+position = Vector2( 292.233, 103.227 )
+texture = ExtResource( 8 )
+hframes = 5
+frame = 4
+
+[node name="Jump" type="Sprite" parent="Helpers"]
+position = Vector2( 965.04, 434.167 )
+texture = ExtResource( 10 )
+
+[node name="Settings" type="CanvasLayer" parent="."]
+script = ExtResource( 11 )
+
+[connection signal="open_settings" from="." to="Settings" method="_on_Main_open_settings"]
+[connection signal="players_nearby" from="." to="Helpers" method="_on_Main_players_nearby"]
+[connection signal="team_changed" from="." to="Helpers" method="_on_Main_team_changed"]
+[connection signal="team_changed" from="." to="Players" method="_on_Main_team_changed"]
+[connection signal="player_logged_in" from="Players" to="Helpers" method="_on_Players_player_logged_in"]

@@ -13,6 +13,8 @@ onready var body = get_parent()
 onready var edges = get_node("/root/Main/Web").edges
 onready var tween = $Tween
 
+onready var aim_helper = $AimHelper
+
 var jump_data = {
 	'target_point': null,
 	'start_point': null,
@@ -87,6 +89,9 @@ func get_forward_vec():
 	var rot = body.rotation
 	return Vector2(cos(rot), sin(rot))
 
+func update_aim_helper(col):
+	aim_helper.modulate = col
+
 func prepare_jump():
 	if body.is_in_group("Players"): 
 		if body.m.points.is_empty() and not body.m.specialties.jumping_is_free():
@@ -96,10 +101,14 @@ func prepare_jump():
 	body.m.mover.disable()
 	body.m.tracker.disable()
 	
+	aim_helper.set_visible(true)
+	
 	active = true
 
 func execute_jump():
 	if not active: return
+	
+	aim_helper.set_visible(false)
 	
 	active = false
 	input_disabled = true
@@ -305,3 +314,4 @@ func _on_Status_on_death():
 		tween.stop_all()
 	
 	input_disabled = false
+	aim_helper.set_visible(false)

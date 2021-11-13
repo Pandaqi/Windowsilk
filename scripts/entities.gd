@@ -11,6 +11,9 @@ var available_types = []
 
 onready var spawner = get_node("../Spawner")
 onready var timer = $Timer
+onready var web = get_node("../Web")
+
+export var is_menu : bool = false
 
 var placement_params = {
 	'small_radius': 40.0,
@@ -27,6 +30,9 @@ func activate():
 	#available_types = ['fly', 'wasp', 'gnat', 'butterfly', 'bee', 'moth', 'mosquito', 'hornet']
 	available_types = ['fly']
 	#return
+	
+	if is_menu:
+		available_types = ['larva']
 	
 	precalculate_probabilities()
 	_on_Timer_timeout()
@@ -97,7 +103,7 @@ func place_entity(params = {}):
 		return
 	
 	var entity = entity_scene.instance()
-	add_child(entity)
+	web.entities.add_child(entity)
 
 	entity.m.status.set_type(rand_type)
 	entity.add_to_group(group)

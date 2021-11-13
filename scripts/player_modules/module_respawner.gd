@@ -20,14 +20,14 @@ func start_respawn():
 	home_base = web.home_bases[body.m.status.team_num]
 	home_base.m.homebase.update_stat("num_deaths", 1)
 	
-	body.m.status.give_feedback("Respawn!")
-	body.set_scale(Vector2(1,1))
-	
 	teleport_to_home_base()
 	decrease_opponent_objectives()
 	lose_our_points()
 	start_timer()
 	play_animation()
+	
+	body.m.status.give_feedback("Respawn!")
+	body.set_scale(Vector2(1,1))
 
 func finish_respawn():
 	stop_animation()

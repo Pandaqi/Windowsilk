@@ -1,14 +1,24 @@
 extends Node2D
 
-const COLOR : Color = Color(1,1,1)
+var COLOR : Color = Color(1,1,1)
 onready var body = get_parent()
 onready var tween = get_node("/root/Main/Tween")
+
+var radius_scale_factor : float = 1.0
 
 func update_visuals():
 	update()
 
+func set_color(col):
+	COLOR = col
+	update()
+
+func scale_radius(rs):
+	radius_scale_factor = rs
+	update()
+
 func _draw():
-	var radius = body.m.body.get_radius()
+	var radius = body.m.body.get_radius()*radius_scale_factor
 	draw_circle(Vector2.ZERO, radius, COLOR)
 	
 	if GlobalDict.cfg.draw_outlines_on_web:

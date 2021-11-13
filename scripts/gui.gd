@@ -250,7 +250,7 @@ func _on_GameOverTimer_timeout():
 	
 	play_dropdown_animation()
 
-func _physics_process(dt):
+func _physics_process(_dt):
 	if winning_team < 0: return
 	
 	var team = players.get_players_in_team(winning_team)
@@ -288,7 +288,10 @@ func finish_unpause():
 # Remaining scene navigation
 #
 func exit():
-	pass
+	get_tree().paused = false
+	Global.back_to_menu()
 
 func restart():
+	get_tree().paused = false
+# warning-ignore:return_value_discarded
 	get_tree().reload_current_scene()

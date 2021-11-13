@@ -2,11 +2,14 @@ extends Node2D
 
 onready var edges = $Edges
 onready var points = $Points
+onready var entities = $Entities
 
 onready var main_node = get_node("/root/Main")
 
 const EDGE_MARGIN : float = 50.0
 const BOUND_THICKNESS : float = 64.0
+
+const POINT_SNAP_RADIUS : float = 15.0
 
 var vp = Vector2(1920, 1080)
 var corners = [
@@ -18,13 +21,21 @@ var corners = [
 
 var home_bases = []
 
+export var type : String = "random"
+export var custom_web : String = ""
+
 func activate():
 	inset_corners()
 	position_bounds()
 	
 	yield(get_tree(), "idle_frame")
 	
-	generate_random_web()
+	if type == "random":
+		generate_random_web()
+	elif type == "custom":
+		load_custom_web()
+	elif type == "default":
+		load_default_web() # TO DO: Hasn't been updated since day 1, don't use haphazardly
 
 func inset_corners():
 	corners[0] += Vector2(1,1)*EDGE_MARGIN
@@ -40,7 +51,7 @@ func position_bounds():
 
 func get_random_inner_pos(params):
 	var margin = Vector2.ZERO
-	if params.has('margin'): Vector2(1,1)*params.margin
+	if params.has('margin'): margin = Vector2(1,1)*params.margin
 	
 	var start = corners[0] + margin
 	var width = (corners[2]-corners[0]-2*margin)
@@ -143,6 +154,7 @@ func generate_random_web():
 			if nothing_happened: continue
 			
 			yield(get_tree(), "idle_frame")
+		yield(get_tree(), "idle_frame")
 	
 	main_node.web_loading_done()
 
@@ -164,3 +176,60 @@ func load_default_web():
 	edges.shoot(0.5*vp, corners[3] - corners[1])
 	
 	main_node.web_loading_done()
+
+func load_custom_web():
+	var scene = load("res://scenes/custom_webs/" + custom_web + ".tscn").instance()
+	
+	for point in scene.get_node("Points").get_children():
+		point.get_parent().remove_child(point)
+		add_child(point)
+		
+		var p = points.create_at(point.position)
+		point.add_properties_to_real(p)
+		point.queue_free()
+	
+	for edge in scene.get_node("Edges").get_children():
+		edge.get_parent().remove_child(edge)
+		add_child(edge)
+		
+		var start = edge.points[0]
+		var end = edge.points[1]
+		
+		var nodeA = snap_to_existing_point(start)
+		var nodeB = snap_to_existing_point(end)
+		
+		var e = edges.create_between(nodeA, nodeB)
+		edge.add_properties_to_real(e)
+		edge.queue_free()
+	
+	scene.queue_free()
+	
+	main_node.web_loading_done()
+
+func snap_to_existing_point(pos:Vector2):
+	return get_closest_point(pos)
+
+func get_closest_point(pos : Vector2):
+	var space_state = get_world_2d().direct_space_state
+
+	var shp = CircleShape2D.new()
+	shp.radius = POINT_SNAP_RADIUS
+	
+	var query_params = Physics2DShapeQueryParameters.new()
+	query_params.set_shape(shp)
+	query_params.transform.origin = pos
+	
+	var result = space_state.intersect_shape(query_params)
+	if not result: return null
+	
+	var best_point = null
+	var best_dist = INF
+	for res in result:
+		if not res.collider.is_in_group("Points"): continue
+		
+		var dist = (res.collider.position - pos).length()
+		if dist < best_dist:
+			best_dist = dist
+			best_point = res.collider
+
+	return best_point

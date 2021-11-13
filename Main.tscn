@@ -1,17 +1,14 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=14 format=2]
 
-[ext_resource path="res://scripts/web.gd" type="Script" id=1]
+[ext_resource path="res://scenes/web.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/main.gd" type="Script" id=2]
-[ext_resource path="res://scripts/web_modules/module_edges.gd" type="Script" id=3]
-[ext_resource path="res://scripts/web_modules/module_points.gd" type="Script" id=4]
-[ext_resource path="res://scenes/level_bound.tscn" type="PackedScene" id=5]
-[ext_resource path="res://scripts/entities.gd" type="Script" id=6]
+[ext_resource path="res://scenes/spawner.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/feedback.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/entities.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/ui/gui_sign.tscn" type="PackedScene" id=7]
-[ext_resource path="res://scripts/feedback.gd" type="Script" id=8]
 [ext_resource path="res://scripts/gui.gd" type="Script" id=9]
 [ext_resource path="res://assets/fonts/griffy.ttf" type="DynamicFontData" id=10]
 [ext_resource path="res://assets/ui/pause_reminder.png" type="Texture" id=11]
-[ext_resource path="res://scripts/spawner.gd" type="Script" id=14]
 [ext_resource path="res://scripts/players.gd" type="Script" id=16]
 
 [sub_resource type="Shader" id=1]
@@ -70,52 +67,24 @@ font_data = ExtResource( 10 )
 [node name="Main" type="Node2D"]
 script = ExtResource( 2 )
 
-[node name="Web" type="Node2D" parent="."]
-script = ExtResource( 1 )
+[node name="Web" parent="." instance=ExtResource( 1 )]
 
-[node name="Edges" type="Node2D" parent="Web"]
-script = ExtResource( 3 )
+[node name="Entities" parent="." instance=ExtResource( 5 )]
 
-[node name="Points" type="Node2D" parent="Web"]
-script = ExtResource( 4 )
-
-[node name="Bounds" type="Node2D" parent="Web"]
-
-[node name="Right" parent="Web/Bounds" instance=ExtResource( 5 )]
-position = Vector2( 1984, 0 )
-rotation = 3.14159
-
-[node name="Down" parent="Web/Bounds" instance=ExtResource( 5 )]
-position = Vector2( 960, 1144 )
-rotation = 1.5708
-
-[node name="Left" parent="Web/Bounds" instance=ExtResource( 5 )]
-
-[node name="Up" parent="Web/Bounds" instance=ExtResource( 5 )]
-position = Vector2( 960, -64 )
-rotation = 1.5708
-
-[node name="Entities" type="Node2D" parent="."]
-script = ExtResource( 6 )
-
-[node name="Timer" type="Timer" parent="Entities"]
-one_shot = true
-
-[node name="Spawner" type="Node2D" parent="."]
-script = ExtResource( 14 )
+[node name="Spawner" parent="." instance=ExtResource( 3 )]
 
 [node name="Players" type="Node2D" parent="."]
 script = ExtResource( 16 )
-
-[node name="Feedback" type="Node2D" parent="."]
-script = ExtResource( 8 )
 
 [node name="Particles" type="Node2D" parent="."]
 
 [node name="Tween" type="Tween" parent="."]
 
+[node name="Feedback" parent="." instance=ExtResource( 4 )]
+
 [node name="GUI" type="CanvasLayer" parent="."]
 pause_mode = 2
+layer = 2
 script = ExtResource( 9 )
 
 [node name="Cutout" type="ColorRect" parent="GUI"]
@@ -183,7 +152,6 @@ hframes = 2
 [node name="ReminderTimer" type="Timer" parent="GUI"]
 one_shot = true
 
-[connection signal="timeout" from="Entities/Timer" to="Entities" method="_on_Timer_timeout"]
 [connection signal="timeout" from="GUI/Timer" to="GUI" method="_on_Timer_timeout"]
 [connection signal="timeout" from="GUI/GameOverTimer" to="GUI" method="_on_GameOverTimer_timeout"]
 [connection signal="timeout" from="GUI/ReminderTimer" to="GUI" method="_on_ReminderTimer_timeout"]

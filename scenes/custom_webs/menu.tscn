@@ -1,0 +1,273 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scripts/web_modules/module_build_point.gd" type="Script" id=1]
+[ext_resource path="res://scripts/web_modules/module_build_edge.gd" type="Script" id=2]
+[ext_resource path="res://scenes/ui/menu_player_icon.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/ui/play_point.png" type="Texture" id=4]
+[ext_resource path="res://assets/ui/menu_icons.png" type="Texture" id=5]
+
+[node name="Web" type="Node2D"]
+
+[node name="Edges" type="Node2D" parent="."]
+
+[node name="Edge" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 717.157, 121.932, 1200.97, 121.932 )
+script = ExtResource( 2 )
+
+[node name="Edge2" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1200.97, 124.451, 1445.39, 545.265 )
+script = ExtResource( 2 )
+
+[node name="Edge3" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1442.87, 542.745, 1198.45, 963.559 )
+script = ExtResource( 2 )
+
+[node name="Edge4" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1206.01, 963.559, 714.637, 961.039 )
+script = ExtResource( 2 )
+
+[node name="Edge5" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 712.117, 955.999, 475.252, 540.225 )
+script = ExtResource( 2 )
+
+[node name="Edge6" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 475.252, 545.265, 717.157, 126.971 )
+script = ExtResource( 2 )
+
+[node name="Edge7" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 717.821, 121.63, 801.565, 271.301 )
+script = ExtResource( 2 )
+
+[node name="Edge8" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1200.69, 125.193, 1118.73, 269.519 )
+script = ExtResource( 2 )
+
+[node name="Edge9" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1444.79, 542.134, 1273.74, 547.479 )
+script = ExtResource( 2 )
+
+[node name="Edge10" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1202.47, 962.638, 1116.94, 814.749 )
+script = ExtResource( 2 )
+
+[node name="Edge11" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 716.039, 960.856, 799.784, 814.749 )
+script = ExtResource( 2 )
+
+[node name="Edge12" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 477.278, 543.916, 646.549, 540.352 )
+script = ExtResource( 2 )
+
+[node name="Edge13" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 799.784, 269.519, 1120.51, 273.083 )
+script = ExtResource( 2 )
+
+[node name="Edge14" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1118.73, 271.301, 1275.52, 545.698 )
+script = ExtResource( 2 )
+
+[node name="Edge15" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1275.52, 547.479, 1116.94, 821.876 )
+script = ExtResource( 2 )
+
+[node name="Edge16" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1118.73, 818.313, 799.784, 814.749 )
+script = ExtResource( 2 )
+
+[node name="Edge17" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 798.002, 814.749, 641.204, 543.916 )
+script = ExtResource( 2 )
+
+[node name="Edge18" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 641.204, 543.916, 799.784, 265.955 )
+script = ExtResource( 2 )
+
+[node name="Edge19" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1196.06, 126.144, 1717.67, 199.22 )
+script = ExtResource( 2 )
+
+[node name="Edge20" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1715.15, 206.779, 1440.49, 549.478 )
+script = ExtResource( 2 )
+
+[node name="Edge21" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1443.01, 544.438, 1720.19, 879.577 )
+script = ExtResource( 2 )
+
+[node name="Edge22" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 1720.19, 879.577, 1201.1, 965.252 )
+script = ExtResource( 2 )
+
+[node name="Edge23" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 712.255, 962.732, 198.207, 877.057 )
+script = ExtResource( 2 )
+
+[node name="Edge24" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 198.207, 879.577, 475.39, 541.918 )
+script = ExtResource( 2 )
+
+[node name="Edge25" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 470.35, 541.918, 198.207, 201.74 )
+script = ExtResource( 2 )
+
+[node name="Edge26" type="Line2D" parent="Edges"]
+points = PoolVector2Array( 712.255, 123.624, 200.727, 204.259 )
+script = ExtResource( 2 )
+
+[node name="Points" type="Node2D" parent="."]
+
+[node name="Point1" type="Node2D" parent="Points"]
+position = Vector2( 1202, 120.8 )
+script = ExtResource( 1 )
+type = "start"
+starting_index = 1
+
+[node name="Point2" type="Node2D" parent="Points"]
+position = Vector2( 1444, 540 )
+script = ExtResource( 1 )
+type = "start"
+starting_index = 2
+
+[node name="Point3" type="Node2D" parent="Points"]
+position = Vector2( 1202, 959.2 )
+script = ExtResource( 1 )
+type = "start"
+starting_index = 3
+
+[node name="Point4" type="Node2D" parent="Points"]
+position = Vector2( 718, 959.2 )
+script = ExtResource( 1 )
+type = "start"
+starting_index = 4
+
+[node name="Point5" type="Node2D" parent="Points"]
+position = Vector2( 476, 540 )
+script = ExtResource( 1 )
+type = "start"
+starting_index = 5
+
+[node name="Point6" type="Node2D" parent="Points"]
+position = Vector2( 718, 120.8 )
+script = ExtResource( 1 )
+type = "start"
+starting_index = 0
+
+[node name="Point7" type="Node2D" parent="Points"]
+position = Vector2( 802, 266.4 )
+script = ExtResource( 1 )
+type = "team"
+team_num = 0
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+
+[node name="Sprite" parent="Points/Point7" instance=ExtResource( 3 )]
+
+[node name="Point8" type="Node2D" parent="Points"]
+position = Vector2( 1118, 266.4 )
+script = ExtResource( 1 )
+type = "team"
+team_num = 1
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+
+[node name="Sprite2" parent="Points/Point8" instance=ExtResource( 3 )]
+position = Vector2( 0.173218, 0.0038147 )
+frame = 1
+
+[node name="Point9" type="Node2D" parent="Points"]
+position = Vector2( 1276, 540 )
+script = ExtResource( 1 )
+type = "team"
+team_num = 2
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+
+[node name="Sprite3" parent="Points/Point9" instance=ExtResource( 3 )]
+position = Vector2( 0.44043, -0.837891 )
+frame = 2
+
+[node name="Point10" type="Node2D" parent="Points"]
+position = Vector2( 1118, 813.6 )
+script = ExtResource( 1 )
+type = "team"
+team_num = 3
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+
+[node name="Sprite4" parent="Points/Point10" instance=ExtResource( 3 )]
+position = Vector2( -1.87646, -1.89929 )
+frame = 3
+
+[node name="Point11" type="Node2D" parent="Points"]
+position = Vector2( 802, 813.6 )
+script = ExtResource( 1 )
+type = "team"
+team_num = 4
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+
+[node name="Sprite5" parent="Points/Point11" instance=ExtResource( 3 )]
+position = Vector2( -0.0974121, 1.30701 )
+frame = 4
+
+[node name="Point12" type="Node2D" parent="Points"]
+position = Vector2( 644, 540 )
+script = ExtResource( 1 )
+type = "team"
+team_num = 5
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+
+[node name="Sprite6" parent="Points/Point12" instance=ExtResource( 3 )]
+position = Vector2( -0.811035, 0.765259 )
+frame = 5
+
+[node name="PointCenter" type="Node2D" parent="Points"]
+position = Vector2( 960, 540 )
+script = ExtResource( 1 )
+type = "play"
+scale_factor = 3.0
+
+[node name="Sprite" type="Sprite" parent="Points/PointCenter"]
+texture = ExtResource( 4 )
+
+[node name="PointArenas" type="Node2D" parent="Points"]
+position = Vector2( 1720, 200 )
+script = ExtResource( 1 )
+type = "arenas"
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+scale_factor = 2.0
+
+[node name="Sprite" type="Sprite" parent="Points/PointArenas"]
+texture = ExtResource( 5 )
+hframes = 4
+
+[node name="PointBugs" type="Node2D" parent="Points"]
+position = Vector2( 1720, 880 )
+script = ExtResource( 1 )
+type = "bugs"
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+scale_factor = 2.0
+
+[node name="Sprite" type="Sprite" parent="Points/PointBugs"]
+texture = ExtResource( 5 )
+hframes = 4
+frame = 1
+
+[node name="PointSettings" type="Node2D" parent="Points"]
+position = Vector2( 200, 880 )
+script = ExtResource( 1 )
+type = "bugs"
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+scale_factor = 2.0
+
+[node name="Sprite" type="Sprite" parent="Points/PointSettings"]
+texture = ExtResource( 5 )
+hframes = 4
+frame = 2
+
+[node name="PointQuit" type="Node2D" parent="Points"]
+position = Vector2( 200, 200 )
+script = ExtResource( 1 )
+type = "quit"
+color = Color( 0.631373, 0.329412, 0.764706, 1 )
+scale_factor = 2.0
+
+[node name="Sprite" type="Sprite" parent="Points/PointQuit"]
+texture = ExtResource( 5 )
+hframes = 4
+frame = 3

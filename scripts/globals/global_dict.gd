@@ -11,6 +11,8 @@ var cfg = {
 	'respawn_on_death': true,
 	'point_reset_val': 0, # used on respawn AND draining points at storage
 	
+	'allow_quick_paint': false, # "quick_paint" = hopping on an edge, then immediately hopping off to paint it, boring and cheaty strategy
+	
 	'debug_terrain_types': true,
 	'line_thickness': 30,
 	'draw_outlines_on_web': true,

@@ -15,6 +15,7 @@ onready var stuck_lines = $StuckLines
 onready var anim_player = $AnimationPlayer
 
 var player_num : int = -1
+var team_num : int = -1
 var data = {}
 
 func set_data(new_data):
@@ -65,6 +66,12 @@ func set_player_num(pnum):
 	eyes.set_visible(true)
 	
 	legs.set_color(new_color)
+	body.m.jumper.update_aim_helper(new_color)
+
+func set_team_num(tnum):
+	team_num = tnum
+	
+	# TO DO: particles emit in the shape of your team?
 
 func update_scale(num):
 	var max_points = GlobalDict.cfg.max_points_capacity
@@ -77,6 +84,8 @@ func update_scale(num):
 		new_scale *= GlobalDict.cfg.narrow_bug_upscale
 
 	tween_scale_change(Vector2(1,1)*new_scale)
+	
+	body.z_index = num * 100
 	
 	body.m.collector.update_collision_shape(new_scale)
 

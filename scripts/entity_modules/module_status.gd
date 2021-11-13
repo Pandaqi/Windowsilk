@@ -14,6 +14,8 @@ var team_num : int = -1
 var is_dead : bool = false
 var is_incapacitated : bool = false
 
+var can_die : bool = true
+
 var type : String = ""
 var data
 
@@ -22,13 +24,13 @@ onready var crown = $Crown
 signal on_death()
 
 # DEBUGGING (insta-death)
-func _input(ev):
-	if ev.is_action_released("ui_up") and player_num == 0:
-		die()
+#func _input(ev):
+#	if ev.is_action_released("ui_up") and player_num == 0:
+#		die()
 
 func make_player(pnum, tnum):
 	player_num = pnum
-	team_num = tnum
+	change_team(tnum)
 	
 	body.m.input.set_player_num(pnum)
 	body.m.points.set_to(GlobalDict.cfg.player_starting_points)
@@ -39,11 +41,20 @@ func make_player(pnum, tnum):
 	
 	crown.set_visible(false)
 
+func change_team(num):
+	team_num = num
+	body.m.visuals.set_team_num(team_num)
+
 func make_non_player():
 	body.erase_module("input")
 	body.add_to_group("NonPlayers")
 	
 	crown.queue_free()
+
+func make_menu_entity():
+	can_die = false
+	body.m.points.change(5)
+	body.m.mover.get_node("WebMover").allow_entering_any_edge = true
 
 func is_player():
 	return (player_num >= 0)
@@ -101,6 +112,7 @@ func incapacitate():
 
 func die():
 	if is_dead: return
+	if not can_die: return
 	is_dead = true
 
 	emit_signal("on_death")
@@ -110,6 +122,9 @@ func die():
 		body.m.tracker._on_Status_on_death() # we call this manually as it only needs to be called for non-players
 		body.queue_free()
 		return
+	
+	var offset = Vector2.UP*60
+	feedback.create_death_feedback(body.position + offset)
 	
 	var should_respawn = GlobalDict.cfg.respawn_on_death
 	if not should_respawn:

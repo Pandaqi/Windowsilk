@@ -58,6 +58,10 @@ func shoot(params = {}):
 	snap_to_existing_point(data, 'from')
 	snap_to_existing_point(data, 'to')
 	
+	# snapping and three raycasts can change the actual dir of the edge
+	# so recalculate here
+	data.dir = (data.to.pos - data.from.pos).normalized()
+	
 	res = does_edge_already_exist(data)
 	if res: 
 		if debug: print("Edge already exists; no need to create something new")
@@ -151,7 +155,7 @@ func shoot_raycast(data):
 	var from = data.from + epsilon
 	var to = from + dir*data.max_dist
 	
-	var col_layer = 1
+	var col_layer = 1 + 8
 	
 	# check where we should land
 	# the edges of the map always have bounds, so we always stop at the edge (if we hit nothing else)
@@ -195,8 +199,7 @@ func is_shot_along_current_edge(data):
 	if not cur_edge: return false
 	
 	var edge_vec = cur_edge.m.body.get_vec()
-	var actual_dir = (data.to.pos - data.from.pos).normalized()
-	var dot = actual_dir.dot(edge_vec.normalized())
+	var dot = data.dir.dot(edge_vec.normalized())
 		
 	if abs(dot) < 0.93: return false
 	

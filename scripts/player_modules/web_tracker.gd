@@ -23,6 +23,7 @@ func initialize(params = {}):
 	if params.has('fixed_point') and params.fixed_point: 
 		point = params.fixed_point
 		pos = point.position
+		edge = null
 	
 	# somehow, we tried to spawn on non-existing stuff
 	if (not edge or not is_instance_valid(edge)) and (not point or not is_instance_valid(point)):

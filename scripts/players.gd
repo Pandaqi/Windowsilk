@@ -1,7 +1,5 @@
 extends Node2D
 
-const POINT_TARGET : int = 10
-
 onready var web = get_node("/root/Main/Web")
 
 var entity_scene = preload("res://scenes/entity.tscn")
@@ -16,7 +14,7 @@ func activate():
 
 func create_player(num):
 	var p = entity_scene.instance()
-	add_child(p)
+	web.entities.add_child(p)
 	
 	var team_num = num # for now;; read from "player_data" when I have menus
 	p.m.status.set_type("player_spider") # for now;; different teams will have different types?
@@ -76,4 +74,4 @@ func team_total_below_target(team_num):
 	for player in team:
 		total += player.m.points.count()
 
-	return total < num_players*POINT_TARGET
+	return total < num_players*GlobalDict.cfg.objective_points_per_player

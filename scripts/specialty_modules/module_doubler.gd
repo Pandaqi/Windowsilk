@@ -5,9 +5,10 @@ const DOUBLE_INTERVAL = { 'min': 8.0, 'max': 15.0 }
 onready var timer = $Timer
 onready var specialty_module = get_parent().get_parent()
 onready var body = specialty_module.get_parent()
-onready var entities = get_node("/root/Main/Entities")
+var entities
 
 func activate():
+	entities = get_node("/root/Main/Entities")
 	restart_timer()
 
 func deactivate():
