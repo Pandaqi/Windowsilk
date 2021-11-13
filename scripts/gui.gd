@@ -1,5 +1,6 @@
 extends CanvasLayer
 
+var reminder_phase : bool = false
 var paused : bool = false
 var game_over : bool = false
 
@@ -30,47 +31,105 @@ onready var players = get_node("/root/Main/Players")
 onready var web = get_node("/root/Main/Web")
 
 onready var pause_reminder = $PauseReminder
-const PAUSE_REMINDER_FADE_DUR : float = 6.0
+const PAUSE_REMINDER_FADE_DUR : float = 10.0
+
+onready var reminder_timer = $ReminderTimer
+const RULE_REMINDER_DUR : float = 10.0
+const RULE_REMINDER_DUR_LENGTHEN : float = 4.0
 
 func _ready():
 	bg.color = Color(0,0,0,0)
 	cutout.material = cutout.material.duplicate(true)
 	cutout.set_visible(false)
 	message.set_visible(false)
-	
-	tween.interpolate_property(pause_reminder, "modulate",
-		Color(1,1,1,1), Color(1,1,1,0), PAUSE_REMINDER_FADE_DUR,
-		Tween.TRANS_LINEAR, Tween.EASE_OUT)
-	tween.start()
+
+	show_reminders()
 
 #
 # Polling input
 #
 func _input(ev):
-	check_regular_input(ev)
-	check_pause_input(ev)
+	var res = check_reminder_input(ev)
+	if res: return
+	
+	res = check_regular_input(ev)
+	if res: return
+	
+	res = check_pause_input(ev)
+	if res: return
+	
 	check_game_over_input(ev)
 
+func check_reminder_input(ev):
+	if not reminder_phase: return false
+	if not ev.is_action_released("pause"): return false
+	force_hide_reminders()
+	return true
+
 func check_regular_input(ev):
-	if paused or game_over: return
-	if not ev.is_action_released("pause"): return
+	if paused or game_over or reminder_phase: return false
+	if not ev.is_action_released("pause"): return false
 	pause()
+	return true
 
 func check_pause_input(ev):
-	if (not paused) or game_over: return
+	if (not paused) or game_over or reminder_phase: return false
 	if ev.is_action_released("exit"):
 		exit()
+		return true
 	elif ev.is_action_released("restart"):
 		restart()
+		return true
 	elif ev.is_action_released("unpause"):
 		unpause()
+		return true
 
 func check_game_over_input(ev):
-	if not game_over: return
+	if not game_over: return false
 	if ev.is_action_released("exit"):
 		exit()
+		return true
 	elif ev.is_action_released("restart"):
 		restart()
+		return true
+
+#
+# Rule reminders
+#
+func show_reminders():
+	pause_reminder.get_node("Sprite").set_frame(1)
+	
+	get_tree().paused = true
+	reminder_phase = true
+	
+	for i in range(gui_signs.size()):
+		gui_signs[i].turn_into_reminder()
+	
+	play_dropdown_animation()
+	
+	reminder_timer.wait_time = RULE_REMINDER_DUR
+	reminder_timer.start()
+
+func _on_ReminderTimer_timeout():
+	play_pullup_animation()
+
+func force_hide_reminders():
+	reminder_timer.stop()
+	play_pullup_animation()
+
+func hide_reminders():
+	get_tree().paused = false
+	reminder_phase = false
+	start_fading_pause_reminder()
+
+func start_fading_pause_reminder():
+	pause_reminder.get_node("Sprite").set_frame(0)
+	
+	tween.interpolate_property(pause_reminder, "modulate",
+		Color(1,1,1,1), Color(1,1,1,0), PAUSE_REMINDER_FADE_DUR,
+		Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	tween.start()
+	
 
 #
 # Animating the reveals of the boxes (and line wobbling)
@@ -89,6 +148,15 @@ func play_pullup_animation():
 	sign_counter = gui_signs.size() - 1
 	haul_next_sign()
 
+func on_dropdown_finished():
+	pass
+
+func on_pullup_finished():
+	if reminder_phase:
+		hide_reminders()
+	elif paused:
+		finish_unpause()
+
 func fade_in_bg():
 	tween.interpolate_property(bg, "color",
 		Color(1,1,1,0), Color(1,1,1,125/255.0), BG_FADE_TIME,
@@ -102,18 +170,26 @@ func fade_out_bg():
 	tween.start()
 
 func drop_next_sign():
-	if sign_counter >= gui_signs.size(): return
+	if sign_counter >= gui_signs.size(): 
+		on_dropdown_finished()
+		return
 	
 	var gs = gui_signs[sign_counter]
 	gs.play(ANIM_SPEED_DROP)
 	
-	timer.wait_time = TIME_BETWEEN_SIGN_DROPS
+	timer.wait_time = TIME_BETWEEN_SIGN_DROPS*RULE_REMINDER_DUR_LENGTHEN
+	
+	if sign_counter == 1 and reminder_phase:
+		timer.wait_time *= 2.0
+	
 	timer.start()
 	
 	sign_counter += 1
 
 func haul_next_sign():
-	if sign_counter < 0: return
+	if sign_counter < 0: 
+		on_pullup_finished()
+		return
 	
 	var gs = gui_signs[sign_counter]
 	gs.play_reverse(ANIM_SPEED_HAUL)
@@ -168,6 +244,10 @@ func _on_GameOverTimer_timeout():
 	gui_signs[1].turn_into_game_over(winning_team)
 	
 	game_over = true
+	
+	for i in range(gui_signs.size()):
+		gui_signs[i].turn_into_gui()
+	
 	play_dropdown_animation()
 
 func _physics_process(dt):
@@ -192,12 +272,17 @@ func _physics_process(dt):
 func pause():
 	get_tree().paused = true
 	paused = true
+	
+	for i in range(gui_signs.size()):
+		gui_signs[i].turn_into_gui()
 	play_dropdown_animation()
 
 func unpause():
+	play_pullup_animation()
+
+func finish_unpause():
 	get_tree().paused = false
 	paused = false
-	play_pullup_animation()
 
 #
 # Remaining scene navigation

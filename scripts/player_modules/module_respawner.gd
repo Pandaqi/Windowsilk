@@ -13,11 +13,15 @@ var home_base
 
 signal on_revive()
 
+func plan_respawn():
+	anim_player.play("Death")
+	
 func start_respawn():
 	home_base = web.home_bases[body.m.status.team_num]
 	home_base.m.homebase.update_stat("num_deaths", 1)
 	
 	body.m.status.give_feedback("Respawn!")
+	body.set_scale(Vector2(1,1))
 	
 	teleport_to_home_base()
 	decrease_opponent_objectives()
@@ -90,3 +94,7 @@ func stop_animation():
 
 func lose_our_points():
 	body.m.points.set_to(GlobalDict.cfg.point_reset_val)
+
+func _on_AnimationPlayer_animation_finished(anim_name):
+	if anim_name != "Death": return
+	start_respawn()

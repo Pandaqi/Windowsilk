@@ -22,9 +22,9 @@ onready var crown = $Crown
 signal on_death()
 
 # DEBUGGING (insta-death)
-#func _input(ev):
-#	if ev.is_action_released("ui_up") and player_num == 0:
-#		die()
+func _input(ev):
+	if ev.is_action_released("ui_up") and player_num == 0:
+		die()
 
 func make_player(pnum, tnum):
 	player_num = pnum
@@ -92,7 +92,7 @@ func same_type(tp):
 func incapacitate():
 	is_incapacitated = true
 	
-	give_feedback("Stuck!")
+	give_feedback("Stuck!", false)
 	
 	body.m.movement.disable()
 	body.m.mover.disable()
@@ -115,13 +115,13 @@ func die():
 	if not should_respawn:
 		main_node.on_player_death(body)
 	else:
-		body.m.respawner.start_respawn()
+		body.m.respawner.plan_respawn()
 
 func _on_Respawner_on_revive():
 	is_dead = false
 
-func give_feedback(txt):
-	if not is_player(): return
+func give_feedback(txt, players_only = true):
+	if players_only and not is_player(): return
 	
 	feedback.create(body.position, txt)
 

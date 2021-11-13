@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/module_manager.gd" type="Script" id=1]
 [ext_resource path="res://scripts/point_modules/module_entities.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://assets/team_icons.png" type="Texture" id=7]
 [ext_resource path="res://assets/fonts/main_medium.tres" type="DynamicFont" id=8]
 [ext_resource path="res://scripts/point_modules/module_homebase.gd" type="Script" id=9]
+[ext_resource path="res://scripts/point_modules/module_menu.gd" type="Script" id=10]
 
 [sub_resource type="CircleShape2D" id=1]
 
@@ -60,6 +61,9 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Menu" type="Node2D" parent="."]
+script = ExtResource( 10 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )

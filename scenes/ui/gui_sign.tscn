@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://scripts/gui_sign.gd" type="Script" id=1]
 [ext_resource path="res://assets/ui/gui_signs.png" type="Texture" id=2]
 [ext_resource path="res://assets/team_icons_small.png" type="Texture" id=3]
+[ext_resource path="res://assets/ui/tutorial_reminders.png" type="Texture" id=4]
 
 [sub_resource type="Animation" id=1]
 resource_name = "LineDropdown"
@@ -109,3 +110,13 @@ position = Vector2( 10.0793, 124.398 )
 scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 3 )
 hframes = 6
+
+[node name="Extend" type="Sprite" parent="Sprite"]
+visible = false
+show_behind_parent = true
+position = Vector2( 0, 350 )
+texture = ExtResource( 4 )
+hframes = 4
+frame = 3
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

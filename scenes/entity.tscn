@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=2]
+[gd_scene load_steps=54 format=2]
 
 [ext_resource path="res://scenes/modules/web_tracker.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/player_modules/module_legs.gd" type="Script" id=2]
@@ -38,6 +38,7 @@
 [ext_resource path="res://scripts/player_modules/module_wings.gd" type="Script" id=36]
 [ext_resource path="res://scripts/entity_modules/module_generalarea.gd" type="Script" id=37]
 [ext_resource path="res://assets/ui/crown.png" type="Texture" id=38]
+[ext_resource path="res://assets/stuck_lines.png" type="Texture" id=39]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 13.8734
@@ -47,6 +48,34 @@ radius = 102.736
 
 [sub_resource type="CircleShape2D" id=10]
 radius = 227.737
+
+[sub_resource type="Animation" id=13]
+resource_name = "Death"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("..:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1e-05, 1e-05 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("..:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ 0.0, 10.0, -10.0, 0.0 ]
+}
 
 [sub_resource type="Animation" id=5]
 length = 0.001
@@ -61,6 +90,30 @@ tracks/0/keys = {
 "transitions": PoolRealArray( 1 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("..:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("..:rotation_degrees")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
 }
 
 [sub_resource type="Animation" id=6]
@@ -85,6 +138,74 @@ radius = 112.207
 
 [sub_resource type="CircleShape2D" id=7]
 radius = 12.0516
+
+[sub_resource type="Animation" id=14]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 0.33, 0.33 ) ]
+}
+
+[sub_resource type="Animation" id=15]
+resource_name = "Stuck"
+length = 0.6
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 2, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0.33, 0.33 ), Vector2( 0.4, 0.4 ) ]
+}
 
 [sub_resource type="CircleShape2D" id=4]
 radius = 191.089
@@ -167,6 +288,7 @@ script = ExtResource( 33 )
 one_shot = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Respawner"]
+anims/Death = SubResource( 13 )
 anims/RESET = SubResource( 5 )
 anims/RespawnFlicker = SubResource( 6 )
 
@@ -276,11 +398,15 @@ scale = Vector2( 0.33, 0.33 )
 texture = ExtResource( 5 )
 hframes = 8
 vframes = 8
-frame = 25
 
 [node name="Eyes" type="Sprite" parent="Visuals/Sprite"]
 visible = false
 texture = ExtResource( 25 )
+
+[node name="StuckLines" type="Sprite" parent="Visuals"]
+visible = false
+scale = Vector2( 0.33, 0.33 )
+texture = ExtResource( 39 )
 
 [node name="Legs" type="Node2D" parent="Visuals"]
 show_behind_parent = true
@@ -301,6 +427,10 @@ position = Vector2( -82.5449, 0 )
 script = ExtResource( 36 )
 
 [node name="Tween" type="Tween" parent="Visuals/Wings"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Visuals"]
+anims/RESET = SubResource( 14 )
+anims/Stuck = SubResource( 15 )
 
 [node name="Specialties" type="Node2D" parent="."]
 script = ExtResource( 27 )
@@ -357,33 +487,35 @@ __meta__ = {
 
 [connection signal="body_entered" from="GeneralArea" to="GeneralArea" method="_on_GeneralArea_body_entered"]
 [connection signal="body_exited" from="GeneralArea" to="GeneralArea" method="_on_GeneralArea_body_exited"]
-[connection signal="on_nearby_players_changed" from="GeneralArea" to="Specialties" method="_on_GeneralArea_on_nearby_players_changed"]
 [connection signal="on_nearby_players_changed" from="GeneralArea" to="Points" method="_on_GeneralArea_on_nearby_players_changed"]
+[connection signal="on_nearby_players_changed" from="GeneralArea" to="Specialties" method="_on_GeneralArea_on_nearby_players_changed"]
 [connection signal="body_entered" from="GeneralArea/PlayerArea" to="GeneralArea" method="_on_PlayerArea_body_entered"]
 [connection signal="body_exited" from="GeneralArea/PlayerArea" to="GeneralArea" method="_on_PlayerArea_body_exited"]
-[connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Jumper" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Movement" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Input" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Mover" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="Jumper" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Collector" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
-[connection signal="on_death" from="Status" to="Trail" method="_on_Status_on_death"]
 [connection signal="on_death" from="Status" to="Specialties" method="_on_Status_on_death"]
-[connection signal="on_revive" from="Respawner" to="Input" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="Status" method="_on_Respawner_on_revive"]
+[connection signal="on_death" from="Status" to="Trail" method="_on_Status_on_death"]
+[connection signal="on_death" from="Status" to="SilkReader" method="_on_Status_on_death"]
+[connection signal="on_revive" from="Respawner" to="Tracker" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Movement" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Status" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Input" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Mover" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="Collector" method="_on_Respawner_on_revive"]
+[connection signal="on_revive" from="Respawner" to="Visuals" method="_on_Respawner_on_revive"]
 [connection signal="on_revive" from="Respawner" to="SilkReader" method="_on_Respawner_on_revive"]
-[connection signal="on_revive" from="Respawner" to="Tracker" method="_on_Respawner_on_revive"]
 [connection signal="timeout" from="Respawner/Timer" to="Respawner" method="_on_Timer_timeout"]
-[connection signal="on_move_completed" from="Mover" to="Visuals/Worm" method="_on_Mover_on_move_completed"]
+[connection signal="animation_finished" from="Respawner/AnimationPlayer" to="Respawner" method="_on_AnimationPlayer_animation_finished"]
 [connection signal="on_move_completed" from="Mover" to="Movement/Stamina" method="_on_Mover_on_move_completed"]
 [connection signal="on_move_completed" from="Mover" to="Specialties" method="_on_Mover_on_move_completed"]
+[connection signal="on_move_completed" from="Mover" to="Visuals/Worm" method="_on_Mover_on_move_completed"]
 [connection signal="button_press" from="Input" to="Jumper" method="_on_Input_button_press"]
 [connection signal="button_release" from="Input" to="Jumper" method="_on_Input_button_release"]
-[connection signal="move_vec" from="Input" to="Jumper" method="_on_Input_move_vec"]
 [connection signal="move_vec" from="Input" to="Mover" method="_on_Movement_move_vec"]
+[connection signal="move_vec" from="Input" to="Jumper" method="_on_Input_move_vec"]
 [connection signal="on_jump_finished" from="Jumper" to="Movement/Jumper" method="_on_Jumper_on_jump_finished"]
 [connection signal="move_vec" from="Movement" to="Mover" method="_on_Movement_move_vec"]
 [connection signal="timeout" from="Movement/Shuffler/Timer" to="Movement/Shuffler" method="_on_Timer_timeout"]
@@ -394,13 +526,13 @@ __meta__ = {
 [connection signal="timeout" from="Movement/FlyMovement/Timer" to="Movement/FlyMovement" method="_on_Timer_timeout"]
 [connection signal="arrived_on_edge" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
-[connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_edge" from="Tracker" to="Specialties" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_edge"]
+[connection signal="arrived_on_edge" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_edge"]
 [connection signal="arrived_on_point" from="Tracker" to="Movement" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="Mover" method="_on_Tracker_arrived_on_point"]
-[connection signal="arrived_on_point" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_point"]
 [connection signal="arrived_on_point" from="Tracker" to="Trail" method="_on_Tracker_arrived_on_point"]
+[connection signal="arrived_on_point" from="Tracker" to="SilkReader" method="_on_Tracker_arrived_on_point"]
 [connection signal="teleported" from="Tracker/WebTracker" to="Visuals" method="_on_WebTracker_teleported"]
 [connection signal="body_entered" from="Tracker/FlyTracker/Area2D" to="Tracker/FlyTracker" method="_on_Area2D_body_entered"]
 [connection signal="body_exited" from="Tracker/FlyTracker/Area2D" to="Tracker/FlyTracker" method="_on_Area2D_body_exited"]

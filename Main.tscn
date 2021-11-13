@@ -178,7 +178,12 @@ __meta__ = {
 position = Vector2( 113.628, 35.7718 )
 scale = Vector2( 0.25, 0.25 )
 texture = ExtResource( 11 )
+hframes = 2
+
+[node name="ReminderTimer" type="Timer" parent="GUI"]
+one_shot = true
 
 [connection signal="timeout" from="Entities/Timer" to="Entities" method="_on_Timer_timeout"]
 [connection signal="timeout" from="GUI/Timer" to="GUI" method="_on_Timer_timeout"]
 [connection signal="timeout" from="GUI/GameOverTimer" to="GUI" method="_on_GameOverTimer_timeout"]
+[connection signal="timeout" from="GUI/ReminderTimer" to="GUI" method="_on_ReminderTimer_timeout"]

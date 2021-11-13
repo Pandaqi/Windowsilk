@@ -8,9 +8,9 @@ onready var gui = $GUI
 var game_over_state : bool = false
 
 # DEBUGGING QUICK GAME OVER
-func _input(ev):
-	if ev.is_action_released("ui_up"):
-		game_over(0)
+#func _input(ev):
+#	if ev.is_action_released("ui_up"):
+#		game_over(0)
 
 func _ready():
 	randomize()

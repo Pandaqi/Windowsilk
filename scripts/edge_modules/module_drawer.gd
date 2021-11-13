@@ -33,6 +33,9 @@ func set_color(col):
 	color = col
 	update()
 
+func get_color():
+	return color
+
 func tween_color_change(col):
 	tween.interpolate_property(self, "self_modulate",
 		self_modulate, col, 0.6, 

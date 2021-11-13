@@ -122,6 +122,12 @@ var entities = {
 		"legs": {
 			"type": "eight",
 			"color": "player_color"
+		},
+		"wings": {
+			"type": "player_spider",
+			"hide_when_landed": true,
+			"use_dynamic_color": true,
+			"max_rot": 0.45*PI
 		}
 	},
 	
@@ -143,6 +149,7 @@ var entities = {
 		"specialty": "featherlight",
 		"move": {
 			"speed": 40.0,
+			"flee": true,
 		},
 		"legs": {
 			"type": "eight",
@@ -176,7 +183,8 @@ var entities = {
 		"specialty": "slippery",
 		"move": {
 			"speed": 120.0,
-			"always": true
+			"always": true,
+			"flee": true,
 		},
 		"legs": {
 			"type": "six",
@@ -287,6 +295,7 @@ var entities = {
 		"specialty": "shield",
 		"move": {
 			"speed": 50.0,
+			"chase": true,
 		},
 		"legs": {
 			"type": "six",
@@ -370,7 +379,8 @@ var entities = {
 			"friendly": true
 		},
 		"move": {
-			"speed": 50.0
+			"speed": 50.0,
+			"flee": true,
 		},
 		"antenna": {
 			"type": "mealybug",
@@ -383,7 +393,8 @@ var entities = {
 		"points": 5,
 		"trail": "strong",
 		"move": {
-			"speed": 90.0
+			"speed": 90.0,
+			"chase": true,
 		},
 		"legs": {
 			"type": "six",
@@ -407,6 +418,7 @@ var entities = {
 		"move": {
 			"stamina": 500,
 			"speed": 120.0,
+			"chase": true,
 			"worm": true
 		},
 		"antenna": {
@@ -424,7 +436,8 @@ var entities = {
 			"narrow": true
 		},
 		"move": {
-			"worm": true
+			"worm": true,
+			"chase": true,
 		},
 		"collect": {
 			"cannibal": true
@@ -463,7 +476,8 @@ var entities = {
 		"specialty": "flight",
 		"move": {
 			"type": "fly",
-			"land": true
+			"land": true,
+			"flee": true,
 		},
 		"wings": {
 			"type": "fly",
@@ -565,7 +579,8 @@ var entities = {
 		"specialty": "oneway",
 		"move": {
 			"type": "fly",
-			"land": true
+			"land": true,
+			"chase": true,
 		},
 		"wings": {
 			"type": "moth",

@@ -11,6 +11,9 @@ onready var wings = $Wings
 onready var worm = $Worm
 onready var body = get_parent()
 
+onready var stuck_lines = $StuckLines
+onready var anim_player = $AnimationPlayer
+
 var player_num : int = -1
 var data = {}
 
@@ -37,6 +40,22 @@ func set_data(new_data):
 
 func incapacitate():
 	wings.incapacitate()
+	
+	stuck_lines.set_visible(true)
+	#stuck_lines.set_rotation(randf()*2*PI)
+	
+	var cur_edge = body.m.tracker.get_current_edge()
+	if cur_edge:
+		stuck_lines.modulate = cur_edge.m.drawer.get_color()
+	
+	anim_player.play("Stuck")
+
+func _on_Respawner_on_revive():
+	stuck_lines.set_visible(false)
+	sprite.set_scale(Vector2(1,1)*0.33)
+	
+	if anim_player.get_current_animation() == "Stuck":
+		anim_player.stop()
 
 func set_player_num(pnum):
 	player_num = pnum

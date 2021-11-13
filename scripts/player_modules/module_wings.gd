@@ -7,6 +7,9 @@ const WING_FLAP_SCALE : float = 0.5
 onready var tween = $Tween
 var planned_animation = null
 
+onready var visuals = get_parent()
+onready var body = visuals.get_parent()
+
 var active : bool = false
 var data
 
@@ -54,6 +57,12 @@ func create_both_wings():
 
 func on_move_type_changed(new_type):
 	if not active: return
+	
+	if data.has('hide_when_landed'):
+		set_visible(new_type != "web")
+	
+	if data.has('use_dynamic_color') and body.m.status.is_player():
+		modulate = GlobalDict.player_data[body.m.status.player_num].color
 	
 	if new_type == "web":
 		play_wing_collapse()
