@@ -384,7 +384,9 @@ func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = f
 	# but there's a reason this edge must be kept alive
 	var edge_must_stay_alive = edge.m.entities.has_strong_one() or edge.m.body.cant_destroy_due_to_home_base()
 	if not keep_entities_alive and edge_must_stay_alive:
-		return
+		return {
+			"failed": true
+		}
 	
 	var start_node = edge.m.body.start
 	var end_node = edge.m.body.end
@@ -406,6 +408,7 @@ func remove_existing(edge, destroy_orphan_points = true, keep_entities_alive = f
 	edge.queue_free()
 	
 	return {
+		'failed': false,
 		'entities': entities,
 		'type': type,
 		'boss': boss,

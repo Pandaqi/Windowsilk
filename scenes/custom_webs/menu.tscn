@@ -251,7 +251,7 @@ frame = 1
 [node name="PointSettings" type="Node2D" parent="Points"]
 position = Vector2( 200, 880 )
 script = ExtResource( 1 )
-type = "bugs"
+type = "settings"
 color = Color( 0.631373, 0.329412, 0.764706, 1 )
 scale_factor = 2.0
 

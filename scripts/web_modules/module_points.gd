@@ -33,8 +33,12 @@ func remove_existing(point):
 		e.m.status.die()
 	
 	var edges_copy = point.m.edges.get_them() + []
+	var not_all_removed = false
 	for e in edges_copy:
-		edges.remove_existing(e)
+		var res = edges.remove_existing(e)
+		if res.failed: not_all_removed = true
+	
+	if not_all_removed: return
 
 	point.queue_free()
 

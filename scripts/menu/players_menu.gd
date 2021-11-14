@@ -23,9 +23,10 @@ func create_new(num):
 	p.m.status.make_player(num, team_num)
 	p.m.status.make_menu_entity()
 	
+	p.m.mover.force_update_speed_scale(2.0)
+	
 	if main_node.web_is("arenas") or main_node.web_is("bugs"):
 		p.m.jumper.disable_input()
-		p.m.mover.force_update_speed_scale(2.0)
 
 	var start_point = starting_points[num]
 

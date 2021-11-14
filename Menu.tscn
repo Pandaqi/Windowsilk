@@ -10,7 +10,7 @@
 [ext_resource path="res://assets/ui/help_texts.png" type="Texture" id=8]
 [ext_resource path="res://scripts/menu/helpers.gd" type="Script" id=9]
 [ext_resource path="res://assets/ui/jump_instruction.png" type="Texture" id=10]
-[ext_resource path="res://scripts/menu/settings.gd" type="Script" id=11]
+[ext_resource path="res://scenes/technical_settings.tscn" type="PackedScene" id=11]
 [ext_resource path="res://scripts/menu/config_loader.gd" type="Script" id=12]
 
 [node name="Main" type="Node2D"]
@@ -74,10 +74,9 @@ texture = ExtResource( 10 )
 [node name="ConfigLoader" type="Node2D" parent="."]
 script = ExtResource( 12 )
 
-[node name="Settings" type="CanvasLayer" parent="."]
-script = ExtResource( 11 )
+[node name="TechnicalSettings" parent="." instance=ExtResource( 11 )]
 
-[connection signal="open_settings" from="." to="Settings" method="_on_Main_open_settings"]
+[connection signal="open_settings" from="." to="TechnicalSettings" method="_on_Main_open_settings"]
 [connection signal="players_nearby" from="." to="Helpers" method="_on_Main_players_nearby"]
 [connection signal="team_changed" from="." to="Helpers" method="_on_Main_team_changed"]
 [connection signal="team_changed" from="." to="Players" method="_on_Main_team_changed"]

@@ -171,12 +171,14 @@ func on_players_nearby(val):
 	else: fade_tutorial()
 
 func show_tutorial():
+	if not item_tutorial: return
 	tween.interpolate_property(item_tutorial, "modulate",
 		item_tutorial.modulate, Color(1,1,1,1), 0.5,
 		Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	tween.start()
 
 func fade_tutorial():
+	if not item_tutorial: return
 	tween.interpolate_property(item_tutorial, "modulate",
 		item_tutorial.modulate, Color(1,1,1,0), 0.5,
 		Tween.TRANS_LINEAR, Tween.EASE_OUT)

@@ -163,6 +163,8 @@ func generate_random_web():
 	# NOTE: This is quite a costly "fail-safe", is it worth it?
 	var points = get_tree().get_nodes_in_group("Points")
 	for p in points:
+		if not p or not is_instance_valid(p): continue
+		
 		var intersect = get_intersections(p.position, p.m.body.get_radius())
 		for res in intersect:
 			if not res.collider.is_in_group("Edges"): continue

@@ -6,6 +6,20 @@ onready var tween = get_node("/root/Main/Tween")
 
 var radius_scale_factor : float = 1.0
 
+var sprite = null
+var custom_img = null
+
+func _ready():
+	var cur_arena_data = GlobalDict.arenas[GlobalDict.cfg.arena]
+	if cur_arena_data.has('custom_point'):
+		custom_img = load("res://assets/custom_points/lilypad.png")
+		
+		sprite = Sprite.new()
+		sprite.texture = custom_img
+		sprite.set_rotation(2*PI*randf())
+		add_child(sprite)
+		
+
 func update_visuals():
 	update()
 
@@ -19,6 +33,12 @@ func scale_radius(rs):
 
 func _draw():
 	var radius = body.m.body.get_radius()*radius_scale_factor
+	
+	if custom_img:
+		sprite.set_visible(true)
+		sprite.set_scale((radius/128.0)*Vector2(1,1)*2.0)
+		return
+	
 	draw_circle(Vector2.ZERO, radius, COLOR)
 	
 	if GlobalDict.cfg.draw_outlines_on_web:

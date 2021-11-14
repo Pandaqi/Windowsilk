@@ -19,10 +19,10 @@ func _ready():
 	if GlobalInput.get_player_count() <= 0:
 		GlobalInput.create_debugging_players()
 	
+	arena.activate()
 	web.activate()
 
 func web_loading_done():
-	arena.activate()
 	players.activate()
 	entities.activate()
 	

@@ -39,3 +39,9 @@ func web_loading_done():
 
 func web_is(key):
 	return final_web == key
+
+func hide():
+	pass
+
+func show():
+	pass

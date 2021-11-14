@@ -45,6 +45,7 @@ func force_update_speed_scale(val):
 
 func update_speed_scale(num):
 	if not GlobalDict.cfg.bigger_entities_move_slower: return
+	if not Global.in_game: return
 	
 	speed_scale = max(SPEED_SCALE_BOUNDS.max - SPEED_LOSS_PER_POINT*num, SPEED_SCALE_BOUNDS.min)
 

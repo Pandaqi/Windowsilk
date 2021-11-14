@@ -2,6 +2,7 @@ extends Node
 
 var base_cfg = {
 	'player_starting_points': 2,
+	'menu_entity_points': 5,
 	'max_points_capacity': 9,
 	
 	'arena': 'windowsill',
@@ -107,7 +108,8 @@ var silk_types = {
 }
 
 var arenas = {
-	'windowsill': { 'frame': 0, "def": true } 
+	'windowsill': { 'frame': 0, "def": true },
+	'pondstill': { 'frame': 1, "custom_point": "lilypad" }
 }
 
 # All parameters are FALSE by default (this means simplified code and consistency)

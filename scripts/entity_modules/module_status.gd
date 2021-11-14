@@ -53,7 +53,7 @@ func make_non_player():
 
 func make_menu_entity():
 	can_die = false
-	body.m.points.change(5)
+	body.m.points.set_to(GlobalDict.cfg.menu_entity_points)
 	body.m.mover.get_node("WebMover").allow_entering_any_edge = true
 
 func is_player():
