@@ -49,16 +49,16 @@ func find_closest_to_vec(vec : Vector2):
 	
 	return best
 
-func get_without_threat(body):
+func get_without_threat(other_body):
 	var arr = []
 	for e in edges:
-		if e.m.entities.has_threat_to(body): continue
+		if e.m.entities.has_threat_to(other_body): continue
 		arr.append(e)
 	return arr
 
-func get_with_food(body):
+func get_with_food(other_body):
 	var arr = []
 	for e in edges:
-		if not e.m.entities.has_food_for(body): continue
+		if not e.m.entities.has_food_for(other_body): continue
 		arr.append(e)
 	return arr

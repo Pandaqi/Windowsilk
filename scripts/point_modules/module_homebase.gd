@@ -92,6 +92,9 @@ func change_target(dt):
 func should_win():
 	return total_points >= target_points
 
+func is_active():
+	return active
+
 func is_mine(node):
 	return node.m.status.team_num == team
 

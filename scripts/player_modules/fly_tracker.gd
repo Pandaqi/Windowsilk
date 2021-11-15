@@ -1,6 +1,7 @@
 extends Node2D
 
 onready var spawner = get_node("/root/Main/Spawner")
+onready var arena = get_node("/root/Main/Arena")
 
 onready var tracker_handler = get_parent()
 onready var body = tracker_handler.get_parent()
@@ -21,6 +22,9 @@ func initialize(params):
 	
 	if params.has('fixed_pos'):
 		pos = params.fixed_pos
+	
+	var hijacked_point = arena.hijack_entity_placement(body)
+	if hijacked_point: pos = hijacked_point.position
 	
 	body.set_rotation(2*PI*randf())
 	body.set_position(pos)

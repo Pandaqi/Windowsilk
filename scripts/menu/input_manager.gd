@@ -21,13 +21,13 @@ func check_device_status(ev):
 		players.create_new(GlobalInput.get_player_count() - 1)
 
 func check_option_toggle(ev):
-	var players = get_tree().get_nodes_in_group("Players")
+	var all_players = get_tree().get_nodes_in_group("Players")
 	for i in range(GlobalInput.get_player_count()):
 		var device_num = GlobalInput.device_order[i]
 		
 		if not ev.is_action_released("interact_" + str(device_num)): continue
 		
-		var p = players[i]
+		var p = all_players[i]
 		var closest_point = get_closest_valid_point_to(p.position)
 		
 		if not closest_point: continue

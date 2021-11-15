@@ -12,6 +12,7 @@ onready var stamina = $Stamina
 onready var jumper = $Jumper
 onready var fake_jumper = $FakeJumper
 
+# warning-ignore:unused_signal
 signal move_vec(vec, dt)
 
 func initialize():

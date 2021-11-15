@@ -24,16 +24,18 @@ func update_collision_shape(new_scale):
 	col_shape.radius = 128*0.33*0.5*new_scale
 
 func collect(node):
+	
 	# if we eat something while having the poison powerup
 	# we don't kill it, we just poison it
 	var should_die = true
-	if body.m.specialties.check_type("poison"):
-		node.m.specialties.set_to("poison")
-		should_die = false
-	
-	if body.m.status.is_player():
-		var specialty = node.m.specialties.get_it()
-		body.m.specialties.set_to(specialty)
+	if node.m.has('specialties'):
+		if body.m.specialties.check_type("poison"):
+			node.m.specialties.set_to("poison")
+			should_die = false
+		
+		if body.m.status.is_player():
+			var specialty = node.m.specialties.get_it()
+			body.m.specialties.set_to(specialty)
 
 	if should_die:
 		handle_points(node)
@@ -64,6 +66,12 @@ func can_always_be_eaten():
 	return data.always
 
 func can_collect(other_body, give_feedback = true):
+	# collectibles are like a subset of "static entities" 
+	# that can always be eaten and don't need all these checks
+	# (prime example: Fruit)
+	if other_body.is_in_group("Collectibles"):
+		return true
+	
 	# cannot eat ourselves or non-entities
 	if other_body == body: return false
 	if not other_body.is_in_group("Entities"): return false

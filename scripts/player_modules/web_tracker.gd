@@ -26,6 +26,12 @@ func initialize(params = {}):
 		pos = point.position
 		edge = null
 	
+	var hijacked_point = arena.hijack_entity_placement(body)
+	if hijacked_point:
+		point = hijacked_point
+		pos = point.position
+		edge = null
+	
 	if not edge or not is_instance_valid(edge):
 		edge = null
 	

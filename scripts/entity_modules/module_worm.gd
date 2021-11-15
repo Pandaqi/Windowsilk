@@ -61,7 +61,7 @@ func check_phase_switch():
 	elif phase == 'extend' and length_ratio >= LENGTH_BOUNDS.max:
 		phase = 'compress'
 
-func _on_Mover_on_move_completed(vec):
+func _on_Mover_on_move_completed(_vec):
 	if not active: return
 	
 	check_phase_switch()

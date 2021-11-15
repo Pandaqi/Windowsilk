@@ -27,6 +27,7 @@ func create_at(pos):
 
 func remove_existing(point):
 	if point.m.status.is_home_base(): return
+	if point.m.body.is_fixed(): return
 	
 	var entities_copy = point.m.entities.get_them() + []
 	for e in entities_copy:

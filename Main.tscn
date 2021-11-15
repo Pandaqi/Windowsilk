@@ -70,7 +70,7 @@ script = ExtResource( 2 )
 
 [node name="Arena" type="Node2D" parent="."]
 script = ExtResource( 6 )
-debug_arena = "pondstill"
+debug_arena = "forestkill"
 
 [node name="Web" parent="." instance=ExtResource( 1 )]
 

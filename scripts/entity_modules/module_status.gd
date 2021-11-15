@@ -47,6 +47,7 @@ func change_team(num):
 
 func make_non_player():
 	body.erase_module("input")
+	body.erase_module("respawner")
 	body.add_to_group("NonPlayers")
 	
 	crown.queue_free()
@@ -150,7 +151,7 @@ func give_constant_feedback(txt):
 	last_fb_time = OS.get_ticks_msec()
 	give_feedback(txt)
 
-func _physics_process(dt):
+func _physics_process(_dt):
 	if not winner: return
 	keep_crown_positioned()
 

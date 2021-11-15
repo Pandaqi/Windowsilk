@@ -2,7 +2,7 @@ extends Node
 
 onready var body = get_parent()
 var active : bool = true
-var shutdown : bool = false
+var is_shutdown : bool = false
 
 var active_module = null
 
@@ -10,13 +10,13 @@ func select_module(key):
 	active_module = get_node(key)
 
 func shutdown():
-	shutdown = true
+	is_shutdown = true
 
 func disable():
 	active = false
 
 func enable():
-	if shutdown: return
+	if is_shutdown: return
 	active = true
 
 func _physics_process(dt):

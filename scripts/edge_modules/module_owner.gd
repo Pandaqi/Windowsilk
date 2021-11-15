@@ -54,7 +54,7 @@ func can_enter(entity):
 	return true
 
 # TO DO: Might put this on a slower timer, as we really don't need this precision/speed of updates
-func _physics_process(dt):
+func _physics_process(_dt):
 	body.m.drawer.fade_icons(get_fade_ratio())
 
 func get_time_left():

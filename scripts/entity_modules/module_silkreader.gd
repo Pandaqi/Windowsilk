@@ -30,7 +30,7 @@ func update_silk_type(edge):
 func _on_Tracker_arrived_on_edge(e):
 	update_silk_type(e)
 
-func _on_Tracker_arrived_on_point(p):
+func _on_Tracker_arrived_on_point(_p):
 	reset_silk_type()
 
 func _on_Status_on_death():

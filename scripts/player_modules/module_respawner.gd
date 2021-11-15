@@ -33,12 +33,6 @@ func finish_respawn():
 	stop_animation()
 	
 	emit_signal("on_revive")
-	
-	print("CUR EDGE")
-	print(body.m.tracker.get_current_edge())
-	
-	print("INPUT ACTIVE")
-	print(body.m.input.active)
 
 func teleport_to_home_base():
 	var params = {

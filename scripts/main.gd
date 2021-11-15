@@ -24,11 +24,14 @@ func _ready():
 
 func web_loading_done():
 	players.activate()
-	entities.activate()
-	
 	web.assign_home_bases()
+	
+	arena.prepare_entity_placement()
+	entities.activate()
 
-func on_player_death(p):
+	arena.web_loading_done()
+
+func on_player_death(_p):
 	if game_over_state: return
 	
 	print("PLAYER DIED")

@@ -1,6 +1,10 @@
 extends Node2D
 
 var MAX_POINTS : int = 9
+var MIN_POINTS : int = 0
+
+const MIN_POINTS_COLLECTIBLE : int = -5
+const MAX_POINTS_COLLECTIBLE : int = 0
 
 var num : int = 0
 
@@ -10,6 +14,7 @@ onready var label = $LabelContainer/Label
 onready var body = get_parent()
 onready var main_node = get_node("/root/Main")
 
+# warning-ignore:unused_signal
 signal point_change(val)
 
 func _ready():
@@ -18,19 +23,29 @@ func _ready():
 func set_to(val):
 	change(val - num)
 
+func collectible_change(val):
+# warning-ignore:narrowing_conversion
+	num = clamp(num + val, MIN_POINTS_COLLECTIBLE, MAX_POINTS_COLLECTIBLE)
+	label.set_text(str(num))
+
 func change(val):
-	var no_lives_left = (num == 0)
+	if body.is_in_group("Collectibles"):
+		collectible_change(val)
+		return
+	
+	var no_lives_left = (num == MIN_POINTS)
 	if no_lives_left and val < 0:
 		body.m.status.die()
 		return
 	
-	num = clamp(num + val, 0.0, MAX_POINTS)
+# warning-ignore:narrowing_conversion
+	num = clamp(num + val, MIN_POINTS, MAX_POINTS)
 	
 	label.set_text(str(num))
 	body.m.visuals.update_scale(num)
 	body.m.mover.update_speed_scale(num)
 	
-	if not GlobalDict.cfg.objective_uses_home_base:
+	if not GlobalDict.cfg.objective_uses_home_base and body.m.status.is_player():
 		main_node.on_player_progression(body)
 	
 	body.m.tween.interpolate_property(label_container, "scale",

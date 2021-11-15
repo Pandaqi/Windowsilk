@@ -270,9 +270,6 @@ var entities = {
 		"move": {
 			"fake_jump": true 
 		},
-		"collect": {
-			"friendly": true
-		},
 		"legs": {
 			"type": "four",
 			"color": Color(30/255.0, 34/255.0, 148/255.0)

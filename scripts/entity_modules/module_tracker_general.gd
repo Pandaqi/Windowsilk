@@ -1,6 +1,8 @@
 extends "res://scripts/module_selector.gd"
 
+# warning-ignore:unused_signal
 signal arrived_on_point(p)
+# warning-ignore:unused_signal
 signal arrived_on_edge(e)
 
 onready var switcher = $Switcher

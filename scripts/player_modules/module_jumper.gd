@@ -236,7 +236,7 @@ func finish_jump():
 func handle_new_position_in_web():
 	if jump_data.move_type != "web": return
 	
-	var start_pos = jump_data.start_pos
+	#var start_pos = jump_data.start_pos
 	var target_pos = jump_data.target_pos
 	var actually_jumped = (target_pos != null)
 	if not actually_jumped: return

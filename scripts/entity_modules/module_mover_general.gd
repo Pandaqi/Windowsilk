@@ -9,6 +9,7 @@ const SPEED_LOSS_PER_POINT = 0.05
 var speed_scale : float = 1.0
 var is_static : float = false
 
+# warning-ignore:unused_signal
 signal on_move_completed(vec)
 
 func _on_Movement_move_vec(vec, dt):

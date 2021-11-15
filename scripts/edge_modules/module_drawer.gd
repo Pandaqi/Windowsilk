@@ -77,8 +77,8 @@ func remove_pattern():
 	pattern = -1
 	
 	for arr in pattern_sprites:
-		for sprite in arr:
-			sprite.queue_free()
+		for pattern_sprite in arr:
+			pattern_sprite.queue_free()
 	
 	pattern_sprites = [[],[]]
 
@@ -103,7 +103,7 @@ func set_pattern(num):
 	icon_offset = -0.5*full_pattern_length
 	
 	var angles = [PI, 0]
-	for i in range(num_icons):
+	for _i in range(num_icons):
 		for j in range(2):
 			var icon = team_icon_scene.instance()
 			icon.set_scale(icon_scale)
@@ -146,8 +146,8 @@ func draw_pattern():
 
 func fade_icons(ratio):
 	for arr in pattern_sprites:
-		for sprite in arr:
-			sprite.modulate.a = ratio
+		for pattern_sprite in arr:
+			pattern_sprite.modulate.a = ratio
 
 func play_creation_tween():
 	tween.interpolate_property(self, "scale",

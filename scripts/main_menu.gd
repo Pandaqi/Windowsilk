@@ -5,8 +5,11 @@ onready var entities = $Entities
 onready var players = $Players
 onready var config_loader = $ConfigLoader
 
+# warning-ignore:unused_signal
 signal team_changed(entity)
+# warning-ignore:unused_signal
 signal players_nearby(is_true, type)
+# warning-ignore:unused_signal
 signal open_settings()
 
 var final_web : String

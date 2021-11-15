@@ -5,7 +5,7 @@ const TIMEBOMB_THRESHOLD : float = 5.0
 
 const DURATION : float = 10.0
 const FLICKER_THRESHOLD : float = 3.0 # from what point the icon starts flickering to indicate it's wearing out
-const NOISE_MAKER_FORCE : float = 300.0
+const NOISE_MAKER_FORCE : float = 250.0
 
 const FEATHERLIGHT_SPEED : float = 0.1 # how fast points move inwards
 const MARGIN_BEFORE_FEATHERLIGHT_STARTS : float = 20.0
@@ -226,7 +226,7 @@ func update_time_spent_on_edge(dt):
 		if should_reset:
 			time_spent_on_edge = 0.0
 	
-func _on_Tracker_arrived_on_edge(e):
+func _on_Tracker_arrived_on_edge(_e):
 	time_spent_on_last_edge = time_spent_on_edge
 	time_spent_on_edge = 0.0
 
@@ -244,6 +244,7 @@ func execute_blastarea_effect():
 		if its_us: continue
 		
 		if not b.is_in_group("Entities"): continue
+		if not b.m.has("knockback"): continue
 		
 		var vec_away = (b.position - body.position).normalized()
 		b.m.knockback.apply(dir * vec_away * NOISE_MAKER_FORCE)

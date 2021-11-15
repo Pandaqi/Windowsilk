@@ -1,6 +1,7 @@
 extends Node2D
 
 var arena : String = "windowsill"
+var arena_scene
 var data
 
 const SPLASH_KNOCKBACK_RADIUS : float = 100.0
@@ -16,13 +17,19 @@ func activate():
 	arena = GlobalDict.cfg.arena
 	data = GlobalDict.arenas[arena]
 
-	var arena_scene = load("res://scenes/arenas/" + arena + ".tscn").instance()
+	arena_scene = load("res://scenes/arenas/" + arena + ".tscn").instance()
 	add_child(arena_scene)
-		
 	
-	# TO DO: In the future (maybe)
-	# => Allow them to have manually created webs; if so, create those instead
-	# => Allow them custom functionality, which might need to be activated/copied somewhere else
+	if not arena_scene.script or not arena_scene.has_method("prepare"): return
+	arena_scene.prepare()
+
+func web_loading_done():
+	if not arena_scene.script or not arena_scene.has_method("activate"): return
+	arena_scene.activate()
+
+func prepare_entity_placement():
+	if not arena_scene.script or not arena_scene.has_method("prepare_entity_placement"): return
+	arena_scene.prepare_entity_placement()
 
 func has_global_specialty(tp : String):
 	if not data.has('global_specialty'): return false
@@ -48,3 +55,10 @@ func execute_knockback(pos : Vector2):
 		
 		var vec_away = (col.position - pos).normalized()
 		res.collider.m.knockback.apply(vec_away * SPLASH_KNOCKBACK_FORCE)
+
+func hijack_entity_placement(body):
+	if not arena_scene.script: return null
+	if not arena_scene.has_method("hijack_entity_placement"): return null
+	if body.m.status.is_player(): return null
+	
+	return arena_scene.hijack_entity_placement(body)

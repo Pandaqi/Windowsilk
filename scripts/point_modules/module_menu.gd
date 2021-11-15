@@ -70,10 +70,12 @@ func check_for_action(e):
 		
 	elif type == "bugs":
 		Global.custom_web_to_load = "bugs"
+# warning-ignore:return_value_discarded
 		get_tree().reload_current_scene()
 		
 	elif type == "arenas":
 		Global.custom_web_to_load = "arenas"
+# warning-ignore:return_value_discarded
 		get_tree().reload_current_scene()
 		
 	elif type == "quit":
@@ -81,6 +83,7 @@ func check_for_action(e):
 	
 	elif type == "exit":
 		Global.custom_web_to_load = "menu"
+# warning-ignore:return_value_discarded
 		get_tree().reload_current_scene()
 
 func on_entity_exit(e):
@@ -161,7 +164,7 @@ func turn_off():
 	var radius = 1.5
 	if item_type == "arenas": radius = 2
 	
-	body.m.drawer.scale_radius(1.5)
+	body.m.drawer.scale_radius(radius)
 	body.m.drawer.set_color(Color(0,0,0))
 	item_icon.modulate.a = 0.5
 

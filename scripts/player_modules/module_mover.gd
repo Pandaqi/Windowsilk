@@ -15,7 +15,7 @@ var desired_vec : Vector2 = Vector2.ZERO
 
 onready var web = get_node("/root/Main/Web")
 
-func _on_Input_move_vec(vec, dt):
+func _on_Input_move_vec(vec, _dt):
 	desired_vec = vec
 
 func stop():

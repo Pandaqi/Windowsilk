@@ -67,7 +67,7 @@ func simulate_antennas(dt):
 	for key in antennas:
 		var antenna = antennas[key]
 		
-		var start_pos = antenna.start.global_position
+		#var start_pos = antenna.start.global_position
 		var ideal_pos = antenna.start.get_node("Offset").global_position
 		antenna.ideal_pos = ideal_pos
 		

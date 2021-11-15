@@ -4,6 +4,7 @@ onready var edges = $Edges
 onready var points = $Points
 onready var entities = $Entities
 onready var BG = $BG
+onready var overlay = $Overlay
 
 onready var main_node = get_node("/root/Main")
 
@@ -161,8 +162,8 @@ func generate_random_web():
 	
 	# remove any "bad" edges
 	# NOTE: This is quite a costly "fail-safe", is it worth it?
-	var points = get_tree().get_nodes_in_group("Points")
-	for p in points:
+	var all_points = get_tree().get_nodes_in_group("Points")
+	for p in all_points:
 		if not p or not is_instance_valid(p): continue
 		
 		var intersect = get_intersections(p.position, p.m.body.get_radius())

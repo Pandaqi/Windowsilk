@@ -48,7 +48,7 @@ func turn_into_game_over(winning_team):
 	icon.set_visible(true)
 	icon.set_frame(winning_team)
 
-func _on_AnimationPlayer_animation_finished(anim_name):
+func _on_AnimationPlayer_animation_finished(_anim_name):
 	var should_extend_sprite = (frame == 1 and type == 'reminder')
 	if not should_extend_sprite: return
 	

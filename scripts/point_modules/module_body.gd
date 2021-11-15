@@ -5,6 +5,7 @@ onready var body = get_parent()
 
 var col_shape
 var scale_factor : float = 1.0
+var fixed : bool = false
 
 func update_body():
 	col_node.shape = col_node.shape.duplicate(true)
@@ -17,9 +18,20 @@ func scale_collision_shape(f):
 	update_body()
 
 func move(vec, _dt):
-	body.move_and_slide(vec)
+	if fixed: return
 	
+	body.move_and_slide(vec)
 	body.m.status.check()
 
 func get_radius():
 	return col_shape.radius / scale_factor
+
+func make_fixed():
+	if fixed: return
+	
+	fixed = true
+	scale_collision_shape(2.0)
+	body.m.drawer.scale_radius(2.0)
+
+func is_fixed():
+	return fixed
