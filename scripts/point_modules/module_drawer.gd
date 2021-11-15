@@ -12,7 +12,7 @@ var custom_img = null
 func _ready():
 	var cur_arena_data = GlobalDict.arenas[GlobalDict.cfg.arena]
 	if cur_arena_data.has('custom_point'):
-		custom_img = load("res://assets/custom_points/lilypad.png")
+		custom_img = load("res://assets/custom_points/" + cur_arena_data.custom_point + ".png")
 		
 		sprite = Sprite.new()
 		sprite.texture = custom_img

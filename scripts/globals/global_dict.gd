@@ -109,7 +109,10 @@ var silk_types = {
 
 var arenas = {
 	'windowsill': { 'frame': 0, "def": true },
-	'pondstill': { 'frame': 1, "custom_point": "lilypad" }
+	'pondstill': { 'frame': 1, "custom_point": "lilypad", "global_specialty": "slippery", "create_splash_knockbacks": true },
+	"desertwail": { 'frame': 2, "custom_point": "cactus" },
+	"forestkill": { 'frame': 3, "custom_point": "tree" },
+	"fruitfill": { 'frame': 4 }
 }
 
 # All parameters are FALSE by default (this means simplified code and consistency)

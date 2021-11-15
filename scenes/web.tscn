@@ -23,13 +23,21 @@ script = ExtResource( 2 )
 [node name="Right" parent="Bounds" instance=ExtResource( 1 )]
 position = Vector2( 1984, 0 )
 rotation = 3.14159
+collision_layer = 9
+collision_mask = 9
 
 [node name="Down" parent="Bounds" instance=ExtResource( 1 )]
 position = Vector2( 960, 1144 )
 rotation = 1.5708
+collision_layer = 9
+collision_mask = 9
 
 [node name="Left" parent="Bounds" instance=ExtResource( 1 )]
+collision_layer = 9
+collision_mask = 9
 
 [node name="Up" parent="Bounds" instance=ExtResource( 1 )]
 position = Vector2( 960, -64 )
 rotation = 1.5708
+collision_layer = 9
+collision_mask = 9

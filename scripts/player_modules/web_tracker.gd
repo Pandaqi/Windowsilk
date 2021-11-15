@@ -8,6 +8,7 @@ onready var tracker_handler = get_parent()
 onready var body = tracker_handler.get_parent()
 onready var spawner = get_node("/root/Main/Spawner")
 onready var edges = get_node("/root/Main/Web/Edges")
+onready var arena = get_node("/root/Main/Arena")
 
 signal teleported()
 
@@ -44,6 +45,8 @@ func initialize(params = {}):
 		force_set_edge(edge)
 	elif point:
 		force_set_point(point)
+	
+	arena.execute_knockback(body.position)
 	
 	emit_signal("teleported")
 

@@ -12,7 +12,6 @@ var last_velocity : Vector2 = Vector2.RIGHT
 
 var cur_vec : Vector2 = Vector2.ZERO
 var desired_vec : Vector2 = Vector2.ZERO
-var allow_entering_any_edge : bool = false
 
 onready var web = get_node("/root/Main/Web")
 
@@ -104,7 +103,7 @@ func try_point_move(vec, _dt):
 	if not best_edge: return false
 	
 	if not best_edge.m.boss.can_enter(body):
-		if not allow_entering_any_edge: 
+		if Global.in_game:
 			return false
 	
 	if best_edge.m.type.direction_forbidden(vec): 

@@ -19,6 +19,7 @@ onready var icon = $Sprite
 onready var body = get_parent()
 
 onready var anim_player = $AnimationPlayer
+onready var arena = get_node("/root/Main/Arena")
 
 var last_known_move_direction : Vector2 = Vector2.ZERO
 
@@ -159,13 +160,16 @@ func modify_points(val):
 	return val
 
 func check_type(tp):
-	return type == tp or get_silk_type() == tp
+	return type == tp or get_silk_type() == tp or arena.has_global_specialty(tp)
 
 func get_silk_type():
 	return body.m.silkreader.cur_silk_type
 
 func modify_input_vec(start_vec, target_vec, dt):
 	if start_vec.length() <= 0.03: return target_vec
+	
+	start_vec = start_vec.normalized()
+	target_vec = target_vec.normalized()
 	
 	if check_type("slippery"): 
 		return start_vec.slerp(target_vec, SLIPPERY_FACTOR * dt)

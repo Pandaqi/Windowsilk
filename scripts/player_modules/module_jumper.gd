@@ -11,6 +11,7 @@ var input_disabled : bool = false
 
 onready var body = get_parent()
 onready var edges = get_node("/root/Main/Web").edges
+onready var arena = get_node("/root/Main/Arena")
 onready var tween = $Tween
 
 onready var aim_helper = $AimHelper
@@ -227,6 +228,8 @@ func finish_jump():
 
 	body.m.mover.enable()
 	body.m.tracker.enable()
+	
+	arena.execute_knockback(body.position)
 	
 	emit_signal("on_jump_finished")
 

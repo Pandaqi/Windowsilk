@@ -142,27 +142,54 @@ func make_config_item(itm_name, itm_type, lst):
 func read_value_from_config():
 	var val = GlobalConfig.read_game_config(item_type, item_name)
 	
-	if val != toggled:
-		toggle()
+	if val:
+		turn_on()
+		toggled = true
 	else:
-		toggle()
-		toggle()
+		turn_off()
+		toggled = false
 
-func toggle():
+func turn_on():
+	var radius = 2
+	if item_type == "arenas": radius = 3
+	
+	body.m.drawer.scale_radius(radius)
+	body.m.drawer.set_color(Color(0,1,0))
+	item_icon.modulate.a = 1.0
+
+func turn_off():
+	var radius = 1.5
+	if item_type == "arenas": radius = 2
+	
+	body.m.drawer.scale_radius(1.5)
+	body.m.drawer.set_color(Color(0,0,0))
+	item_icon.modulate.a = 0.5
+
+func toggle(forced = false):
 	if not item_name: return
+	
+	var single_selection_mode = (item_type == "arenas")
+	if (single_selection_mode and toggled) and not forced: 
+		return
 	
 	toggled = not toggled
 	
+	if single_selection_mode and toggled and (not forced):
+		force_turn_off_all_other_points()
+	
 	if toggled:
-		body.m.drawer.scale_radius(2.0)
-		body.m.drawer.set_color(Color(0,1,0))
-		item_icon.modulate.a = 1.0
+		turn_on()
 	else:
-		body.m.drawer.scale_radius(1.5)
-		body.m.drawer.set_color(Color(0,0,0))
-		item_icon.modulate.a = 0.5
+		turn_off()
 	
 	GlobalConfig.update_game_config(item_type, item_name, toggled)
+
+func force_turn_off_all_other_points():
+	var points = get_tree().get_nodes_in_group("Points")
+	for p in points:
+		if not p.m.menu.toggled: continue
+		if p == body: continue
+		p.m.menu.toggle(true)
 
 func on_players_nearby(val):
 	if type != "config": return

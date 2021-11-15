@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://scripts/module_manager.gd" type="Script" id=1]
 [ext_resource path="res://scripts/point_modules/module_entities.gd" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://assets/fonts/main_medium.tres" type="DynamicFont" id=8]
 [ext_resource path="res://scripts/point_modules/module_homebase.gd" type="Script" id=9]
 [ext_resource path="res://scripts/point_modules/module_menu.gd" type="Script" id=10]
+[ext_resource path="res://scripts/point_modules/module_knockback.gd" type="Script" id=11]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 251.313
@@ -76,6 +77,9 @@ collision_mask = 2
 shape = SubResource( 2 )
 
 [node name="Tween" type="Tween" parent="Menu"]
+
+[node name="Knockback" type="Node2D" parent="."]
+script = ExtResource( 11 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
