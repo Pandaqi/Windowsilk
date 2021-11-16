@@ -237,7 +237,12 @@ func get_time_on_edge():
 func execute_blastarea_effect():
 	var bodies = $BlastArea.get_overlapping_bodies()
 	var dir = 1
-	if check_type("attractor"): dir = -1
+	var audio_key = "noisemaker"
+	if check_type("attractor"): 
+		dir = -1
+		audio_key = "attractor"
+	
+	GlobalAudio.play_dynamic_sound(body, audio_key)
 	
 	for b in bodies:
 		var its_us = (b == body)

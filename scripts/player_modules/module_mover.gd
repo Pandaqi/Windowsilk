@@ -15,13 +15,37 @@ var desired_vec : Vector2 = Vector2.ZERO
 
 onready var web = get_node("/root/Main/Web")
 
+var MOVE_AUDIO_VOLUME : float = -6.0
+var audio_player
+
+func on_select():
+	var key
+	if not body.m.status.is_player():
+		MOVE_AUDIO_VOLUME *= 2
+		key = "move_legs"
+	else:
+		key = "move_legs_constant"
+	
+	if body.m.status.is_worm():
+		MOVE_AUDIO_VOLUME = -INF
+	
+	audio_player = GlobalAudio.play_dynamic_sound(body, key, MOVE_AUDIO_VOLUME, "FX", false)
+
+func on_deselect():
+	audio_player.stop()
+	audio_player.queue_free()
+
 func _on_Input_move_vec(vec, _dt):
 	desired_vec = vec
 
 func stop():
+	if audio_player.is_playing(): audio_player.stop()
 	desired_vec = Vector2.ZERO
 
 func module_update(dt):
+	if not audio_player.is_playing(): audio_player.play()
+	audio_player.set_position(body.position)
+	
 	var cur_pos = body.position
 	var final_vec = body.m.specialties.modify_input_vec(cur_vec, desired_vec, dt)
 	move_along_web(final_vec, dt)

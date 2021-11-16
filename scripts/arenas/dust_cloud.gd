@@ -83,12 +83,19 @@ func restart_timer():
 	timer.start()
 
 func _on_Timer_timeout():
+	blast_away_entities()
+	play_blast_tweens()
+
+func blast_away_entities():
 	for b in area.get_overlapping_bodies():
 		if not b.is_in_group("Entities"): continue
 		
 		var vec_away = (b.position - position).normalized()
 		b.m.knockback.apply(vec_away * GUST_FORCE)
 	
+	GlobalAudio.play_dynamic_sound(self, "gust_of_wind")
+
+func play_blast_tweens():
 	tween.interpolate_property(self, "rotation",
 		rotation, rotation+2*PI, 0.5,
 		Tween.TRANS_LINEAR, Tween.EASE_OUT)

@@ -11,14 +11,31 @@ const BOUND_KNOCKBACK_FORCE : float = 20.0
 var vec : Vector2 = Vector2.ZERO
 var speed
 
+var MOVE_AUDIO_VOLUME : float = -3.0
+var audio_player
+
+func on_select():
+	if not body.m.status.is_player():
+		MOVE_AUDIO_VOLUME *= 2
+	
+	audio_player = GlobalAudio.play_dynamic_sound(body, "move_wings", MOVE_AUDIO_VOLUME, "FX", false)
+
+func on_deselect():
+	audio_player.stop()
+	audio_player.queue_free()
+
 func _on_Input_move_vec(new_vec, _dt):
 	vec = new_vec
 
 func stop():
+	if audio_player.is_playing(): audio_player.stop()
 	vec = Vector2.ZERO
 
 func module_update(dt):
 	if vec.length() <= 0.03: return
+	
+	if not audio_player.is_playing(): audio_player.play()
+	audio_player.set_position(body.position)
 	
 	var cur_pos = body.position
 	var rot = body.rotation

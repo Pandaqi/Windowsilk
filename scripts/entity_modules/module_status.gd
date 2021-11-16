@@ -68,6 +68,9 @@ func get_move_type():
 	if not data.move.has('type'): return 'web'
 	return data.move.type
 
+func is_worm():
+	return data.move.has('worm')
+
 func set_type(tp):
 	type = tp
 	
@@ -121,6 +124,7 @@ func die():
 
 	emit_signal("on_death")
 	give_feedback("You died!")
+	play_sound("death")
 	
 	if not is_player():
 		body.m.tracker._on_Status_on_death() # we call this manually as it only needs to be called for non-players
@@ -162,4 +166,7 @@ func keep_crown_positioned():
 func make_winner():
 	winner = true
 	crown.set_visible(true)
-	
+
+func play_sound(key):
+	if not is_player(): return
+	GlobalAudio.play_dynamic_sound(body, key)

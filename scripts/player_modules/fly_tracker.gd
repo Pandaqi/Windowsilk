@@ -23,11 +23,14 @@ func initialize(params):
 	if params.has('fixed_pos'):
 		pos = params.fixed_pos
 	
-	var hijacked_point = arena.hijack_entity_placement(body)
-	if hijacked_point: pos = hijacked_point.position
+	if tracker_handler.initial_placement:
+		var hijacked_point = arena.hijack_entity_placement(body)
+		if hijacked_point: pos = hijacked_point.position
 	
 	body.set_rotation(2*PI*randf())
 	body.set_position(pos)
+	
+	tracker_handler.initial_placement = false
 
 func get_current_edge():
 	if not is_instance_valid(cur_edge):

@@ -26,11 +26,12 @@ func initialize(params = {}):
 		pos = point.position
 		edge = null
 	
-	var hijacked_point = arena.hijack_entity_placement(body)
-	if hijacked_point:
-		point = hijacked_point
-		pos = point.position
-		edge = null
+	if tracker_handler.initial_placement:
+		var hijacked_point = arena.hijack_entity_placement(body)
+		if hijacked_point:
+			point = hijacked_point
+			pos = point.position
+			edge = null
 	
 	if not edge or not is_instance_valid(edge):
 		edge = null
@@ -53,6 +54,7 @@ func initialize(params = {}):
 		force_set_point(point)
 	
 	arena.execute_knockback(body.position)
+	tracker_handler.initial_placement = false
 	
 	emit_signal("teleported")
 

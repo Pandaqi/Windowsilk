@@ -56,6 +56,8 @@ func on_team_progression(team_num, points, needed_points):
 	game_over(team_num)
 
 func on_team_won(team_num):
+	GlobalAudio.play_static_sound("win_game")
+	
 	game_over(team_num)
 
 func game_over(winning_team):

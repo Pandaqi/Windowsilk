@@ -7,7 +7,13 @@ var is_shutdown : bool = false
 var active_module = null
 
 func select_module(key):
+	if active_module and active_module.has_method("on_deselect"):
+		active_module.on_deselect()
+	
 	active_module = get_node(key)
+	
+	if active_module.has_method('on_select'):
+		active_module.on_select()
 
 func shutdown():
 	is_shutdown = true

@@ -1,0 +1,72 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="web_create_data" version="1.3.0" audacityversion="2.3.3" sel0="0.0034296432" sel1="0.0034296432" vpos="0" h="0.0000000000" zoom="1166.3020833333" rate="44100.0" snapto="off" selectionformat="hh:mm:ss + milliseconds" frequencyformat="Hz" bandwidthformat="octaves">
+	<tags>
+		<tag name="TITLE" value="Spider Bite Suck 5"/>
+		<tag name="ARTIST" value="SFX Producer"/>
+		<tag name="GENRE" value="Animals"/>
+		<tag name="Subtitle" value="Medium"/>
+		<tag name="Unknown text information frame" value="2018"/>
+		<tag name="Composer" value="SFX Producer"/>
+	</tags>
+	<wavetrack name="spider_bite_3 (or stuck)" isSelected="1" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="12258">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808690.au" len="12258" min="-0.31416" max="0.221294" rms="0.029242"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="spider_bite_3 (or stuck)" isSelected="1" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="12258">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808e38.au" len="12258" min="-0.31416" max="0.221294" rms="0.029242"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="spider_bite (but could be used for getting stuck)" isSelected="0" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.01410431" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="7337">
+				<waveblock start="0">
+					<simpleblockfile filename="e08083f8.au" len="7337" min="-0.519908" max="0.707917" rms="0.038548"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="spider_bite (but could be used for getting stuck)" isSelected="0" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.01410431" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="7337">
+				<waveblock start="0">
+					<simpleblockfile filename="e08088c1.au" len="7337" min="-0.519908" max="0.707917" rms="0.038548"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="spider_bit_2 (or stuck)" isSelected="0" height="150" minimized="0" channel="0" linked="1" mute="0" solo="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="7959">
+				<waveblock start="0">
+					<simpleblockfile filename="e080880b.au" len="7959" min="-0.57999" max="0.707917" rms="0.068875"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="spider_bit_2 (or stuck)" isSelected="0" height="150" minimized="0" channel="1" linked="0" mute="0" solo="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="7959">
+				<waveblock start="0">
+					<simpleblockfile filename="e080842a.au" len="7959" min="-0.57999" max="0.707917" rms="0.068875"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>

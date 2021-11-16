@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/web_destroy.ogg-ea7e5e22cbbeac822fa0dfd02d4a95a8.oggstr"
+
+[deps]
+
+source_file="res://assets/audio/web_destroy.ogg"
+dest_files=[ "res://.import/web_destroy.ogg-ea7e5e22cbbeac822fa0dfd02d4a95a8.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

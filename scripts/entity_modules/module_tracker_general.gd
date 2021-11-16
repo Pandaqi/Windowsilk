@@ -8,6 +8,8 @@ signal arrived_on_edge(e)
 onready var switcher = $Switcher
 var data = {}
 
+var initial_placement = true
+
 func set_move_type(tp, params):
 	switcher.switch_to(tp, params)
 

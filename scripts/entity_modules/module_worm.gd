@@ -58,6 +58,7 @@ func check_phase_switch():
 	
 	if phase == 'compress' and length_ratio <= LENGTH_BOUNDS.min:
 		phase = 'extend'
+		GlobalAudio.play_dynamic_sound(body, "move_worm", -3.0)
 	elif phase == 'extend' and length_ratio >= LENGTH_BOUNDS.max:
 		phase = 'compress'
 

@@ -84,6 +84,7 @@ func check_player_entrance(p):
 	p.m.points.set_to(reset_val)
 	
 	p.m.status.give_feedback("Stored!")
+	p.m.status.play_sound("store_points")
 
 func change_target(dt):
 	target_points += dt

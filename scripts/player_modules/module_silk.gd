@@ -21,14 +21,20 @@ func _ready():
 	MAX_POINTS = GlobalDict.cfg.max_points_capacity
 
 func set_to(val):
-	change(val - num)
+	change(val - num, false)
 
 func collectible_change(val):
 # warning-ignore:narrowing_conversion
 	num = clamp(num + val, MIN_POINTS_COLLECTIBLE, MAX_POINTS_COLLECTIBLE)
 	label.set_text(str(num))
 
-func change(val):
+func change(val, play_sound = true):
+	
+	if play_sound:
+		var key = "receive_points"
+		if val <= 0: key = "lose_points"
+		body.m.status.play_sound(key)
+	
 	if body.is_in_group("Collectibles"):
 		collectible_change(val)
 		return

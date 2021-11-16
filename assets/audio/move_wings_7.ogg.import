@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/move_wings_7.ogg-a804e3aedcb047ed9d5b5ff488e3d59f.oggstr"
+
+[deps]
+
+source_file="res://assets/audio/move_wings_7.ogg"
+dest_files=[ "res://.import/move_wings_7.ogg-a804e3aedcb047ed9d5b5ff488e3d59f.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

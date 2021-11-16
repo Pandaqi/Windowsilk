@@ -122,7 +122,7 @@ func execute_jump():
 	
 	jump_data.target_pos = null
 	jump_data.target_point = null
-	
+
 	var params = determine_jump_details()
 	if jump_data.find_valid_dir:
 		var new_vec = find_valid_jumping_dir(params)
@@ -141,6 +141,11 @@ func execute_jump():
 			body.m.points.change(pay_for_travel(dist))
 		
 		body.m.tracker.remove_from_all()
+		
+			
+		GlobalAudio.play_dynamic_sound(body, "whoosh")
+		if body.m.status.is_player():
+			GlobalAudio.play_dynamic_sound(body, "web_create")
 		
 	play_jump_tween()
 

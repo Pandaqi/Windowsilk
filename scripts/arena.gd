@@ -38,6 +38,8 @@ func has_global_specialty(tp : String):
 func execute_knockback(pos : Vector2):
 	if not data.has('create_splash_knockbacks'): return
 	
+	$BlastCenter.set_position(pos)
+	
 	var space_state = get_world_2d().direct_space_state
 
 	var shp = CircleShape2D.new()
@@ -55,6 +57,8 @@ func execute_knockback(pos : Vector2):
 		
 		var vec_away = (col.position - pos).normalized()
 		res.collider.m.knockback.apply(vec_away * SPLASH_KNOCKBACK_FORCE)
+	
+	GlobalAudio.play_dynamic_sound($BlastCenter, "water_splash")
 
 func hijack_entity_placement(body):
 	if not arena_scene.script: return null

@@ -4,6 +4,8 @@
 
 [node name="Pondstill" type="Node2D"]
 
+[node name="BlastCenter" type="Node2D" parent="."]
+
 [node name="BG" type="Node2D" parent="."]
 
 [node name="Bg" type="Sprite" parent="BG"]

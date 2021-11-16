@@ -31,11 +31,18 @@ func collect(node):
 	if node.m.has('specialties'):
 		if body.m.specialties.check_type("poison"):
 			node.m.specialties.set_to("poison")
+			GlobalAudio.play_dynamic_sound(node, "poison")
 			should_die = false
 		
 		if body.m.status.is_player():
 			var specialty = node.m.specialties.get_it()
 			body.m.specialties.set_to(specialty)
+	
+	var volume = 0.0
+	if not body.m.status.is_player():
+		volume = -3.0
+	
+	GlobalAudio.play_dynamic_sound(body, "munch", volume)
 
 	if should_die:
 		handle_points(node)

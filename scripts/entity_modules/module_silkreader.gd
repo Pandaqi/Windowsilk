@@ -51,6 +51,7 @@ func check_if_were_stuck(edge = null):
 	if randf() > prob: return
 
 	position_precisely_on_edge(edge)
+	GlobalAudio.play_dynamic_sound(body, "web_stuck")
 
 	body.m.status.incapacitate()
 

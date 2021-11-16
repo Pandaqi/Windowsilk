@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/web_stuck.ogg-46c38fd93146b94f9c18136ab3b60e2f.oggstr"
+
+[deps]
+
+source_file="res://assets/audio/web_stuck.ogg"
+dest_files=[ "res://.import/web_stuck.ogg-46c38fd93146b94f9c18136ab3b60e2f.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

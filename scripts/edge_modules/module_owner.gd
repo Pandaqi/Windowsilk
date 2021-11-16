@@ -1,5 +1,7 @@
 extends Node2D
 
+const PAINT_VOLUME : float = -6.0
+
 var boss = null
 var total_wait_time : float = 20.0
 
@@ -17,6 +19,7 @@ func set_to(b, short = true):
 	if not b: return
 	
 	boss = b
+	GlobalAudio.play_dynamic_sound(body, "web_paint", PAINT_VOLUME)
 	
 	body.m.drawer.set_pattern(boss.m.status.team_num)
 	start_timer(short)
