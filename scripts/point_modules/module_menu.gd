@@ -5,7 +5,7 @@ var num_players_here : int = 0
 var num_players_nearby : int = 0
 var team_num : int = -1
 
-var react_to_nearby_players = ["arenas", "bugs", "settings", "quit", "config"]
+var react_to_nearby_players = ["arenas", "bugs", "settings", "quit", "config", "play"]
 
 onready var body = get_parent()
 onready var feedback = get_node("/root/Main/Feedback")
@@ -20,6 +20,7 @@ var arena_tutorial = preload("res://scenes/ui/arena_tutorial.tscn")
 onready var tween = $Tween
 
 const TUTORIAL_SHOW_RADIUS : float = 30.0
+const PLAY_DETECT_RADIUS : float = 150.0
 
 # TO DO: Very ugly, but it works for now
 var item_name = null
@@ -38,6 +39,10 @@ func set_type(tp):
 		var shp = $Area2D/CollisionShape2D.shape.duplicate(true)
 		shp.radius = TUTORIAL_SHOW_RADIUS
 		$Area2D/CollisionShape2D.shape = shp
+	elif type == "play":
+		var shp = $Area2D/CollisionShape2D.shape.duplicate(true)
+		shp.radius = PLAY_DETECT_RADIUS
+		$Area2D/CollisionShape2D.shape = shp
 
 func on_entity_enter(e):
 	if type == "": return
@@ -55,10 +60,6 @@ func check_for_action(e):
 	if type == "start":
 		pass
 		
-	elif type == "play":
-		if num_players_here == GlobalInput.get_player_count():
-			start_game()
-		
 	elif type == "team":
 		GlobalDict.player_data[e.m.status.player_num].team = team_num
 		e.m.status.change_team(team_num)
@@ -66,22 +67,27 @@ func check_for_action(e):
 		main_node.emit_signal("team_changed", e)
 		
 	elif type == "settings":
+		GlobalAudio.play_static_sound("button")
 		main_node.emit_signal("open_settings")
 		
 	elif type == "bugs":
+		GlobalAudio.play_static_sound("button")
 		Global.custom_web_to_load = "bugs"
 # warning-ignore:return_value_discarded
 		get_tree().reload_current_scene()
 		
 	elif type == "arenas":
+		GlobalAudio.play_static_sound("button")
 		Global.custom_web_to_load = "arenas"
 # warning-ignore:return_value_discarded
 		get_tree().reload_current_scene()
 		
 	elif type == "quit":
+		GlobalAudio.play_static_sound("button")
 		get_tree().quit()
 	
 	elif type == "exit":
+		GlobalAudio.play_static_sound("button")
 		Global.custom_web_to_load = "menu"
 # warning-ignore:return_value_discarded
 		get_tree().reload_current_scene()
@@ -146,27 +152,33 @@ func read_value_from_config():
 	var val = GlobalConfig.read_game_config(item_type, item_name)
 	
 	if val:
-		turn_on()
+		turn_on(false)
 		toggled = true
 	else:
-		turn_off()
+		turn_off(false)
 		toggled = false
 
-func turn_on():
+func turn_on(play_sound = true):
 	var radius = 2
 	if item_type == "arenas": radius = 3
 	
 	body.m.drawer.scale_radius(radius)
 	body.m.drawer.set_color(Color(0,1,0))
 	item_icon.modulate.a = 1.0
+	
+	if play_sound:
+		GlobalAudio.play_static_sound("button")
 
-func turn_off():
+func turn_off(play_sound = true):
 	var radius = 1.5
 	if item_type == "arenas": radius = 2
 	
 	body.m.drawer.scale_radius(radius)
 	body.m.drawer.set_color(Color(0,0,0))
 	item_icon.modulate.a = 0.5
+	
+	if play_sound:
+		GlobalAudio.play_static_sound("button")
 
 func toggle(forced = false):
 	if not item_name: return
@@ -195,10 +207,14 @@ func force_turn_off_all_other_points():
 		p.m.menu.toggle(true)
 
 func on_players_nearby(val):
-	if type != "config": return
+	if type == "play":
+		if num_players_nearby >= GlobalInput.get_player_count():
+			GlobalAudio.play_static_sound("button")
+			start_game()
 	
-	if val: show_tutorial()
-	else: fade_tutorial()
+	elif type == "config":
+		if val: show_tutorial()
+		else: fade_tutorial()
 
 func show_tutorial():
 	if not item_tutorial: return

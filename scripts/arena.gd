@@ -1,16 +1,22 @@
 extends Node2D
 
 var arena : String = "windowsill"
-var arena_scene
-var data
+var arena_scene = null
+var data = {}
 
 const SPLASH_KNOCKBACK_RADIUS : float = 100.0
 const SPLASH_KNOCKBACK_FORCE : float = 500.0
+
+onready var particles = get_node("/root/Main/Particles")
+
+export var menu_arena : bool = false
 
 # DEBUGGING
 export var debug_arena : String = ""
 
 func activate():
+	if menu_arena: return
+	
 	if debug_arena != "":
 		GlobalDict.cfg.arena = debug_arena
 	
@@ -24,10 +30,12 @@ func activate():
 	arena_scene.prepare()
 
 func web_loading_done():
+	if not arena_scene: return
 	if not arena_scene.script or not arena_scene.has_method("activate"): return
 	arena_scene.activate()
 
 func prepare_entity_placement():
+	if not arena_scene: return
 	if not arena_scene.script or not arena_scene.has_method("prepare_entity_placement"): return
 	arena_scene.prepare_entity_placement()
 
@@ -58,11 +66,18 @@ func execute_knockback(pos : Vector2):
 		var vec_away = (col.position - pos).normalized()
 		res.collider.m.knockback.apply(vec_away * SPLASH_KNOCKBACK_FORCE)
 	
+	particles.create_blast_particles(pos)
 	GlobalAudio.play_dynamic_sound($BlastCenter, "water_splash")
 
 func hijack_entity_placement(body):
+	if not arena_scene: return null
 	if not arena_scene.script: return null
 	if not arena_scene.has_method("hijack_entity_placement"): return null
 	if body.m.status.is_player(): return null
 	
 	return arena_scene.hijack_entity_placement(body)
+
+func get_custom_point():
+	if not arena_scene: return null
+	if not data.has('custom_point'): return null
+	return data.custom_point

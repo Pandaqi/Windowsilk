@@ -21,6 +21,7 @@ func move(vec, _dt):
 	if fixed: return
 	
 	body.move_and_slide(vec)
+	body.m.entities.inform_future()
 	body.m.status.check()
 
 func get_radius():

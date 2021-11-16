@@ -22,6 +22,3 @@ func visualize(key):
 		var item_name = keys[i]
 		
 		p.m.menu.make_config_item(item_name, item_type, list)
-		
-		print("ASSIGNED")
-		print(item_name)

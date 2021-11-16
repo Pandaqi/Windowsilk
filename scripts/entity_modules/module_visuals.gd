@@ -14,6 +14,8 @@ onready var body = get_parent()
 onready var stuck_lines = $StuckLines
 onready var anim_player = $AnimationPlayer
 
+onready var move_particles = $MoveParticles
+
 var player_num : int = -1
 var team_num : int = -1
 var data = {}
@@ -38,6 +40,8 @@ func set_data(new_data):
 		wings.initialize(data.wings)
 	else:
 		wings.disable()
+	
+	create_move_particles()
 
 func incapacitate():
 	wings.incapacitate()
@@ -50,6 +54,11 @@ func incapacitate():
 		stuck_lines.modulate = cur_edge.m.drawer.get_color()
 	
 	anim_player.play("Stuck")
+
+func capacitate():
+	if body.m.status.is_flying_bug(): wings.capacitate()
+	stuck_lines.set_visible(false)
+	anim_player.stop(true)
 
 func _on_Respawner_on_revive():
 	stuck_lines.set_visible(false)
@@ -71,7 +80,7 @@ func set_player_num(pnum):
 func set_team_num(tnum):
 	team_num = tnum
 	
-	# TO DO: particles emit in the shape of your team?
+	create_move_particles()
 
 func update_scale(num):
 	var max_points = GlobalDict.cfg.max_points_capacity
@@ -97,10 +106,31 @@ func tween_scale_change(new):
 	
 	body.m.tween.start()
 
-# TO DO: Also use this to handle collapsing of wings and stuff (and tweening?)
 func on_move_type_changed(new_type):
 	legs.on_move_type_changed(new_type)
 	wings.on_move_type_changed(new_type)
 
 func _on_WebTracker_teleported():
 	legs.reset_legs()
+
+func create_move_particles():
+	var team_num = body.m.status.team_num
+	
+	var part_key = "res://assets/ui/team_icons/team_icon_small_" + str(team_num) + ".png"
+	move_particles.texture = load(part_key)
+	
+	var player_num = body.m.status.player_num
+	var part_modulate = Color.from_hsv(randf(), 0.5, 0.5)
+	if player_num >= 0:
+		part_modulate = GlobalDict.player_data[player_num].color
+	
+	move_particles.modulate = part_modulate
+	
+func _on_Mover_on_move_completed(vec):
+	if not move_particles.is_emitting(): move_particles.set_emitting(true)
+
+func _on_Mover_on_move_stopped():
+	if not move_particles.is_emitting(): move_particles.set_emitting(false)
+
+func _on_Tracker_on_switch():
+	_on_Mover_on_move_stopped()

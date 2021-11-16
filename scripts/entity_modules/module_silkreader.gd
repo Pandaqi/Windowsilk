@@ -6,6 +6,7 @@ var active : bool = true
 
 onready var body = get_parent()
 
+const STUCK_PROB_SCALE_FACTOR : float = 0.925
 const STUCK_CHECK_INTERVAL : float = 3.0
 onready var stuck_timer = $StuckTimer
 
@@ -47,13 +48,14 @@ func check_if_were_stuck(edge = null):
 	if not edge.m.boss.has_one(): return
 	if edge.m.boss.is_safe_for(body): return
 	
-	var prob = 1.0 - body.m.points.count() / (GlobalDict.cfg.max_points_capacity + 1.0)
+	var prob = 1.0 - (body.m.points.count() + 1.0) / (GlobalDict.cfg.max_points_capacity + 1.0)
+	prob *= STUCK_PROB_SCALE_FACTOR
 	if randf() > prob: return
 
 	position_precisely_on_edge(edge)
 	GlobalAudio.play_dynamic_sound(body, "web_stuck")
 
-	body.m.status.incapacitate()
+	body.m.status.incapacitate(edge)
 
 func _on_StuckTimer_timeout():
 	check_if_were_stuck()

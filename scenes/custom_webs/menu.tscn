@@ -169,7 +169,6 @@ team_num = 1
 color = Color( 0.631373, 0.329412, 0.764706, 1 )
 
 [node name="Sprite2" parent="Points/Point8" instance=ExtResource( 3 )]
-position = Vector2( 0.173218, 0.0038147 )
 frame = 1
 
 [node name="Point9" type="Node2D" parent="Points"]
@@ -180,7 +179,6 @@ team_num = 2
 color = Color( 0.631373, 0.329412, 0.764706, 1 )
 
 [node name="Sprite3" parent="Points/Point9" instance=ExtResource( 3 )]
-position = Vector2( 0.44043, -0.837891 )
 frame = 2
 
 [node name="Point10" type="Node2D" parent="Points"]
@@ -191,7 +189,6 @@ team_num = 3
 color = Color( 0.631373, 0.329412, 0.764706, 1 )
 
 [node name="Sprite4" parent="Points/Point10" instance=ExtResource( 3 )]
-position = Vector2( -1.87646, -1.89929 )
 frame = 3
 
 [node name="Point11" type="Node2D" parent="Points"]
@@ -202,7 +199,6 @@ team_num = 4
 color = Color( 0.631373, 0.329412, 0.764706, 1 )
 
 [node name="Sprite5" parent="Points/Point11" instance=ExtResource( 3 )]
-position = Vector2( -0.0974121, 1.30701 )
 frame = 4
 
 [node name="Point12" type="Node2D" parent="Points"]
@@ -213,7 +209,6 @@ team_num = 5
 color = Color( 0.631373, 0.329412, 0.764706, 1 )
 
 [node name="Sprite6" parent="Points/Point12" instance=ExtResource( 3 )]
-position = Vector2( -0.811035, 0.765259 )
 frame = 5
 
 [node name="PointCenter" type="Node2D" parent="Points"]

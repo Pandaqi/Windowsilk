@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scenes/web.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/main_menu.gd" type="Script" id=2]
@@ -12,9 +12,19 @@
 [ext_resource path="res://assets/ui/jump_instruction.png" type="Texture" id=10]
 [ext_resource path="res://scenes/technical_settings.tscn" type="PackedScene" id=11]
 [ext_resource path="res://scripts/menu/config_loader.gd" type="Script" id=12]
+[ext_resource path="res://scripts/arena.gd" type="Script" id=13]
+[ext_resource path="res://assets/ui/menu_bg.png" type="Texture" id=14]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 14 )
+centered = false
+
+[node name="Arena" type="Node2D" parent="."]
+script = ExtResource( 13 )
+menu_arena = true
 
 [node name="Web" parent="." instance=ExtResource( 1 )]
 type = "custom"
@@ -56,7 +66,7 @@ hframes = 5
 frame = 2
 
 [node name="Settings" type="Sprite" parent="Helpers"]
-position = Vector2( 267.035, 944.854 )
+position = Vector2( 284.994, 974.038 )
 texture = ExtResource( 8 )
 hframes = 5
 frame = 3

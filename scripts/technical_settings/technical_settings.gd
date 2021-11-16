@@ -13,7 +13,7 @@ func _ready():
 	hide()
 
 func _on_Main_open_settings():
-	GlobalAudio.play_static_sound("ui_button_press")
+	GlobalAudio.play_static_sound("button")
 	show()
 	main_node.hide()
 
@@ -66,7 +66,7 @@ func create_interface():
 	cont.add_child(back_btn)
 
 func _on_Back_pressed():
-	GlobalAudio.play_static_sound("ui_button_press")
+	GlobalAudio.play_static_sound("button")
 	
 	self.hide()
 	main_node.show()

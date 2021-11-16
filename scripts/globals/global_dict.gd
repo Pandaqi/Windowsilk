@@ -155,8 +155,10 @@ var entities = {
 			"static": true
 		},
 		"collect": {
-			"always": true
-		}
+			"always": true,
+			"friendly": true
+		},
+		"def": true
 	},
 	
 	"tiny_spider": { 
@@ -171,7 +173,8 @@ var entities = {
 		"legs": {
 			"type": "eight",
 			"color": Color(0,40/255.0,43/255.0) # TO DO
-		}
+		},
+		"def": true
 	},
 	
 	"flea": {
@@ -277,7 +280,8 @@ var entities = {
 		"antenna": {
 			"type": "cricket",
 			"color": Color(41/255.0, 46/255.0, 214/255.0)
-		}
+		},
+		"def": true
 	},
 	
 	"cockroach": {
@@ -359,7 +363,8 @@ var entities = {
 			"type": "regular_fruit_fly",
 			"min_rot": 0.1*PI,
 			"max_rot": 0.3*PI
-		}
+		},
+		"def": true
 	},
 	
 	"aphid": {
@@ -627,7 +632,8 @@ var entities = {
 		"antenna": {
 			"type": "hornet",
 			"color": Color(90/255.0, 31/255.0, 13/255.0)
-		}
+		},
+		"def": true
 	},
 	
 	"mosquito": {

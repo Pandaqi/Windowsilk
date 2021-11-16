@@ -25,6 +25,8 @@ func _ready():
 	build_input_map()
 
 func create_debugging_players():
+	if get_player_count() > 0: return
+	
 	var num_players = 2
 	for _i in range(num_players):
 		add_new_player('keyboard')
@@ -197,7 +199,7 @@ func add_new_player(type, id = -1):
 	if type == "keyboard":
 		num_keyboard_players += 1
 	
-	#GlobalAudio.play_static_sound("Success")
+	GlobalAudio.play_static_sound("player_added")
 	
 	return id
 
@@ -217,7 +219,7 @@ func remove_player(type, id = null, return_num : bool = false):
 	if type == "keyboard":
 		num_keyboard_players -= 1
 	
-	#GlobalAudio.play_static_sound("Fail")
+	GlobalAudio.play_static_sound("player_removed")
 	
 	if return_num:
 		return index

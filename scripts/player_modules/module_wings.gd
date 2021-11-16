@@ -25,6 +25,10 @@ func incapacitate():
 	set_visible(false)
 	active = false
 
+func capacitate():
+	set_visible(true)
+	active = true
+
 func initialize(new_data):
 	data = new_data
 	

@@ -1,14 +1,20 @@
 extends "res://scripts/players.gd"
 
 var starting_points = []
+
+const BASE_PROMPT_SCALE : float = 0.66
 var prompts = []
 
 var prompt_scene = preload("res://scenes/ui/prompt.tscn")
 onready var main_node = get_node("/root/Main")
+onready var tween = get_node('../Tween')
 
 signal player_logged_in()
 
 func activate():
+	for i in range(6):
+		GlobalDict.player_data[i].active = false
+	
 	for i in range(GlobalInput.get_player_count()):
 		create_new(i)
 	
@@ -17,6 +23,8 @@ func activate():
 func create_new(num):
 	var p = entity_scene.instance()
 	web.entities.add_child(p)
+	
+	GlobalDict.player_data[num].active = true
 	
 	var team_num = num
 	p.m.status.set_type("player_spider")
@@ -47,6 +55,8 @@ func advance_prompt(num):
 	var cur_frame = prompts[num].get_frame()
 	if cur_frame >= 5: return
 	prompts[num].set_frame(cur_frame + 5)
+	
+	play_popup_tween(prompts[num])
 
 func show_next_register_prompt():
 	var next_player_num = GlobalInput.get_player_count()
@@ -58,6 +68,14 @@ func show_next_register_prompt():
 	
 	prompts[next_player_num].set_visible(val)
 	prompts[next_player_num].set_frame(10)
+	
+	play_popup_tween(prompts[next_player_num])
+
+func play_popup_tween(prompt):
+	tween.interpolate_property(prompt, "scale", 
+		Vector2.ZERO, Vector2(1,1)*BASE_PROMPT_SCALE, 0.7,
+		Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+	tween.start()
 
 func add_starting_position(point, index):
 	if starting_points.size() <= 0:

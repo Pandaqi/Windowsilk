@@ -21,6 +21,8 @@ onready var body = get_parent()
 onready var anim_player = $AnimationPlayer
 onready var arena = get_node("/root/Main/Arena")
 
+onready var particles = get_node("/root/Main/Particles")
+
 var last_known_move_direction : Vector2 = Vector2.ZERO
 
 var m = {}
@@ -243,6 +245,7 @@ func execute_blastarea_effect():
 		audio_key = "attractor"
 	
 	GlobalAudio.play_dynamic_sound(body, audio_key)
+	particles.create_blast_particles(body.position)
 	
 	for b in bodies:
 		var its_us = (b == body)

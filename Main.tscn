@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://scenes/web.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/main.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://scenes/entities.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scripts/arena.gd" type="Script" id=6]
 [ext_resource path="res://scenes/ui/gui_sign.tscn" type="PackedScene" id=7]
+[ext_resource path="res://scripts/particles.gd" type="Script" id=8]
 [ext_resource path="res://scripts/gui.gd" type="Script" id=9]
 [ext_resource path="res://assets/fonts/griffy.ttf" type="DynamicFontData" id=10]
 [ext_resource path="res://assets/ui/pause_reminder.png" type="Texture" id=11]
@@ -82,6 +83,7 @@ debug_arena = "forestkill"
 script = ExtResource( 16 )
 
 [node name="Particles" type="Node2D" parent="."]
+script = ExtResource( 8 )
 
 [node name="Tween" type="Tween" parent="."]
 

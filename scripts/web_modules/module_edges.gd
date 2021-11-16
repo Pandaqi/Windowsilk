@@ -8,6 +8,7 @@ const TRIPLE_RAYCAST_OFFSET : float = 9.0
 
 var edge_scene = preload("res://scenes/web/edge.tscn")
 
+onready var particles = get_node("/root/Main/Particles")
 onready var points = get_node("../Points")
 onready var web = get_parent()
 
@@ -252,12 +253,14 @@ func create_new_points_and_edges_if_needed(data):
 	
 	if not data.from.already_created:
 		data.from.point = points.create_at(data.from.pos)
+		particles.create_good_particles(data.from.point.position)
 		
 		if not data.destroy:
 			break_edge_in_two(data.from_edge, data.from.point, data)
 	
 	if not data.to.already_created:
 		data.to.point = points.create_at(data.to.pos)
+		particles.create_good_particles(data.to.point.position)
 	
 	# if we hit the _bounds_ of the level, we don't break anything
 	# hence the check
@@ -267,6 +270,7 @@ func create_new_points_and_edges_if_needed(data):
 	
 	# finally, create the new edge along the shooting line
 	data.new_edge = create_between(data.from.point, data.to.point)
+	particles.create_good_particles(data.new_edge.position)
 
 # destroy the point we just created, which in turn destroys all edges around itself
 func destroy_points_and_edges_if_needed(data):
@@ -275,11 +279,17 @@ func destroy_points_and_edges_if_needed(data):
 	
 	if data.dont_create_new_edges:
 		remove_existing(data.to_edge)
+		particles.create_bad_particles(data.to_edge.position)
 		return
 	
 	# NOTE: this is a bogus point with no live edges attached to it, so removing it only removes that point => left in for consistency
-	if not data.from.already_created: points.remove_existing(data.from.point)
+	if not data.from.already_created: 
+		points.remove_existing(data.from.point)
+		particles.create_bad_particles(data.from.point.position)
+		
 	points.remove_existing(data.to.point)
+	particles.create_bad_particles(data.to.point.position)
+	
 
 # find the points (that this edge connected) and any entities on them
 # reconnect new edges to the old points, and transfer entities to the right one

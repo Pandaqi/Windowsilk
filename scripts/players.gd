@@ -5,12 +5,14 @@ onready var web = get_node("/root/Main/Web")
 var entity_scene = preload("res://scenes/entity.tscn")
 var players = []
 
-func activate():
+func prepare():
 	var num_players = GlobalInput.get_player_count()
 	for i in range(num_players):
 		create_player(i)
-	
-	players = get_tree().get_nodes_in_group("Players")
+
+func activate():
+	for i in range(players.size()):
+		place_player(players[i])
 
 func create_player(num):
 	var p = entity_scene.instance()
@@ -20,7 +22,10 @@ func create_player(num):
 	p.m.status.set_type("player_spider")
 	p.m.status.make_player(num, team_num)
 	
-	var home_base_point = web.home_bases[team_num]
+	players.append(p)
+
+func place_player(p):
+	var home_base_point = web.home_bases[p.m.status.team_num]
 	var params = {
 		'nearby_point': home_base_point,
 		'nearby_radius': 40,

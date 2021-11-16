@@ -5,6 +5,7 @@ onready var main_node = get_node("/root/Main")
 
 const CONSTANT_FB_THRESHOLD : float = 0.6
 onready var feedback = get_node("/root/Main/Feedback")
+onready var particles = get_node("/root/Main/Particles")
 var last_fb_time : float = 0.0
 
 var winner : bool = false
@@ -71,6 +72,12 @@ func get_move_type():
 func is_worm():
 	return data.move.has('worm')
 
+func is_flying_bug():
+	return (get_move_type() == "fly")
+
+func is_static():
+	return data.move.has('static')
+
 func set_type(tp):
 	type = tp
 	
@@ -105,10 +112,15 @@ func same_type(tp):
 	return type == tp
 
 # For catching/trapping bugs => we don't want to KILL them, as they'd just disappear from the map then => killing happens when a player stumbles upon them and eats
-func incapacitate():
+func incapacitate(edge):
 	is_incapacitated = true
 	
 	give_feedback("Stuck!", false)
+	particles.create_stuck_particles(body.position)
+	
+	# by landing first, we'll be registered on the edge,
+	# and _move_ with it when it changes
+	body.m.tracker.switcher.land(null, edge)
 	
 	body.m.movement.disable()
 	body.m.mover.disable()
@@ -116,6 +128,19 @@ func incapacitate():
 	body.m.jumper.disable_input()
 	body.m.silkreader.disable()
 	body.m.collector.disable()
+
+# NOTE: Only players can come back from being incapacitated
+func capacitate():
+	is_incapacitated = false
+	
+	give_feedback("Unstuck!", false)
+	
+	body.m.movement.enable()
+	body.m.mover.enable()
+	body.m.visuals.capacitate()
+	body.m.jumper.enable_input()
+	body.m.silkreader.enable()
+	body.m.collector.enable()
 
 func die():
 	if is_dead: return
@@ -125,6 +150,7 @@ func die():
 	emit_signal("on_death")
 	give_feedback("You died!")
 	play_sound("death")
+	particles.create_eat_particles(body.position)
 	
 	if not is_player():
 		body.m.tracker._on_Status_on_death() # we call this manually as it only needs to be called for non-players
@@ -133,6 +159,8 @@ func die():
 	
 	var offset = Vector2.UP*60
 	feedback.create_death_feedback(body.position + offset)
+	
+	main_node.decrease_opponent_objectives(body)
 	
 	var should_respawn = GlobalDict.cfg.respawn_on_death
 	if not should_respawn:

@@ -1,6 +1,7 @@
 extends Node2D
 
 const PAINT_VOLUME : float = -6.0
+const MAX_PLAYER_STUCK_TIME : float = 15.0
 
 var boss = null
 var total_wait_time : float = 20.0
@@ -31,11 +32,20 @@ func has_one():
 	return (boss != null)
 
 func is_safe_for(node):
-	return node.m.status.team_num == boss.m.status.team_num
+	# obviously, one can walk over edges that are yours
+	if node.m.status.team_num == boss.m.status.team_num:
+		return true
+	
+	# but this is a fail-safe to prevent players from being stuck (and unable to _play_ te game) for a long period of time
+	if node.m.status.is_player() and timer.time_left > MAX_PLAYER_STUCK_TIME:
+		return true
+	
+	return false
 
 func reset():
 	boss = null
 	body.m.drawer.remove_pattern()
+	body.m.entities.unstuck_players()
 
 func can_enter(entity):
 	if not boss: return true
@@ -64,7 +74,7 @@ func get_time_left():
 	return timer.time_left
 
 func get_fade_ratio():
-	return get_time_left() / total_wait_time
+	return clamp(get_time_left() / total_wait_time, 0.2, 1.0)
 
 func start_timer(short):
 	total_wait_time = GlobalDict.cfg.short_owner_fade_time

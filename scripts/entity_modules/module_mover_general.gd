@@ -10,11 +10,14 @@ var speed_scale : float = 1.0
 var is_static : float = false
 
 # warning-ignore:unused_signal
+signal on_move_stopped()
 signal on_move_completed(vec)
 
 func _on_Movement_move_vec(vec, dt):
 	if not active: return
-	if is_static: return
+	if is_static: 
+		active_module.stop()
+		return
 
 	var not_moving = (vec.length() <= 0.03)
 	if not_moving: 

@@ -5,6 +5,13 @@ var bg_audio = null # TO DO
 var bg_audio_player
 
 var audio_preload = {
+	# UI (player/device registering)
+	"player_added": preload("res://assets/audio/receive_points.ogg"),
+	"player_removed": preload("res://assets/audio/lose_points.ogg"),
+	
+	# UI (buttons; simple menus, no need for more)
+	"button": preload("res://assets/audio/button.ogg"),
+	
 	# win/lose (points)
 	"receive_points": preload("res://assets/audio/receive_points.ogg"),
 	"store_points": preload("res://assets/audio/store_points.ogg"),

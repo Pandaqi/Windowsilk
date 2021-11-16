@@ -1,6 +1,6 @@
 extends Node2D
 
-const DELAY_AT_POINT : float = 0.1
+const DELAY_AT_POINT : float = 0.175
 const BOUNDS_CHECK_MARGIN : float = 5.0
 
 onready var mover_handler = get_parent()
@@ -19,6 +19,9 @@ var MOVE_AUDIO_VOLUME : float = -6.0
 var audio_player
 
 func on_select():
+	create_move_audio()
+
+func create_move_audio():
 	var key
 	if not body.m.status.is_player():
 		MOVE_AUDIO_VOLUME *= 2
@@ -26,10 +29,13 @@ func on_select():
 	else:
 		key = "move_legs_constant"
 	
-	if body.m.status.is_worm():
+	if body.m.status.is_worm() or body.m.status.is_static():
 		MOVE_AUDIO_VOLUME = -INF
 	
 	audio_player = GlobalAudio.play_dynamic_sound(body, key, MOVE_AUDIO_VOLUME, "FX", false)
+	audio_player.get_parent().remove_child(audio_player)
+	add_child(audio_player)
+	audio_player.stop()
 
 func on_deselect():
 	audio_player.stop()
@@ -40,12 +46,12 @@ func _on_Input_move_vec(vec, _dt):
 
 func stop():
 	if audio_player.is_playing(): audio_player.stop()
+	mover_handler.emit_signal("on_move_stopped")
 	desired_vec = Vector2.ZERO
 
 func module_update(dt):
 	if not audio_player.is_playing(): audio_player.play()
-	audio_player.set_position(body.position)
-	
+
 	var cur_pos = body.position
 	var final_vec = body.m.specialties.modify_input_vec(cur_vec, desired_vec, dt)
 	move_along_web(final_vec, dt)

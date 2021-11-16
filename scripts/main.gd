@@ -16,15 +16,15 @@ var game_over_state : bool = false
 func _ready():
 	randomize()
 	
-	if GlobalInput.get_player_count() <= 0:
-		GlobalInput.create_debugging_players()
+	GlobalInput.create_debugging_players()
 	
 	arena.activate()
 	web.activate()
 
 func web_loading_done():
-	players.activate()
+	players.prepare()
 	web.assign_home_bases()
+	players.activate()
 	
 	arena.prepare_entity_placement()
 	entities.activate()
@@ -59,6 +59,40 @@ func on_team_won(team_num):
 	GlobalAudio.play_static_sound("win_game")
 	
 	game_over(team_num)
+
+func decrease_opponent_objectives(body):
+	if not body.m.status.is_player(): return
+	
+	var all_bases = web.home_bases
+	var team_num = body.m.status.team_num
+	var home_base = web.home_bases[team_num]
+	var winning_teams = []
+	
+	for b in all_bases:
+		var its_our_home = (b == home_base)
+		if its_our_home: continue
+		
+		b.m.homebase.change_target(-1)
+		if b.m.homebase.should_win():
+			winning_teams.append(b)
+	
+	if winning_teams.size() <= 0: return
+	if winning_teams.size() == 1:
+		on_team_won(team_num)
+		return
+	
+	# use number of deaths as a tiebreaker
+	# if that is still equal, it's just team num order
+	var best_team = -1
+	var lowest_val = INF
+	
+	for t in winning_teams:
+		var num_deaths = t.m.homebase.get_stat("num_deaths")
+		if num_deaths < lowest_val:
+			lowest_val = num_deaths
+			best_team = t.m.homebase.team_num
+	
+	on_team_won(best_team)
 
 func game_over(winning_team):
 	if game_over_state: return

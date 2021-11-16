@@ -58,6 +58,8 @@ func switch_to(tp, params = {}):
 	
 	# inform visuals of the change
 	body.m.visuals.on_move_type_changed(cur_state)
+	
+	tracker_handler.emit_signal("on_switch")
 
 func handle_flying_bugs_that_can_land():
 	if not tracker_handler.data.has('land'): return

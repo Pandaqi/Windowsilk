@@ -52,6 +52,9 @@ func get_max_dist():
 func disable_input():
 	input_disabled = true
 
+func enable_input():
+	input_disabled = false
+
 func _on_Input_move_vec(vec, dt):
 	if not active: return
 	
@@ -129,25 +132,34 @@ func execute_jump():
 		body.set_rotation(new_vec.angle())
 		params.dir = new_vec
 	
+	var succesful = true
 	if params.move_type == "web":
-		shoot_silk_line(params)
+		succesful = shoot_silk_line(params)
 	else:
 		jump_data.target_pos = body.position + get_forward_vec()*FLY_JUMP_DIST
 	
-	var actually_jumped = (jump_data.target_pos != null)
-	if actually_jumped:
+	jump_data.destroy = params.destroy
+	
+	var actually_jumped = (jump_data.target_pos != null) and (not jump_data.destroy)
+	var should_pay = (actually_jumped or jump_data.destroy) and body.m.status.is_player()
+	
+	if should_pay:
 		var dist = (jump_data.target_pos - jump_data.start_pos).length()
-		if body.is_in_group("Players"):
-			body.m.points.change(pay_for_travel(dist))
-		
+		body.m.points.change(pay_for_travel(dist))
+	
+	if actually_jumped:
 		body.m.tracker.remove_from_all()
 		
-			
+		jump_data.target_point.m.entities.add_future(body)
+		
 		GlobalAudio.play_dynamic_sound(body, "whoosh")
 		if body.m.status.is_player():
 			GlobalAudio.play_dynamic_sound(body, "web_create")
 		
-	play_jump_tween()
+		play_jump_tween()
+	
+	if not succesful:
+		finish_jump()
 
 func determine_jump_details():
 	var dir = get_forward_vec()
@@ -181,12 +193,7 @@ func shoot_silk_line(params):
 	var res = edges.shoot(params)
 	if res.failed:
 		body.m.status.give_feedback("No jump possible")
-		finish_jump()
-		return
-	
-	if res.destroy:
-		finish_jump()
-		return
+		return false
 	
 	if res.new_edge:
 		res.new_edge.m.boss.set_to(body, false)
@@ -195,6 +202,12 @@ func shoot_silk_line(params):
 	jump_data.target_pos = res.to.pos
 	jump_data.target_point = res.to.point
 	jump_data.target_edge = res.to_edge
+	
+	if res.destroy:
+		body.m.status.give_feedback("Destroyed!")
+		return false
+	
+	return true
 
 func play_jump_tween():
 	var target = jump_data.target_pos
@@ -220,6 +233,21 @@ func play_jump_tween():
 	
 	tween.start()
 
+func update_jump_tween(new_target):
+	var new_pos = new_target.position
+	var old_pos = jump_data.target_pos
+	if (new_pos - old_pos).length() <= 10: return
+	
+	var distance = (old_pos - body.position).length()
+	var dur = distance / JUMP_DISTANCE_PER_SECOND
+	
+	tween.interpolate_property(body, "position",
+		body.position, new_pos, dur,
+		Tween.TRANS_CUBIC, Tween.EASE_OUT)
+	tween.start()
+	
+	jump_data.target_point = new_target
+
 func finish_fake_jump():
 	emit_signal("on_jump_finished")
 
@@ -227,6 +255,10 @@ func finish_jump():
 	input_disabled = false
 	
 	handle_new_position_in_web()
+	
+	var actually_jumped = jump_data.target_point
+	if actually_jumped:
+		jump_data.target_point.m.entities.remove_future(body)
 	
 	var we_died_during_jump = body.m.status.is_dead
 	if we_died_during_jump: return
@@ -240,6 +272,7 @@ func finish_jump():
 
 func handle_new_position_in_web():
 	if jump_data.move_type != "web": return
+	if jump_data.destroy: return
 	
 	#var start_pos = jump_data.start_pos
 	var target_pos = jump_data.target_pos

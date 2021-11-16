@@ -5,6 +5,8 @@ signal arrived_on_point(p)
 # warning-ignore:unused_signal
 signal arrived_on_edge(e)
 
+signal on_switch()
+
 onready var switcher = $Switcher
 var data = {}
 

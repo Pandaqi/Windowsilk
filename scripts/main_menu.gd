@@ -24,10 +24,7 @@ func _ready():
 	
 	if not web_is("menu"):
 		$Helpers.queue_free()
-	
-	# DEBUGGING
-	GlobalInput.create_debugging_players()
-	
+
 	web.custom_web = final_web
 	web.activate()
 

@@ -13,6 +13,7 @@ onready var label = $LabelContainer/Label
 
 onready var body = get_parent()
 onready var main_node = get_node("/root/Main")
+onready var particles = get_node("/root/Main/Particles")
 
 # warning-ignore:unused_signal
 signal point_change(val)
@@ -34,6 +35,8 @@ func change(val, play_sound = true):
 		var key = "receive_points"
 		if val <= 0: key = "lose_points"
 		body.m.status.play_sound(key)
+	
+	particles.create_point_particles(body.position)
 	
 	if body.is_in_group("Collectibles"):
 		collectible_change(val)

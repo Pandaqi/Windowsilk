@@ -3,6 +3,7 @@ extends Node2D
 var COLOR : Color = Color(1,1,1)
 onready var body = get_parent()
 onready var tween = get_node("/root/Main/Tween")
+onready var arena = get_node("/root/Main/Arena")
 
 var radius_scale_factor : float = 1.0
 
@@ -10,9 +11,9 @@ var sprite = null
 var custom_img = null
 
 func _ready():
-	var cur_arena_data = GlobalDict.arenas[GlobalDict.cfg.arena]
-	if cur_arena_data.has('custom_point'):
-		custom_img = load("res://assets/custom_points/" + cur_arena_data.custom_point + ".png")
+	var custom_point = arena.get_custom_point()
+	if custom_point:
+		custom_img = load("res://assets/custom_points/" + custom_point + ".png")
 		
 		sprite = Sprite.new()
 		sprite.texture = custom_img

@@ -82,3 +82,9 @@ func has_strong_one():
 			return true
 	
 	return false
+
+func unstuck_players():
+	for entity in entities:
+		if not entity.m.status.is_player(): continue
+		if not entity.m.status.is_incapacitated: continue
+		entity.m.status.capacitate()

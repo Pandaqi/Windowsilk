@@ -8,6 +8,7 @@ func _on_Players_player_logged_in():
 	$Team.set_visible(true)
 
 func _on_Main_team_changed(_e):
+	GlobalAudio.play_static_sound("button")
 	$Jump.set_visible(true)
 
 func _on_Main_players_nearby(is_true, type):

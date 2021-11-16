@@ -1,6 +1,6 @@
 extends Node2D
 
-const TIMER_BOUNDS = { 'min': 4.5, 'max': 9.5 }
+const TIMER_BOUNDS = { 'min': 5.5, 'max': 11.5 }
 onready var timer = $Timer
 
 signal on_instant_jump(params)

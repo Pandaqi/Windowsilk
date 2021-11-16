@@ -20,6 +20,9 @@ func shutdown():
 
 func disable():
 	active = false
+	
+	if active_module and active_module.has_method("on_selector_disable"):
+		active_module.on_selector_disable()
 
 func enable():
 	if is_shutdown: return
