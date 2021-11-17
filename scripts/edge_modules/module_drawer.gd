@@ -4,6 +4,7 @@ const BASE_COLOR : Color = Color(1,1,1)
 var color : Color = Color(1,1,1)
 var pattern : int = -1
 
+var num_icons : int = 0
 var icon_width : float = 32.0
 var original_icon_width : float = 128.0
 var icon_scale = Vector2(1,1) * (icon_width / original_icon_width)
@@ -20,6 +21,9 @@ onready var sprite = $Sprite
 onready var tween = get_node("/root/Main/Tween")
 
 var team_icon_scene = preload("res://scenes/team_icon.tscn")
+
+const PATTERN_UPDATE_THRESHOLD : float = 2.0
+var last_pattern_recalculation : float = 0.0
 
 func update_visuals():
 	var new_length = body.m.body.get_length()
@@ -69,9 +73,19 @@ func rotate_icon(val):
 func recalculate_pattern():
 	if pattern < 0: return
 	
+	var new_num_icons = floor(body.m.body.get_length() / (icon_width + icon_margin))
+	
+	var time_since_last = (OS.get_ticks_msec() - last_pattern_recalculation)/1000.0
+	var too_soon = time_since_last < PATTERN_UPDATE_THRESHOLD
+	var significant_update = abs(new_num_icons - num_icons) > 1
+	
+	if too_soon and not significant_update: return
+	
 	var old_num = pattern
 	remove_pattern()
 	set_pattern(old_num)
+	
+	last_pattern_recalculation = OS.get_ticks_msec()
 
 func remove_pattern():
 	pattern = -1
@@ -98,7 +112,7 @@ func set_pattern(num):
 	# TO DO: set some icon? Update a shader to show a repeated version of an icon?
 	pattern = num
 	
-	var num_icons = floor(body.m.body.get_length() / (icon_width + icon_margin))
+	num_icons = floor(body.m.body.get_length() / (icon_width + icon_margin))
 	full_pattern_length = (num_icons-1)*(icon_width + icon_margin)
 	icon_offset = -0.5*full_pattern_length
 	

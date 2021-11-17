@@ -51,6 +51,10 @@ func position_bounds():
 	$Bounds/Left.position.x = corners[0].x - BOUND_THICKNESS
 	$Bounds/Up.position.y = corners[0].y - BOUND_THICKNESS
 
+func is_point_on_level_bound(point):
+	var pos = point.position
+	return is_out_of_bounds(pos, -5)
+
 func get_random_inner_pos(params):
 	var margin = Vector2.ZERO
 	if params.has('margin'): margin = Vector2(1,1)*params.margin

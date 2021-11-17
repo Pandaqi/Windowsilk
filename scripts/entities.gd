@@ -27,7 +27,7 @@ func activate():
 	
 	# DEBUGGING
 	#available_types = ['fly', 'wasp', 'gnat', 'butterfly', 'bee', 'moth', 'mosquito', 'hornet']
-	#available_types = ['small_caterpillar']
+	#available_types = ['grasshopper']
 	#return
 	
 	if is_menu:

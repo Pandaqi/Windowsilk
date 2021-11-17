@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://scenes/web.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/main_menu.gd" type="Script" id=2]
@@ -14,6 +14,7 @@
 [ext_resource path="res://scripts/menu/config_loader.gd" type="Script" id=12]
 [ext_resource path="res://scripts/arena.gd" type="Script" id=13]
 [ext_resource path="res://assets/ui/menu_bg.png" type="Texture" id=14]
+[ext_resource path="res://scenes/particles.tscn" type="PackedScene" id=15]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 2 )
@@ -41,6 +42,8 @@ script = ExtResource( 4 )
 [node name="Spawner" parent="." instance=ExtResource( 5 )]
 
 [node name="Feedback" parent="." instance=ExtResource( 6 )]
+
+[node name="Particles" parent="." instance=ExtResource( 15 )]
 
 [node name="Entities" parent="." instance=ExtResource( 7 )]
 is_menu = true
@@ -88,6 +91,6 @@ script = ExtResource( 12 )
 
 [connection signal="open_settings" from="." to="TechnicalSettings" method="_on_Main_open_settings"]
 [connection signal="players_nearby" from="." to="Helpers" method="_on_Main_players_nearby"]
-[connection signal="team_changed" from="." to="Helpers" method="_on_Main_team_changed"]
 [connection signal="team_changed" from="." to="Players" method="_on_Main_team_changed"]
+[connection signal="team_changed" from="." to="Helpers" method="_on_Main_team_changed"]
 [connection signal="player_logged_in" from="Players" to="Helpers" method="_on_Players_player_logged_in"]

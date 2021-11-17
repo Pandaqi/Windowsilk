@@ -1,7 +1,7 @@
 extends Node
 
 
-var bg_audio = null # TO DO
+var bg_audio = preload("res://assets/audio/soundtrack.mp3")
 var bg_audio_player
 
 var audio_preload = {
@@ -115,7 +115,7 @@ func play_static_sound(key, volume_alteration = 0, bus : String = "GUI"):
 	add_child(audio_player)
 	
 	audio_player.stream = pick_audio(key)
-	audio_player.pitch_scale = 1.0 + 0.075*(randf()-0.5)
+	audio_player.pitch_scale = 1.0 + 0.02*(randf()-0.5)
 	audio_player.play()
 	
 	return audio_player
@@ -127,7 +127,7 @@ func play_dynamic_sound(creator, key, volume_alteration = 0, bus : String = "FX"
 
 	audio_player.max_distance = 2000
 	audio_player.set_position(creator.get_global_position())
-	audio_player.pitch_scale = 1.0 + 0.075*(randf()-0.5)
+	audio_player.pitch_scale = 1.0 + 0.02*(randf()-0.5)
 	
 	add_child(audio_player)
 	

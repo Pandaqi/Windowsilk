@@ -36,7 +36,10 @@ func change(val, play_sound = true):
 		if val <= 0: key = "lose_points"
 		body.m.status.play_sound(key)
 	
-	particles.create_point_particles(body.position)
+	var pos = body.position
+	var has_a_position = (pos.length() > 0.03)
+	if has_a_position:
+		particles.create_point_particles(pos)
 	
 	if body.is_in_group("Collectibles"):
 		collectible_change(val)

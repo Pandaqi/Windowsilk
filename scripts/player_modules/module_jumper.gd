@@ -3,6 +3,7 @@ extends Node2D
 const JUMP_DISTANCE_PER_SECOND : float = 750.0
 const JUMP_SCALE : float = 1.3
 const FLY_JUMP_DIST : float = 80.0
+const MIN_JUMP_DIST : float = 40.0 # TO DO: duplicate from another variable in Edges; move to GlobalDict config and read there?
 
 const DIST_PER_POINT : float = 185.0
 
@@ -18,7 +19,10 @@ onready var aim_helper = $AimHelper
 
 var jump_data = {
 	'target_point': null,
+	'target_pos': Vector2.ZERO,
 	'start_point': null,
+	'start_pos': Vector2.ZERO,
+	'destroy': false,
 	'find_valid_dir': false,
 	'dont_create_new_edges': false
 }
@@ -140,17 +144,17 @@ func execute_jump():
 	
 	jump_data.destroy = params.destroy
 	
-	var actually_jumped = (jump_data.target_pos != null) and (not jump_data.destroy)
-	var should_pay = (actually_jumped or jump_data.destroy) and body.m.status.is_player()
+	var should_pay = (actually_jumped() or jump_data.destroy) and body.m.status.is_player()
 	
 	if should_pay:
 		var dist = (jump_data.target_pos - jump_data.start_pos).length()
 		body.m.points.change(pay_for_travel(dist))
 	
-	if actually_jumped:
+	if actually_jumped():
 		body.m.tracker.remove_from_all()
 		
-		jump_data.target_point.m.entities.add_future(body)
+		if jump_data.target_point:
+			jump_data.target_point.m.entities.add_future(body)
 		
 		GlobalAudio.play_dynamic_sound(body, "whoosh")
 		if body.m.status.is_player():
@@ -251,13 +255,18 @@ func update_jump_tween(new_target):
 func finish_fake_jump():
 	emit_signal("on_jump_finished")
 
+func actually_jumped():
+	if (not jump_data.target_point) and (not jump_data.target_pos): return false
+	if jump_data.destroy: return false
+	if ((jump_data.target_pos - jump_data.start_pos).length() <= MIN_JUMP_DIST) and body.m.status.is_player(): return false
+	return true
+
 func finish_jump():
 	input_disabled = false
 	
 	handle_new_position_in_web()
-	
-	var actually_jumped = jump_data.target_point
-	if actually_jumped:
+
+	if actually_jumped() and jump_data.target_point:
 		jump_data.target_point.m.entities.remove_future(body)
 	
 	var we_died_during_jump = body.m.status.is_dead
@@ -276,8 +285,7 @@ func handle_new_position_in_web():
 	
 	#var start_pos = jump_data.start_pos
 	var target_pos = jump_data.target_pos
-	var actually_jumped = (target_pos != null)
-	if not actually_jumped: return
+	if not actually_jumped(): return
 	
 	var no_valid_edge = (not jump_data.target_edge) or (not is_instance_valid(jump_data.target_edge))
 	var no_valid_point = (not jump_data.target_point) or (not is_instance_valid(jump_data.target_point))

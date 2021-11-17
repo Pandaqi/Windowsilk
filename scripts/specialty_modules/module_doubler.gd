@@ -1,6 +1,6 @@
 extends Node2D
 
-const DOUBLE_INTERVAL = { 'min': 8.0, 'max': 15.0 }
+const DOUBLE_INTERVAL = { 'min': 12.0, 'max': 20.0 }
 
 onready var timer = $Timer
 onready var specialty_module = get_parent().get_parent()
