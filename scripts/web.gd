@@ -7,6 +7,7 @@ onready var BG = $BG
 onready var overlay = $Overlay
 
 onready var main_node = get_node("/root/Main")
+onready var players = get_node("/root/Main/Players")
 
 const EDGE_MARGIN : float = 50.0
 const BOUND_THICKNESS : float = 64.0
@@ -88,6 +89,11 @@ func generate_random_web():
 	#var start_pos = get_random_inner_pos(params)
 	#points.create_at(start_pos)
 	
+	var teams_in_play = players.get_teams_in_play()
+
+	home_bases = []
+	home_bases.resize(6)
+	
 	# shoot the actual web
 	var num_debug_frames = 1
 	var total_edge_length : float = 0.0
@@ -125,9 +131,10 @@ func generate_random_web():
 		if nothing_happened: continue
 		
 		var from_point_created = res.from.point
-		var create_home_base = (counter < GlobalInput.get_player_count())
+		var create_home_base = teams_in_play.size() > 0
 		if create_home_base:
-			home_bases.append(from_point_created)
+			var team = teams_in_play.pop_front()
+			home_bases[team] = from_point_created
 		
 		total_edge_length += res.new_edge.m.body.get_length()
 		counter += 1
@@ -142,6 +149,8 @@ func generate_random_web():
 	
 	for i in range(home_bases.size()):
 		var b = home_bases[i]
+		if not b: continue
+		
 		var from_pos = b.position
 		
 		while b.m.edges.count() < min_edges:
@@ -163,7 +172,7 @@ func generate_random_web():
 			
 			yield(get_tree(), "idle_frame")
 		yield(get_tree(), "idle_frame")
-	
+
 	# remove any "bad" edges
 	# NOTE: This is quite a costly "fail-safe", is it worth it?
 	var all_points = get_tree().get_nodes_in_group("Points")
@@ -181,10 +190,10 @@ func generate_random_web():
 	main_node.web_loading_done()
 
 func assign_home_bases():
-	var counter = 0
-	for b in home_bases:
-		b.m.status.convert_to_home_base(counter)
-		counter += 1
+	for i in range(home_bases.size()):
+		var b = home_bases[i]
+		if not b: continue
+		b.m.status.convert_to_home_base(i)
 
 func load_default_web():
 	edges.shoot(corners[0], corners[2] - corners[0])

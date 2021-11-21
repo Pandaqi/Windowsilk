@@ -7,6 +7,7 @@ var players = []
 
 func prepare():
 	var num_players = GlobalInput.get_player_count()
+	players = []
 	for i in range(num_players):
 		create_player(i)
 
@@ -49,6 +50,18 @@ func get_closest(pos):
 			best = p
 	
 	return best
+
+func get_teams_in_play():
+	var data = GlobalDict.player_data
+	var teams = []
+	for d in data:
+		if not d.active: continue
+		
+		var team_num = d.team
+		if team_num in teams: continue
+		teams.append(team_num)
+	
+	return teams
 
 func get_teams_left():
 	var teams_left = []

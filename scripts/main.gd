@@ -69,6 +69,8 @@ func decrease_opponent_objectives(body):
 	var winning_teams = []
 	
 	for b in all_bases:
+		if not b: continue
+		
 		var its_our_home = (b == home_base)
 		if its_our_home: continue
 		

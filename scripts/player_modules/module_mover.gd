@@ -116,10 +116,6 @@ func did_we_walk_off_the_edge(edge):
 	if edge.m.entities.is_on_me(body): return false
 	
 	var closest_point = edge.m.body.get_closest_point(body)
-	
-	# DEBUGGING: this might mess with us
-	#if (body.position - closest_point.position).length() > 5.0: return false
-
 	body.m.tracker.arrived_on_point(closest_point)
 	return true
 
