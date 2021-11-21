@@ -48,7 +48,7 @@ func check_if_were_stuck(edge = null):
 	if not edge.m.boss.has_one(): return
 	if edge.m.boss.is_safe_for(body): return
 	
-	var prob = 1.0 - (body.m.points.count() + 1.0) / (GlobalDict.cfg.max_points_capacity + 1.0)
+	var prob = 1.0 - (body.m.points.count() + 0.5) / (GlobalDict.cfg.max_points_capacity + 1.0)
 	prob *= STUCK_PROB_SCALE_FACTOR
 	if randf() > prob: return
 

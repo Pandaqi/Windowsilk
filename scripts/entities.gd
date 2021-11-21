@@ -101,6 +101,10 @@ func place_entity(params = {}):
 	if too_many_of_type(group):
 		return
 	
+	# my code for the "Doubler" specialty is SO GOOD that it can actually succesfully double the player :p
+	# but that leads to confusion, so disable it
+	if rand_type == "player_spider": return
+	
 	var entity = entity_scene.instance()
 	web.entities.add_child(entity)
 

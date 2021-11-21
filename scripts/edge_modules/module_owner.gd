@@ -2,6 +2,7 @@ extends Node2D
 
 const PAINT_VOLUME : float = -6.0
 const MAX_PLAYER_STUCK_TIME : float = 15.0
+const MIN_ALPHA : float = 0.33 # allowing the fade to go to 0 means we don't clearly see owners for 5-10 seconds, which isn't great
 
 var boss = null
 var total_wait_time : float = 20.0
@@ -18,12 +19,24 @@ func set_to_specific_time(tm):
 
 func set_to(b, short = true):
 	if not b: return
+	if forbid_owner_due_to_home_base(b): return
 	
 	boss = b
 	GlobalAudio.play_dynamic_sound(body, "web_paint", PAINT_VOLUME)
 	
 	body.m.drawer.set_pattern(boss.m.status.team_num)
 	start_timer(short)
+
+func forbid_owner_due_to_home_base(b):
+	var start_node = body.m.body.start
+	var end_node = body.m.body.end
+	
+	if start_node.m.status.is_home_base():
+		if not start_node.m.homebase.is_mine(b): return true
+	
+	if end_node.m.status.is_home_base():
+		if not end_node.m.homebase.is_mine(b): return true
+	return false
 
 func get_it():
 	return boss
@@ -60,9 +73,10 @@ func can_enter(entity):
 		entity.m.status.give_constant_feedback("Can't enter special lines!")
 		return false
 	
-	if boss.m.status.team_num != entity.m.status.team_num:
-		entity.m.status.give_constant_feedback("Owned by someone else!")
-		return false
+	if GlobalDict.cfg.forbid_players_entering_silk_from_another_team:
+		if boss.m.status.team_num != entity.m.status.team_num:
+			entity.m.status.give_constant_feedback("Owned by someone else!")
+			return false
 	
 	return true
 
@@ -74,7 +88,8 @@ func get_time_left():
 	return timer.time_left
 
 func get_fade_ratio():
-	return clamp(get_time_left() / total_wait_time, 0.2, 1.0)
+	var ratio = get_time_left() / total_wait_time
+	return MIN_ALPHA + ratio*(1.0 - MIN_ALPHA)
 
 func start_timer(short):
 	total_wait_time = GlobalDict.cfg.short_owner_fade_time

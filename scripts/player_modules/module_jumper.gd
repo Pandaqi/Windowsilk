@@ -161,6 +161,8 @@ func execute_jump():
 			GlobalAudio.play_dynamic_sound(body, "web_create")
 		
 		play_jump_tween()
+	else:
+		succesful = false
 	
 	if not succesful:
 		finish_jump()

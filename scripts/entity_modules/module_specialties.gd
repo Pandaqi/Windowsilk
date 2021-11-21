@@ -5,7 +5,7 @@ const TIMEBOMB_THRESHOLD : float = 5.0
 
 const DURATION : float = 10.0
 const FLICKER_THRESHOLD : float = 3.0 # from what point the icon starts flickering to indicate it's wearing out
-const NOISE_MAKER_FORCE : float = 250.0
+const NOISE_MAKER_FORCE : float = 180.0
 
 const FEATHERLIGHT_SPEED : float = 0.1 # how fast points move inwards
 const MARGIN_BEFORE_FEATHERLIGHT_STARTS : float = 20.0

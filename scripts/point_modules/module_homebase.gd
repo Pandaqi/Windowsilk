@@ -67,7 +67,8 @@ func update_total(dp):
 	total_points += dp
 	update_label()
 	
-	main_node.on_team_progression(team, total_points, target_points)
+	if not should_win(): return
+	main_node.on_team_won(team)
 
 func check_player_entrance(p):
 	if not active: return

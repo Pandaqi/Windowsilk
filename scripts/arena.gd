@@ -5,7 +5,7 @@ var arena_scene = null
 var data = {}
 
 const SPLASH_KNOCKBACK_RADIUS : float = 100.0
-const SPLASH_KNOCKBACK_FORCE : float = 500.0
+const SPLASH_KNOCKBACK_FORCE : float = 440.0
 
 onready var particles = get_node("/root/Main/Particles")
 

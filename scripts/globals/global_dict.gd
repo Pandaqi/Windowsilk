@@ -28,7 +28,7 @@ var base_cfg = {
 	
 	'players_leave_trail': true,
 	'short_owner_fade_time': 20.0,
-	'long_owner_fade_time': 300.0,
+	'long_owner_fade_time': 200.0,
 	'owned_silk_catches_any_bug': true,
 	
 	'allow_eating_small_players': false,
@@ -36,6 +36,7 @@ var base_cfg = {
 	'paint_trails_when_jumping': true,
 	
 	"ai_can_enter_owned_silk": true,
+	'forbid_players_entering_silk_from_another_team': false,
 	
 	"max_entities_per_type": 10,
 	

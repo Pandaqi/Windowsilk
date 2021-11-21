@@ -49,12 +49,6 @@ func on_player_progression(p):
 	
 	game_over(team_num)
 
-func on_team_progression(team_num, points, needed_points):
-	if points < needed_points: return
-	if game_over_state: return
-	
-	game_over(team_num)
-
 func on_team_won(team_num):
 	GlobalAudio.play_static_sound("win_game")
 	
@@ -80,7 +74,8 @@ func decrease_opponent_objectives(body):
 	
 	if winning_teams.size() <= 0: return
 	if winning_teams.size() == 1:
-		on_team_won(team_num)
+		var winning_team_num = winning_teams[0].m.homebase.team_num
+		on_team_won(winning_team_num)
 		return
 	
 	# use number of deaths as a tiebreaker

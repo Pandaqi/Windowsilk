@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://scenes/web.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/main.gd" type="Script" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://scripts/gui.gd" type="Script" id=9]
 [ext_resource path="res://assets/fonts/griffy.ttf" type="DynamicFontData" id=10]
 [ext_resource path="res://assets/ui/pause_reminder.png" type="Texture" id=11]
+[ext_resource path="res://scripts/larva_helper.gd" type="Script" id=12]
 [ext_resource path="res://scripts/players.gd" type="Script" id=16]
 
 [sub_resource type="Shader" id=1]
@@ -80,6 +81,12 @@ script = ExtResource( 6 )
 
 [node name="Players" type="Node2D" parent="."]
 script = ExtResource( 16 )
+
+[node name="LarvaHelper" type="Node2D" parent="Players"]
+script = ExtResource( 12 )
+
+[node name="Timer" type="Timer" parent="Players/LarvaHelper"]
+one_shot = true
 
 [node name="Particles" parent="." instance=ExtResource( 8 )]
 
@@ -157,6 +164,7 @@ hframes = 2
 [node name="ReminderTimer" type="Timer" parent="GUI"]
 one_shot = true
 
+[connection signal="timeout" from="Players/LarvaHelper/Timer" to="Players/LarvaHelper" method="_on_Timer_timeout"]
 [connection signal="timeout" from="GUI/Timer" to="GUI" method="_on_Timer_timeout"]
 [connection signal="timeout" from="GUI/GameOverTimer" to="GUI" method="_on_GameOverTimer_timeout"]
 [connection signal="timeout" from="GUI/ReminderTimer" to="GUI" method="_on_ReminderTimer_timeout"]

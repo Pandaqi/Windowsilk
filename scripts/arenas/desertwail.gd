@@ -1,6 +1,6 @@
 extends Node2D
 
-const NUM_DUST_CLOUDS : int = 3
+const NUM_DUST_CLOUDS : int = 2
 
 var dc_scene = preload("res://scenes/arenas/dust_cloud.tscn")
 onready var web = get_node("/root/Main/Web")

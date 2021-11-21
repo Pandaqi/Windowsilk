@@ -5,7 +5,7 @@ const TIMER_BOUNDS = { 'min': 7.0, 'max': 10.0 }
 const SCALE_BOUNDS = { 'min': 0.725, 'max': 1.0 }
 const CLOUD_SIZE : float = 512.0
 
-const GUST_FORCE : float = 300.0
+const GUST_FORCE : float = 200.0
 
 var force
 var speed : float

@@ -82,10 +82,30 @@ func can_collect(other_body, give_feedback = true):
 	# cannot eat ourselves or non-entities
 	if other_body == body: return false
 	if not other_body.is_in_group("Entities"): return false
+	if not other_body.m.status.can_die: return false
+	
+	var we_are_player = body.m.status.is_player()
+	var they_are_player = other_body.m.status.is_player()
+	
+	# if a player is near their home base, they are invincible
+	if other_body.m.generalarea.has_protection_from_home_base(): 
+		if give_feedback: other_body.m.status.give_constant_feedback("Protected by home!")
+		return false
+	
+	# same team?
+	if we_are_player:
+		var same_team = (other_body.m.status.team_num == body.m.status.team_num)
+		if same_team: 
+			body.m.status.give_feedback("Can't eat team!")
+			return false
 	
 	# we're at max capacity?
+	# -> only holds for PLAYERS eating anything
+	# -> or NON-PLAYERS eating NON-PLAYERS
+	# (so players still have a threat from big bugs, even if they're at max)
 	if body.m.points.at_max_capacity(): 
-		if give_feedback: body.m.status.give_constant_feedback("Max capacity!")
+		if we_are_player or not they_are_player:
+			if give_feedback: body.m.status.give_constant_feedback("Max capacity!")
 		return false
 	
 	# if the other is no (longer) a valid entity, abort
@@ -94,11 +114,6 @@ func can_collect(other_body, give_feedback = true):
 	# conversely, if the other is incapacitated, they cannot defend themselves and eating is always possible
 	# (mostly applies to flying bugs getting stuck in player-owned silk)
 	if other_body.m.status.is_incapacitated: return true
-	
-	# if a player is near their home base, they are invincible
-	if other_body.m.generalarea.has_protection_from_home_base(): 
-		if give_feedback: other_body.m.status.give_constant_feedback("Protected by home!")
-		return false
 	
 	# no need to eat/chase something that's already poisoned if we're poisoned
 	if body.m.specialties.is_poisoned() and other_body.m.specialties.is_poisoned():
@@ -120,8 +135,6 @@ func can_collect(other_body, give_feedback = true):
 	
 	# now apply the point check => more points than the other? can eat
 	var margin = 0
-	var we_are_player = body.is_in_group("Players")
-	var they_are_player = other_body.is_in_group("Players")
 	var apply_point_difference_check = body.is_in_group("Players") or GlobalDict.cfg.point_difference_holds_for_all
 	
 	if they_are_player and apply_point_difference_check: 

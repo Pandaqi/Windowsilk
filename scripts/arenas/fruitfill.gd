@@ -4,6 +4,7 @@ const TIMER_BOUNDS = { 'min': 5, 'max': 10 }
 const COLLECTIBLE_BOUNDS = { 'min': 2, 'max': 5 }
 const OFF_WEB_PROB : float = 0.1
 const ROTTING_INTERVAL : float = 10.0
+const MAX_FRUIT_START_POINTS : int = 2
 
 onready var timer = $Timer
 onready var spawner = get_node("/root/Main/Spawner")
@@ -47,6 +48,7 @@ func place_fruit():
 	web.entities.add_child(f)
 	
 	f.m.status.initialize(ROTTING_INTERVAL)
+	f.m.points.set_to(randi() % MAX_FRUIT_START_POINTS)
 	
 	print("FRUIT PLACED AT")
 	print(data.pos)
