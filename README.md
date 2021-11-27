@@ -51,10 +51,6 @@ As such, these are some things that could improve the game further:
 * Actually give insects the legs they have (now there are just a few default legs everyone uses) + animate the legs during flight.
 * Optimization improvements. Splitting everything into modules/nodes has the downside that even a simple game like this has _thousands_ of nodes active at the same time. Many of those nodes could be simplified to the most basic version ("Node") or optimized some other way.
 
-Besides that, I'm thinking of turning this idea into a puzzle game as well. (With "this idea" being "solve puzzles on a spider web by creating new strands or destroying old ones".) If I make it a bit more abstract/simplified and constrain it to a grid, I think that'd be wonderful. 
-
-(If you read this and think: "yes, great idea, I'm going to make that puzzle game!" That's fine by me, just let me know and maybe we can collaborate.)
-
 
 ## What can I use?
 In the spirit of these game jams, I make absolutely everything available and freely accessible. 

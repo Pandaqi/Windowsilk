@@ -24,6 +24,7 @@ var corners = [
 
 var home_bases = []
 
+# DEBUGGING
 export var type : String = "random"
 export var custom_web : String = ""
 
